@@ -1,114 +1,190 @@
-import React from 'react';
+"use client";
 
-interface TeamMember {
-  id: number;
-  name: string;
-  role: string;
-  description: string;
-  imageUrl: string;
+import React, { useEffect, useRef } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-const teamMembers: TeamMember[] = [
- {
-  id: 1,
-  name: "Hafizur Rahman", // আপনার নাম অনুযায়ী পরিবর্তন করতে পারেন
-  role: "Founder & Lead Developer",
-  description: "Architecting high-performance digital ecosystems with MERN stack expertise and a passion for premium, animated user experiences.",
-  imageUrl: "/team/profile.jpg", // public ফোল্ডারে আপনার ছবি এই নামে রাখুন
-},
+const teamMembers = [
+  {
+    id: 1,
+    name: "Hafizur Rahman",
+    role: "Founder & Lead Developer",
+    description:
+      "Architecting high-performance digital ecosystems with MERN stack expertise.",
+    imageUrl: "/team/profile.jpg",
+  },
   {
     id: 2,
     name: "Elena Vance",
     role: "Head of Strategy",
-    description: "Transforming complex market data into elegant, actionable roadmaps for global enterprise ecosystems.",
+    description: "Transforming complex market data into elegant roadmaps.",
     imageUrl: "/team/profile.jpg",
   },
   {
     id: 3,
     name: "Julian Kross",
     role: "Lead Systems Architect",
-    description: "Building the invisible foundations that power high-concurrency applications with zero-latency precision.",
+    description: "Building invisible foundations with zero-latency precision.",
     imageUrl: "/team/profile.jpg",
-  }
+  },
 ];
 
 const TeamSection = () => {
+  const containerRef = useRef(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    // Reveal Animation on Scroll
+    gsap.fromTo(
+      cardRefs.current,
+      { opacity: 0, y: 60 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        stagger: 0.2,
+        ease: "expo.out",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 75%",
+        },
+      },
+    );
+  }, []);
+
+  const onMouseMove = (e: React.MouseEvent, index: number) => {
+    const card = cardRefs.current[index];
+    const rect = card.getBoundingClientRect();
+
+    // Mouse relative to card center
+    const xPos = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPos = (e.clientY - rect.top) / rect.height - 0.5;
+
+    // Smooth Ultra-Fluid Tilt
+    gsap.to(card, {
+      duration: 0.8,
+      rotationY: xPos * 12,
+      rotationX: -yPos * 12,
+      transformPerspective: 1200,
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+
+    // Move the image slightly opposite for Parallax
+    gsap.to(card.querySelector(".member-img"), {
+      duration: 0.8,
+      x: -xPos * 25,
+      y: -yPos * 25,
+      ease: "power3.out",
+    });
+  };
+
+  const onMouseLeave = (index: number) => {
+    const card = cardRefs.current[index];
+    gsap.to(card, {
+      duration: 1.2,
+      rotationY: 0,
+      rotationX: 0,
+      ease: "elastic.out(1, 0.4)",
+    });
+    gsap.to(card.querySelector(".member-img"), {
+      duration: 1.2,
+      x: 0,
+      y: 0,
+      ease: "power3.out",
+    });
+  };
+
   return (
-    <section className="relative py-24 px-6 bg-[#131313] overflow-hidden">
-      {/* Background Mesh Gradients */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 mesh-gradient" />
-      
-      {/* Abstract Background Lines (SVG) */}
-      <svg className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M-100,200 Q400,100 800,400 T1800,200" fill="none" stroke="#958ea0" strokeWidth="1" />
-        <path d="M-100,600 Q600,800 1200,400 T2000,700" fill="none" stroke="#958ea0" strokeWidth="0.5" />
-      </svg>
+    <section
+      ref={containerRef}
+      className="bg-[#0b0c18] py-20 px-6 relative overflow-hidden"
+    >
+      {/* Background: Abstract Lines & Hero Glow */}
+      <div className="absolute top-0 left-1/4 w-px h-full bg-white/[0.03]" />
+      <div className="absolute top-0 right-1/4 w-px h-full bg-white/[0.03]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/5 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header Area */}
-        <div className="mb-20 max-w-3xl">
-          <span className="inline-block text-[#4cd7f6] font-bold tracking-[0.3em] text-[12px] uppercase mb-6">
-            The Architects of Growth
-          </span>
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-[#e5e2e1] mb-8 leading-[1.1]">
-            Meet the Team at <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d0bcff] to-[#4cd7f6]">
-              Grow Business Solutions
+        {/* Modern Minimal Header */}
+        <div className="mb-32 flex items-baseline justify-between border-b border-white/5 pb-10">
+          <div>
+            <p className="text-cyan-400 font-mono text-[10px] tracking-[0.5em] uppercase mb-4">
+              Core Collective
+            </p>
+            <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
+              The{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10">
+                Team.
+              </span>
+            </h2>
+          </div>
+          <div className="hidden md:block text-right">
+            <span className="text-white/20 font-mono text-sm tracking-widest uppercase">
+              Growth Architecture / 2026
             </span>
-          </h2>
-          <p className="text-lg md:text-xl text-[#cbc3d7] leading-relaxed max-w-2xl font-light">
-            A curated collective of visionary designers, strategic engineers, and creative thinkers redefining the digital landscape.
-          </p>
+          </div>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {teamMembers.map((member, index) => (
-            <div 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+          {teamMembers.map((member, idx) => (
+            <div
               key={member.id}
-              className={`group p-8 rounded-2xl transition-all duration-500 ease-out flex flex-col h-full transform hover:-translate-y-2 
-                bg-[#353534]/40 backdrop-blur-xl border border-[#494454]/20 hover:border-[#4cd7f6]/50 hover:shadow-[0_0_40px_-10px_rgba(76,215,246,0.2)]
-                ${index === 1 ? 'md:mt-12' : ''} // আপনার ডিজাইনের সেই staggered ইফেক্ট
-              `}
+              ref={(el) => {
+                if (el) cardRefs.current[idx] = el;
+              }}
+              onMouseMove={(e) => onMouseMove(e, idx)}
+              onMouseLeave={() => onMouseLeave(idx)}
+              className={`relative group cursor-none md:cursor-default ${idx === 1 ? "md:mt-24" : ""}`}
             >
-              {/* Member Image */}
-              <div className="relative aspect-[4/5] mb-8 overflow-hidden rounded-xl">
-                <img 
-                  src={member.imageUrl} 
-                  alt={member.name}
-                  className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-110 group-hover:grayscale-0"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#131313]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* Image Container with Parallax Effect */}
+              <div className="relative aspect-[3/4] rounded-[40px] overflow-hidden bg-[#121323] border border-white/5 transition-colors duration-500 group-hover:border-cyan-500/30">
+                <div className="member-img w-full h-full scale-125 relative">
+                  <Image
+                    src={member.imageUrl}
+                    alt={member.name}
+                    fill
+                    className="object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
+                  />
+                  {/* Subtle technical overlay */}
+                  <div className="absolute inset-0 bg-[#0b0c18]/20 group-hover:bg-transparent transition-colors duration-700" />
+                </div>
+
+                {/* Info Overlay (Appears on Hover) */}
+                <div className="absolute bottom-0 left-0 w-full p-10 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 bg-gradient-to-t from-[#0b0c18] to-transparent">
+                  <p className="text-cyan-400 font-mono text-[9px] tracking-[0.3em] uppercase mb-2">
+                    Internal node_{member.id}
+                  </p>
+                  <h3 className="text-3xl font-bold text-white mb-2">
+                    {member.name}
+                  </h3>
+                  <p className="text-white/50 text-sm italic font-light leading-relaxed">
+                    {member.description}
+                  </p>
+                </div>
               </div>
 
-              {/* Member Details */}
-              <div className="flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold text-[#e5e2e1] tracking-tight mb-2">
-                  {member.name}
-                </h3>
-                <p className="text-[#4cd7f6] font-medium tracking-widest text-xs uppercase mb-6">
-                  {member.role}
-                </p>
-                <p className="text-[#cbc3d7] text-sm leading-relaxed mb-8 flex-grow">
-                  {member.description}
-                </p>
-
-                {/* Social Icons Placeholder */}
-                <div className="flex gap-4 items-center">
-                  <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#cbc3d7] hover:text-[#4cd7f6] transition-colors">
-                    <span className="material-symbols-outlined text-lg">share</span>
-                  </button>
-                  <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[#cbc3d7] hover:text-[#4cd7f6] transition-colors">
-                    <span className="material-symbols-outlined text-lg">public</span>
-                  </button>
+              {/* Static Label (Visible always) */}
+              <div className="mt-8 px-4 flex justify-between items-center group-hover:opacity-0 transition-opacity duration-300">
+                <div>
+                  <h4 className="text-white font-bold text-lg">
+                    {member.name}
+                  </h4>
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest">
+                    {member.role}
+                  </p>
                 </div>
+                <div className="w-8 h-[1px] bg-white/10" />
               </div>
             </div>
           ))}
         </div>
-
-        {/* Call to Action */}
-        
       </div>
     </section>
   );

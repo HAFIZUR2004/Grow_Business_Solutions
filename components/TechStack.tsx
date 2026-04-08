@@ -1,88 +1,237 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  Code2,
+  Atom,
+  Terminal,
+  Database,
+  Server,
+  FileJson,
+  Globe,
+  ShieldCheck,
+  Layers,
+  BarChart3,
+} from "lucide-react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+const technologies = [
+  { name: "Next.js", color: "#ffffff", orbit: 240, speed: 45, icon: Code2 },
+  { name: "React", color: "#61dafb", orbit: 160, speed: 30, icon: Atom },
+  { name: "Node.js", color: "#68a063", orbit: 280, speed: 55, icon: Server },
+  { name: "MongoDB", color: "#47a248", orbit: 200, speed: 40, icon: Database },
+  {
+    name: "PostgreSQL",
+    color: "#336791",
+    orbit: 260,
+    speed: 50,
+    icon: Database,
+  },
+  {
+    name: "TypeScript",
+    color: "#3178c6",
+    orbit: 180,
+    speed: 35,
+    icon: FileJson,
+  },
+];
 
 const TechStack = () => {
-  return (
-    <section className="py-32 px-8 overflow-hidden relative bg-[#131313] text-[#E5E2E1]">
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-        
-        {/* Left Side: Content */}
-        <div>
-          <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
-            The Modern <span className="text-primary text-blue-500">Atomic</span> Tech Stack.
-          </h2>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8">
-            আমরা শুধু টুলস ব্যবহার করি না, সেগুলোর ওপর পূর্ণ নিয়ন্ত্রণ রাখি। পারফরম্যান্স, স্কেলেবিলিটি এবং দীর্ঘমেয়াদী মেইনটেইনেবিলিটির ওপর ভিত্তি করেই আমাদের টেকনোলজি সিলেকশন করা হয়।
-          </p>
+  const sectionRef = useRef(null);
+  const orbitRefs = useRef<HTMLDivElement[]>([]);
 
+  useEffect(() => {
+    // Reveal Entrance
+    gsap.from(".tech-content", {
+      opacity: 0,
+      y: 30,
+      duration: 1.2,
+      ease: "power4.out",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 70%",
+      },
+    });
+
+    // Orbital Logic
+    orbitRefs.current.forEach((node, i) => {
+      if (!node) return;
+      const tech = technologies[i];
+
+      // Rotate the orbit container
+      gsap.to(node, {
+        rotation: 360,
+        duration: tech.speed,
+        repeat: -1,
+        ease: "none",
+      });
+
+      // Keep icons upright
+      const label = node.querySelector(".tech-node-inner");
+      gsap.to(label, {
+        rotation: -360,
+        duration: tech.speed,
+        repeat: -1,
+        ease: "none",
+      });
+    });
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-40 px-8 overflow-hidden relative bg-[#08090d] text-[#E5E2E1]"
+    >
+      {/* Animated Mesh Background (No Images) */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1a1b2e_0%,transparent_70%)]" />
+        <div
+          className="absolute top-0 left-0 w-full h-full"
+          style={{
+            backgroundImage: `radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+        {/* Left Side: Content */}
+        <div className="tech-content space-y-10">
           <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-white/5">
-                <span className="material-symbols-outlined text-yellow-400">bolt</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-white">Next-Gen Reactivity</h4>
-                <p className="text-sm text-gray-400">Next.js এবং React Server Components এর মাধ্যমে সুপার ফাস্ট লোডিং নিশ্চিত করা হয়।</p>
-              </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[1px] bg-cyan-500/50" />
+              <span className="text-[10px] font-mono tracking-[0.5em] text-cyan-400 uppercase">
+                Neural Infrastructure
+              </span>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.9]">
+              The{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 italic font-light">
+                Atomic
+              </span>{" "}
+              <br />
+              Stack.
+            </h2>
+            <p className="text-white/40 text-lg leading-relaxed max-w-lg font-light">
+              Architecting high-performance systems with a curated selection of
+              industry-leading technologies for maximum scalability.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 1. Optimized Core (Existing) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
+              <Terminal className="w-5 h-5 text-cyan-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Optimized Core</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                Latency-tuned server environments for 99.9% uptime.
+              </p>
             </div>
 
-            <div className="flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-white/5">
-                <span className="material-symbols-outlined text-blue-400">terminal</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-white">Full-Stack Scalability</h4>
-                <p className="text-sm text-gray-400">Node.js, Express এবং MongoDB/Postgres এর সমন্বয়ে শক্তিশালী ব্যাকএন্ড আর্কিটেকচার।</p>
-              </div>
+            {/* 2. Reactive UI (Existing) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-purple-500/20 transition-all duration-500 group">
+              <Atom className="w-5 h-5 text-purple-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Reactive UI</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                State-driven fluid interfaces with zero layout shifts.
+              </p>
+            </div>
+
+            {/* 3. Distributed Edge (New) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-blue-500/20 transition-all duration-500 group">
+              <Globe className="w-5 h-5 text-blue-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Distributed Edge</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                Global CDN delivery ensuring low-latency access everywhere.
+              </p>
+            </div>
+
+            {/* 4. Ironclad Security (New) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-emerald-500/20 transition-all duration-500 group">
+              <ShieldCheck className="w-5 h-5 text-emerald-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Ironclad Security</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                End-to-end encryption and advanced JWT authentication.
+              </p>
+            </div>
+
+            {/* 5. Atomic Design (New) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all duration-500 group">
+              <Layers className="w-5 h-5 text-orange-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Scalable Logic</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                Modular architecture built for long-term maintainability.
+              </p>
+            </div>
+
+            {/* 6. Insightful Analytics (New) */}
+            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-pink-500/20 transition-all duration-500 group">
+              <BarChart3 className="w-5 h-5 text-pink-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+              <h4 className="font-bold text-white mb-1">Smart Insights</h4>
+              <p className="text-xs text-white/30 font-light leading-relaxed">
+                Real-time monitoring and user behavior data tracking.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Floating Visuals */}
-        <div className="relative h-[600px] flex items-center justify-center">
-          {/* Background Gradient Blur */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl opacity-50"></div>
-          
-          {/* Center Piece - Core */}
-          <div className="w-48 h-48 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center relative z-20 shadow-2xl">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-blue-500/20 to-transparent animate-pulse"></div>
-            <div className="absolute text-center">
-              <div className="text-[10px] font-black uppercase tracking-tighter opacity-50">Core</div>
-              <div className="text-2xl font-black">MERN+</div>
+        {/* Right Side: Orbital Engine */}
+        <div className="relative h-[650px] flex items-center justify-center scale-75 md:scale-100">
+          {/* Central Engine Core */}
+          <div className="relative z-30 w-36 h-36 rounded-full bg-[#08090d] border border-white/10 flex items-center justify-center shadow-[0_0_60px_rgba(62,232,246,0.05)]">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-500/10 to-purple-500/10 animate-pulse" />
+            <div className="text-center z-10">
+              <div className="text-[9px] font-mono tracking-widest text-white/20 uppercase mb-1">
+                Stack
+              </div>
+              <div className="text-2xl font-black tracking-tighter text-white">
+                MERN+
+              </div>
             </div>
           </div>
 
-          {/* Floating Tech Bubbles */}
-          
-          {/* Next.js */}
-          <div className="absolute top-10 left-10 w-28 h-28 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_6s_ease-in-out_infinite] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Next.js</span>
-          </div>
+          {/* Orbiting Nodes */}
+          {technologies.map((tech, i) => {
+            const Icon = tech.icon;
+            return (
+              <div
+                key={i}
+                ref={(el) => {
+                  if (el) orbitRefs.current[i] = el;
+                }}
+                className="absolute flex items-center justify-center pointer-events-none"
+                style={{ width: tech.orbit * 2, height: tech.orbit * 2 }}
+              >
+                {/* Orbit Circle Path */}
+                <div className="absolute inset-0 rounded-full border border-white/[0.04]" />
 
-          {/* React */}
-          <div className="absolute top-20 right-10 w-28 h-28 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_7s_ease-in-out_infinite_0.5s] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400">React</span>
-          </div>
+                {/* Tech Node */}
+                <div className="tech-node-inner absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto group">
+                  <div className="w-16 h-16 rounded-2xl bg-[#0d0e14] border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-500 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]">
+                    <Icon
+                      size={24}
+                      style={{ color: tech.color }}
+                      className="mb-1 opacity-70 group-hover:opacity-100 transition-opacity"
+                    />
+                    <span className="text-[8px] font-mono uppercase tracking-tighter text-white/30 group-hover:text-white transition-colors">
+                      {tech.name}
+                    </span>
+                  </div>
 
-          {/* MongoDB */}
-          <div className="absolute bottom-20 left-0 w-28 h-28 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_5s_ease-in-out_infinite_1s] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-green-500">MongoDB</span>
-          </div>
+                  {/* Subtle link back to core */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[1px] h-12 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </div>
+            );
+          })}
 
-          {/* PostgreSQL */}
-          <div className="absolute bottom-10 right-20 w-32 h-32 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_8s_ease-in-out_infinite_1.5s] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-300">PostgreSQL</span>
-          </div>
-
-          {/* Node.js */}
-          <div className="absolute top-1/2 -left-8 w-24 h-24 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_9s_ease-in-out_infinite] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-green-400">Node.js</span>
-          </div>
-
-          {/* Express.js */}
-          <div className="absolute bottom-1/2 -right-4 w-24 h-24 rounded-full border border-white/10 bg-white/5 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-[bounce_7s_ease-in-out_infinite_2s] z-30 shadow-xl">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Express</span>
-          </div>
-
+          {/* Massive Deep Background Glow */}
+          <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.03] blur-[150px] rounded-full" />
         </div>
       </div>
     </section>

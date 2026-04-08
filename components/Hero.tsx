@@ -129,17 +129,6 @@ export default function HeroSection() {
           </svg>
         </div>
 
-        {/* 4-point star */}
-        <div className="star" aria-hidden>
-          <svg viewBox="0 0 40 40" width="44" height="44">
-            <polygon
-              points="20,0 23,17 40,20 23,23 20,40 17,23 0,20 17,17"
-              fill="white"
-              opacity="0.92"
-            />
-          </svg>
-        </div>
-
         {/* Left content */}
         <div className="content">
           <div className="badge">
