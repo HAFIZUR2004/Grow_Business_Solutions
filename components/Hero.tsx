@@ -1,67 +1,151 @@
-export default function Hero() {
-  return (
-    <section className="relative min-h-screen flex items-center pt-20 px-8 overflow-hidden bg-[#131313] text-[#E5E2E1]">
-      {/* Background Glows & Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-600/20 blur-[120px] rounded-full"></div>
-      <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-cyan-600/10 blur-[100px] rounded-full"></div>
-      
-      {/* SVG Bezier Lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" preserveAspectRatio="none">
-        <path d="M-100,500 C200,300 500,800 1200,400 S1600,200 1800,600" stroke="#958ea0" fill="none" strokeWidth="1"></path>
-      </svg>
+"use client";
+import React from 'react';
+import { motion } from 'framer-motion';
 
-      <div className="max-w-[1440px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center z-10">
+const Hero = () => {
+  return (
+    <section className="relative min-h-screen w-full bg-[#050505] flex items-center justify-center overflow-hidden px-6 py-20">
+      
+      {/* --- Advanced Background Layering --- */}
+      
+      {/* 1. Main Subtle Grid */}
+      <div className="absolute inset-0 opacity-10" 
+        style={{
+          backgroundImage: `linear-gradient(#444 1px, transparent 1px), linear-gradient(90deg, #444 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(circle at center, black, transparent 90%)'
+        }} 
+      />
+
+      {/* 2. Complex Mesh/Wireframe (The "Weir" Look) */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <svg width="100%" height="100%" className="absolute inset-0">
+          <pattern id="mesh" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(139, 92, 246, 0.2)" strokeWidth="0.5" />
+            <circle cx="0" cy="0" r="1.5" fill="rgba(6, 182, 212, 0.4)" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#mesh)" />
+        </svg>
+      </div>
+
+      {/* 3. Organic Animated Blob for "Complexity" */}
+      <motion.div 
+        animate={{ 
+          scale: [1, 1.2, 1],
+          rotate: [0, 90, 0],
+        }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-purple-900/10 blur-[150px] rounded-[40%_60%_70%_30%] border border-purple-500/10"
+      />
+
+      {/* --- Main Content --- */}
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center z-10">
         
-        {/* Text Content */}
-        <div className="lg:col-span-7">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-6">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-            Software Engineering Excellence
+        {/* Left Side: Content */}
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 mb-8 backdrop-blur-md">
+            <div className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500 shadow-[0_0_10px_#22d3ee]"></span>
+            </div>
+            <span className="text-[10px] tracking-[0.3em] font-bold text-gray-400 uppercase">Software Engineering Excellence</span>
           </div>
-          
-          <h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8 bg-gradient-to-b from-white via-[#E5E2E1] to-[#958EA0] bg-clip-text text-transparent">
-            Grow Business Solutions <span className="block">BD.</span>
+
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tight leading-[0.9] mb-8 text-white">
+            Grow Business <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-gray-700">
+              Solutions BD.
+            </span>
           </h1>
 
-          <p className="text-gray-400 text-lg md:text-xl max-w-xl leading-relaxed mb-10">
-            Architecting high-performance digital ecosystems for the global market. We turn complex requirements into elegant, obsidian-grade software.
+          <p className="text-gray-400 text-lg md:text-xl max-w-lg leading-relaxed mb-10 font-light italic opacity-80">
+            "Architecting high-performance digital ecosystems. We turn complex requirements into elegant, obsidian-grade software."
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            <button className="bg-[#a078ff] text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_40px_-5px_rgba(160,120,255,0.4)] transition-all active:scale-95">
-              View Ecosystem
+          <div className="flex flex-wrap gap-5">
+            <button className="relative group overflow-hidden bg-[#7C5DFA] text-white px-10 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-[0_0_40px_-5px_#7C5DFA]">
+               <span className="relative z-10">View Ecosystem</span>
+               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </button>
-            <button className="bg-white/5 backdrop-blur-md text-white px-8 py-4 rounded-full font-bold text-lg border border-white/10 hover:bg-white/10 transition-all">
+            <button className="bg-white/[0.02] backdrop-blur-md text-white px-10 py-4 rounded-xl font-bold text-lg border border-white/10 hover:bg-white/5 transition-all">
               Our Thesis
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Visual Elements/Mockup */}
-        <div className="lg:col-span-5 relative h-[500px] flex items-center justify-center">
-          <div className="relative w-full h-full flex items-center justify-center">
-            {/* Animated Rings */}
-            <div className="absolute w-80 h-80 border-2 border-purple-500/20 rounded-xl rotate-45 animate-[spin_20s_linear_infinite]"></div>
-            <div className="absolute w-64 h-64 border border-cyan-500/30 rounded-full animate-ping"></div>
-            
-            {/* Main Glass Card */}
-            <div className="w-[80%] aspect-square bg-white/5 backdrop-blur-[40px] border border-white/10 rounded-3xl flex items-center justify-center overflow-hidden rotate-[-5deg] relative z-20 shadow-2xl">
+        {/* Right Side: High-Complexity Wireframe Globe */}
+        <div className="relative flex items-center justify-center">
+          
+          {/* Animated SVG Connections (The "Nodes") */}
+          <div className="absolute inset-0 z-0 opacity-40">
+            <svg viewBox="0 0 500 500" className="w-full h-full">
+              <motion.circle 
+                cx="250" cy="250" r="240" 
+                fill="none" stroke="rgba(124, 93, 250, 0.1)" strokeWidth="1" strokeDasharray="10 5"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.circle 
+                cx="250" cy="250" r="180" 
+                fill="none" stroke="rgba(34, 211, 238, 0.1)" strokeWidth="1" strokeDasharray="5 15"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              />
+            </svg>
+          </div>
+
+          {/* The Main Visual Core */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative w-full aspect-square max-w-[550px] flex items-center justify-center"
+          >
+            {/* Globe Image with Glass Effect */}
+            <div className="relative w-full h-full rounded-full p-8">
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full blur-2xl" />
               <img 
-                alt="Abstract wireframe" 
-                className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
-                src="https://i.ibb.co.com/FbdCFPgW/1594.jpg" 
+                src="https://raw.githubusercontent.com/gist/PiyushSuthar/39739ecd6844955b9a896d8594247077/raw/b13a7c73a0e633d7b88df178cc0548ca7c6f0147/globe.png" 
+                alt="Globe Wireframe"
+                className="w-full h-full object-contain opacity-70 contrast-125 brightness-110"
               />
             </div>
 
-            {/* Floating Badge */}
-            <div className="absolute -top-4 -right-4 bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/20 shadow-[0_0_80px_-10px_rgba(208,188,255,0.3)] z-30">
-              <div className="text-purple-400 text-3xl font-black">99.9%</div>
-              <div className="text-[10px] uppercase tracking-widest text-gray-400">Uptime SLA</div>
-            </div>
-          </div>
-        </div>
+            {/* Premium 99.9% Badge */}
+            <motion.div 
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-8 left-0 md:-left-4 bg-black/80 backdrop-blur-2xl px-6 py-4 rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-20"
+            >
+              <div className="text-white text-3xl font-black flex items-center gap-2">
+                99.9% <span className="text-[10px] text-cyan-400 animate-pulse">●</span>
+              </div>
+              <div className="text-[9px] uppercase tracking-[0.2em] text-gray-500 font-bold">Uptime SLA Protocol</div>
+            </motion.div>
 
+            {/* Small floating node badge */}
+            <div className="absolute bottom-20 right-0 bg-white/[0.03] backdrop-blur-xl p-3 rounded-lg border border-white/5 opacity-60">
+                <div className="flex gap-1">
+                    {[1,2,3,4].map(i => <div key={i} className="w-1 h-4 bg-purple-500/40 rounded-full" />)}
+                </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Sparkle Decoration */}
+      <div className="absolute bottom-12 right-12 text-white/20 animate-pulse">
+        <svg width="30" height="30" viewBox="0 0 40 40">
+          <path d="M20 0L24 16L40 20L24 24L20 40L16 24L0 20L16 16L20 0Z" fill="currentColor" />
+        </svg>
+      </div>
+
     </section>
   );
-}
+};
+
+export default Hero;

@@ -15,3 +15,19 @@ module.exports = {
   },
   plugins: [],
 }
+// tailwind.config.ts
+const config = {
+  theme: {
+    extend: {
+      colors: {
+        purple: {
+          500: '#a078ff',
+          600: '#6d3bd7',
+        },
+        cyan: {
+          400: '#4cd7f6',
+        }
+      }
+    }
+  }
+}
