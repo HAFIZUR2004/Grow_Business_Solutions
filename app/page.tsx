@@ -5,6 +5,7 @@ import TechStack from "@/components/TechStack";
 import Footer from "@/components/Footer";
 import EngineeringProtocol from "@/components/engineeringProtocol";
 import TeamSection from "@/components/TeamSection";
+import SuccessSection from "@/components/SuccessSection";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <EngineeringProtocol/>
+      <SuccessSection/>
       <TeamSection/>
       <Portfolio />
       <TechStack />

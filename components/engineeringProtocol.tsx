@@ -44,9 +44,54 @@ const steps = [
 const EngineeringProtocol = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // Central Line Drawing Animation
+    // --- Canvas Particles Logic (Hero Style) ---
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // ডটগুলোর সেটআপ (Hero Section এর কালার স্কিম অনুযায়ী)
+    const particles = Array.from({ length: 40 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      // হিরো সেকশনের পার্পল এবং সায়ান কালার মিক্স
+      color: Math.random() > 0.5 ? "rgba(140, 100, 240, 0.4)" : "rgba(62, 232, 246, 0.3)",
+    }));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+      });
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    // --- GSAP Scroll Animations ---
     gsap.fromTo(
       lineRef.current,
       { height: 0 },
@@ -59,10 +104,9 @@ const EngineeringProtocol = () => {
           end: "bottom 80%",
           scrub: 1,
         },
-      },
+      }
     );
 
-    // Card Fade-in with Beam Effect
     steps.forEach((_, i) => {
       gsap.fromTo(
         `.step-item-${i}`,
@@ -78,9 +122,14 @@ const EngineeringProtocol = () => {
             end: "top 50%",
             scrub: 0.5,
           },
-        },
+        }
       );
     });
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
 
   return (
@@ -88,6 +137,15 @@ const EngineeringProtocol = () => {
       ref={scrollRef}
       className="bg-[#0b0c18] text-white py-20 px-6 relative overflow-hidden"
     >
+      {/* Background Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-60"
+      />
+
+      {/* Hero Section এর মত সাইড গ্লো (Glow effect) */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
       <div className="max-w-6xl mx-auto relative z-10">
         <h2 className="text-4xl md:text-6xl font-black text-center mb-40 tracking-tighter">
           The Engineering{" "}
@@ -96,9 +154,7 @@ const EngineeringProtocol = () => {
 
         {/* Central Vertical Timeline */}
         <div className="relative">
-          {/* Static Line Background */}
           <div className="absolute left-1/2 -translate-x-1/2 w-[1px] h-full bg-white/5 top-0" />
-          {/* Animated Glow Line (The Beam) */}
           <div
             ref={lineRef}
             className="absolute left-1/2 -translate-x-1/2 w-[2px] bg-gradient-to-b from-[#b5a7ff] to-[#3ee8f6] top-0 shadow-[0_0_15px_#3ee8f6]"
@@ -108,14 +164,16 @@ const EngineeringProtocol = () => {
             {steps.map((step, idx) => (
               <div
                 key={idx}
-                className={`step-item-${idx} flex flex-col md:flex-row items-center w-full ${step.align === "left" ? "md:flex-row" : "md:flex-row-reverse"}`}
+                className={`step-item-${idx} flex flex-col md:flex-row items-center w-full ${
+                  step.align === "left" ? "md:flex-row" : "md:flex-row-reverse"
+                }`}
               >
-                {/* Content Block */}
                 <div
-                  className={`w-full md:w-1/2 ${step.align === "left" ? "md:text-right md:pr-20" : "md:text-left md:pl-20"} relative`}
+                  className={`w-full md:w-1/2 ${
+                    step.align === "left" ? "md:text-right md:pr-20" : "md:text-left md:pl-20"
+                  } relative`}
                 >
                   <div className="relative inline-block">
-                    {/* Background Text (Like your image) */}
                     <span className="absolute -top-10 left-0 w-full text-center text-6xl font-black text-white/[0.02] uppercase pointer-events-none select-none">
                       {step.bgText}
                     </span>
@@ -126,16 +184,15 @@ const EngineeringProtocol = () => {
                     >
                       {step.id}. {step.title}
                     </h4>
-                    <p className="text-white/40 max-w-[400px] leading-relaxed ml-auto mr-auto md:ml-0 md:mr-0">
+                    <p className="text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0">
                       {step.desc}
                     </p>
                   </div>
                 </div>
 
-                {/* Central Glowing Node */}
                 <div className="relative z-20 my-10 md:my-0">
                   <div
-                    className={`w-4 h-4 rounded-full border-4 border-[#0b0c18] shadow-[0_0_20px_rgba(255,255,255,0.5)]`}
+                    className="w-4 h-4 rounded-full border-4 border-[#0b0c18]"
                     style={{
                       backgroundColor: step.color,
                       boxShadow: `0 0 15px ${step.color}`,
@@ -143,9 +200,10 @@ const EngineeringProtocol = () => {
                   />
                 </div>
 
-                {/* Decorative Side (Empty space or icons like image) */}
                 <div
-                  className={`hidden md:block w-1/2 ${step.align === "left" ? "pl-20" : "pr-20"}`}
+                  className={`hidden md:block w-1/2 ${
+                    step.align === "left" ? "pl-20" : "pr-20"
+                  }`}
                 >
                   <span className="text-4xl font-black text-white/[0.03] uppercase tracking-widest italic select-none">
                     {step.bgText}
