@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar"; // আপনার Navbar এর সঠিক পাথ দিন
-import Footer from "@/components/Footer"; // আপনার Footer এর সঠিক পাথ দিন
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,7 +12,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Grow Business Solutions BD",
-  description: "Obsidian Software Agency",
+  description: "A concern of Taqwa Supplies",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -21,16 +25,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`dark ${inter.variable}`}
+      suppressHydrationWarning
+    >
       <body
-        className={`${inter.className} bg-[#0b0c18] antialiased text-white`}
+        className={`${inter.className} bg-[#0b0c18] antialiased text-white flex flex-col min-h-screen`}
+        suppressHydrationWarning={true}
       >
-        {/* Navbar এখানে থাকলে হোম এবং এবাউট সব পেজে পাবে */}
         <Navbar />
 
-        <main className="min-h-screen">{children}</main>
+        {/* flex-grow ensures this area fills space so footer stays at the bottom */}
+        <main className="flex-grow">{children}</main>
 
-        {/* Footer এখানে থাকলে সব পেজে পাবে */}
         <Footer />
       </body>
     </html>
