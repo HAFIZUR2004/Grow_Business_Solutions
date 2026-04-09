@@ -8,14 +8,13 @@ import Image from "next/image";
 // React Icons
 import {
   FaGithub,
-  FaTwitter,
   FaLinkedinIn,
   FaChevronUp,
-  FaGlobe,
-  FaEnvelope,
   FaShieldAlt,
+  FaFacebookF,
 } from "react-icons/fa";
-import { FiCpu, FiZap, FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
+import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -65,7 +64,7 @@ export default function Footer() {
           className="object-cover object-center"
         />
         {/* হালকা গ্রাডিয়েন্ট যাতে টেক্সট পড়া যায় কিন্তু ইমেজ না ঢাকে */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#02040a]/80 via-transparent to-[#02040a]/90" />
+        <div className="absolute inset-0 bg-linear-to-b from-[#02040a]/80 via-transparent to-[#02040a]/90" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -148,14 +147,33 @@ export default function Footer() {
               >
                 contact@growbusiness.solutions
               </a>
+              {/* Social Icons সেকশনে এই পরিবর্তনটি করুন */}
               <div className="flex gap-4 lg:justify-end">
-                {[FaGithub, FaTwitter, FaLinkedinIn].map((Icon, i) => (
+                {[
+                  {
+                    Icon: FaFacebookF,
+                    url: "https://www.facebook.com/growbusinesssolutionsbd",
+                  },
+
+                  { Icon: FaGithub, url: "YOUR_GITHUB_URL" },
+                  { Icon: FaXTwitter, url: "https://x.com/GrowBS_BD" },
+                  {
+                    Icon: FaInstagram,
+                    url: "https://www.instagram.com/growbusinesssolutions/",
+                  },
+                  {
+                    Icon: FaLinkedinIn,
+                    url: "https://www.linkedin.com/company/grow-business-solutionsbd/",
+                  },
+                ].map((social, i) => (
                   <a
                     key={i}
-                    href="#"
+                    href={social.url}
+                    target="_blank" // নতুন ট্যাবে খোলার জন্য
+                    rel="noopener noreferrer"
                     className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 border border-white/10 text-white hover:bg-emerald-500 hover:text-black transition-all duration-300 shadow-lg"
                   >
-                    <Icon className="text-xl" />
+                    <social.Icon className="text-xl" />
                   </a>
                 ))}
               </div>
