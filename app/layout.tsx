@@ -22,13 +22,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`dark ${inter.variable}`}>
-      <body className={`${inter.className} bg-[#0b0c18] antialiased text-white`}>
+      <body
+        className={`${inter.className} bg-[#0b0c18] antialiased text-white`}
+      >
         {/* Navbar এখানে থাকলে হোম এবং এবাউট সব পেজে পাবে */}
         <Navbar />
-        
-        <main className="min-h-screen">
-          {children}
-        </main>
+
+        <main className="min-h-screen">{children}</main>
 
         {/* Footer এখানে থাকলে সব পেজে পাবে */}
         <Footer />

@@ -7,18 +7,17 @@ import Link from "next/link"; // Link ইম্পোর্ট করুন
 export default function Navbar() {
   // মেনু আইটেমগুলোকে অবজেক্ট হিসেবে সাজানো যাতে আলাদা পাথ দেওয়া যায়
   const navItems = [
-    { name: "About Us", path: "/about" }, // /about পাথে যাবে
+    { name: "About Us", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Projects", path: "/projects" },
-    { name: "Portfolio", path: "/#portfolio" },
-    { name: "Process", path: "/#process" },
-    { name: "Insights", path: "/#insights" },
+    { name: "Portfolio", path: "/portfolio" },
+    { name: "Process", path: "/process" },
+    { name: "Insights", path: "/insights" },
   ];
 
   return (
     <nav className="fixed top-0 w-full bg-[#020617]/80 backdrop-blur-xl z-50 border-b border-white/5">
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
-        
         {/* Brand Identity */}
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="relative w-11 h-11 bg-white rounded-xl p-1 shadow-lg shadow-green-500/10 transition-all duration-500 group-hover:shadow-green-500/30 group-hover:scale-105">
