@@ -155,7 +155,10 @@ export default function Footer() {
                     url: "https://www.facebook.com/growbusinesssolutionsbd",
                   },
 
-                  { Icon: FaGithub, url: "YOUR_GITHUB_URL" },
+                  {
+                    Icon: FaGithub,
+                    url: "https://github.com/Grow-Business-Solutions",
+                  },
                   { Icon: FaXTwitter, url: "https://x.com/GrowBS_BD" },
                   {
                     Icon: FaInstagram,
