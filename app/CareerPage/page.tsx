@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import CareerHeroPage from "./Careerheropage/page";
 
 /* ─── tiny helpers ─── */
 const Tag = ({ children }: { children: React.ReactNode }) => (
@@ -43,66 +44,6 @@ function BlobVisual() {
 }
 
 /* ─── HERO ─── */
-function Hero() {
-  return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden bg-[#0b0f0e]">
-      {/* Grid texture */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-      {/* Radial glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[600px] h-[600px] rounded-full bg-[#6c5ce7]/10 blur-3xl" />
-      </div>
-
-      {/* Live badge */}
-      <div className="mb-8 flex items-center gap-2 border border-white/10 bg-white/5 backdrop-blur px-4 py-1.5 rounded-full">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#6c5ce7] animate-pulse" />
-        <span className="text-[9px] tracking-[0.3em] text-white/50 uppercase">
-          A Live Deployment: P.A.B.L.O.
-        </span>
-      </div>
-
-      <h1 className="relative z-10 font-black leading-none tracking-tight">
-        <span className="block text-[clamp(3.5rem,12vw,8rem)] text-white">JOIN THE</span>
-        <span
-          className="block text-[clamp(3.5rem,12vw,8rem)] text-transparent italic"
-          style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.3)" }}
-        >
-          DIGITAL
-        </span>
-        <span
-          className="block text-[clamp(3rem,10vw,7rem)] italic"
-          style={{
-            background: "linear-gradient(135deg,#b0a8ff 0%,#6c5ce7 60%,#4a3fa0 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          PROTOCOL
-        </span>
-      </h1>
-
-      <p className="relative z-10 mt-6 max-w-md text-sm text-white/40 leading-relaxed">
-        Architecting the future of enterprise systems through obsidian-grade logic and cinematic engineering standards.
-      </p>
-
-      <div className="relative z-10 mt-10 flex flex-wrap gap-4 justify-center">
-        <button className="bg-[#6c5ce7] hover:bg-[#7d6ff0] transition-colors px-7 py-3 rounded-full text-xs font-bold tracking-[0.18em] uppercase">
-          Explore Open Roles
-        </button>
-        <button className="border border-white/20 hover:border-white/40 transition-colors px-7 py-3 rounded-full text-xs font-bold tracking-[0.18em] uppercase text-white/70">
-          Our Philosophy
-        </button>
-      </div>
-    </section>
-  );
-}
 
 /* ─── MANIFESTO ─── */
 function Manifesto() {
@@ -368,7 +309,7 @@ function CtaBanner() {
 export default function CareersPage() {
   return (
     <main className="bg-[#0b0f0e] text-white min-h-screen">
-      <Hero />
+      <CareerHeroPage/>
       <Manifesto />
       <Vacancies />
       <WhyBuild />

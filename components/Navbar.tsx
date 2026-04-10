@@ -2,22 +2,24 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link"; // Link ইম্পোর্ট করুন
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // pathname চেক করার জন্য
 
 export default function Navbar() {
-  // মেনু আইটেমগুলোকে অবজেক্ট হিসেবে সাজানো যাতে আলাদা পাথ দেওয়া যায়
+  const pathname = usePathname(); // বর্তমান পেজের পাথ রিটার্ন করে
+
   const navItems = [
-    { name: "About Us", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Projects", path: "/projects" },
+    { name: "About Us", path: "/about" },
+    { name: "Career", path: "/CareerPage" },
     { name: "Contact Us", path: "/ContactUs" },
-    { name: "Career Page", path: "/CareerPage" },
-    { name: "Insights", path: "/insights" },
   ];
 
   return (
     <nav className="fixed top-0 w-full bg-[#020617]/80 backdrop-blur-xl z-50 border-b border-white/5">
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+        
         {/* Brand Identity */}
         <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="relative w-11 h-11 bg-white rounded-xl p-1 shadow-lg shadow-green-500/10 transition-all duration-500 group-hover:shadow-green-500/30 group-hover:scale-105">
@@ -39,18 +41,29 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Navigation - Next.js Link ব্যবহার করে */}
-        <div className="hidden md:flex gap-10 text-base font-semibold text-slate-300">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.path}
-              className="hover:text-[#22c55e] transition-all relative group py-1"
-            >
-              {item.name}
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#22c55e] transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
+        {/* Navigation */}
+        <div className="hidden md:flex gap-10 text-base font-semibold">
+          {navItems.map((item) => {
+            const isActive = pathname === item.path; // চেক করছে এই আইটেমটি কি অ্যাক্টিভ?
+
+            return (
+              <Link
+                key={item.name}
+                href={item.path}
+                className={`transition-all relative group py-1 ${
+                  isActive ? "text-[#22c55e]" : "text-slate-300 hover:text-[#22c55e]"
+                }`}
+              >
+                {item.name}
+                {/* Active Indicator Underline */}
+                <span 
+                  className={`absolute bottom-0 left-0 h-[2px] bg-[#22c55e] transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`} 
+                />
+              </Link>
+            );
+          })}
         </div>
 
         {/* Start Project Button */}
