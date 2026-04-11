@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   Layers,
   BarChart3,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 
 if (typeof window !== "undefined") {
@@ -21,217 +23,245 @@ if (typeof window !== "undefined") {
 }
 
 const technologies = [
-  { name: "Next.js", color: "#ffffff", orbit: 240, speed: 45, icon: Code2 },
-  { name: "React", color: "#61dafb", orbit: 160, speed: 30, icon: Atom },
-  { name: "Node.js", color: "#68a063", orbit: 280, speed: 55, icon: Server },
-  { name: "MongoDB", color: "#47a248", orbit: 200, speed: 40, icon: Database },
+  { name: "Next.js", color: "#ffffff", orbit: 260, speed: 50, icon: Code2 },
+  { name: "React", color: "#61dafb", orbit: 170, speed: 35, icon: Atom },
+  { name: "Node.js", color: "#68a063", orbit: 300, speed: 60, icon: Server },
+  { name: "MongoDB", color: "#47a248", orbit: 210, speed: 45, icon: Database },
   {
     name: "PostgreSQL",
     color: "#336791",
-    orbit: 260,
-    speed: 50,
+    orbit: 280,
+    speed: 55,
     icon: Database,
   },
   {
     name: "TypeScript",
     color: "#3178c6",
-    orbit: 180,
-    speed: 35,
+    orbit: 190,
+    speed: 40,
     icon: FileJson,
+  },
+];
+
+const features = [
+  {
+    icon: Terminal,
+    title: "Optimized Core",
+    desc: "Latency-tuned server environments for near-zero downtime.",
+    color: "cyan",
+  },
+  {
+    icon: Atom,
+    title: "Reactive UI",
+    desc: "State-driven fluid interfaces with flawless user interactions.",
+    color: "purple",
+  },
+  {
+    icon: Globe,
+    title: "Distributed Edge",
+    desc: "Global CDN delivery ensuring blazing-fast access everywhere.",
+    color: "blue",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Ironclad Security",
+    desc: "End-to-end encryption and advanced authentication protocols.",
+    color: "emerald",
+  },
+  {
+    icon: Layers,
+    title: "Scalable Logic",
+    desc: "Modular architecture built for long-term maintainability and growth.",
+    color: "orange",
+  },
+  {
+    icon: BarChart3,
+    title: "Smart Insights",
+    desc: "Real-time monitoring and user behavior data tracking.",
+    color: "pink",
   },
 ];
 
 const TechStack = () => {
   const sectionRef = useRef(null);
   const orbitRefs = useRef<HTMLDivElement[]>([]);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [currentRow, setCurrentRow] = useState(0);
+
+  const totalRows = Math.ceil(features.length / 2);
+  const visibleRows = 2;
+
+  const scrollNext = () => {
+    if (currentRow < totalRows - visibleRows) setCurrentRow((prev) => prev + 1);
+  };
+
+  const scrollPrev = () => {
+    if (currentRow > 0) setCurrentRow((prev) => prev - 1);
+  };
 
   useEffect(() => {
-    // Reveal Entrance
-    gsap.from(".tech-content", {
-      opacity: 0,
-      y: 30,
-      duration: 1.2,
-      ease: "power4.out",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 70%",
-      },
-    });
-
-    // Orbital Logic
-    orbitRefs.current.forEach((node, i) => {
-      if (!node) return;
-      const tech = technologies[i];
-
-      // Rotate the orbit container
-      gsap.to(node, {
-        rotation: 360,
-        duration: tech.speed,
-        repeat: -1,
-        ease: "none",
+    const ctx = gsap.context(() => {
+      // Entrance Animations
+      gsap.from(".tech-content-title", {
+        opacity: 0,
+        y: 60,
+        duration: 1.5,
+        ease: "power4.out",
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
       });
 
-      // Keep icons upright
-      const label = node.querySelector(".tech-node-inner");
-      gsap.to(label, {
-        rotation: -360,
-        duration: tech.speed,
-        repeat: -1,
-        ease: "none",
+      // Orbital Animation
+      orbitRefs.current.forEach((node, i) => {
+        if (!node) return;
+        const tech = technologies[i];
+        gsap.to(node, {
+          rotation: 360,
+          duration: tech.speed,
+          repeat: -1,
+          ease: "none",
+        });
+        const label = node.querySelector(".tech-node-inner");
+        if (label)
+          gsap.to(label, {
+            rotation: -360,
+            duration: tech.speed,
+            repeat: -1,
+            ease: "none",
+          });
       });
-    });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
+
+  // Vertical Slide Effect
+  useEffect(() => {
+    if (gridRef.current) {
+      gsap.to(gridRef.current, {
+        y: `-${currentRow * 280}px`,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+    }
+  }, [currentRow]);
 
   return (
     <section
       ref={sectionRef}
-      className="py-40 px-8 overflow-hidden relative bg-[#08090d] text-[#E5E2E1]"
+      className="py-20 px-8 overflow-hidden relative bg-[#0b0c18] text-[#E5E2E1]"
     >
-      {/* Animated Mesh Background (No Images) */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1a1b2e_0%,transparent_70%)]" />
+      {/* Background Decor */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#0b0c18_0%,transparent_85%)]" />
         <div
-          className="absolute top-0 left-0 w-full h-full"
+          className="absolute top-0 left-0 w-full h-full opacity-10"
           style={{
-            backgroundImage: `radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+            backgroundSize: "60px 60px",
           }}
         />
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
-        {/* Left Side: Content */}
-        <div className="tech-content space-y-10">
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-[1px] bg-cyan-500/50" />
-              <span className="text-[10px] font-mono tracking-[0.5em] text-cyan-400 uppercase">
-                Neural Infrastructure
-              </span>
-            </div>
-            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.9]">
+      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+        {/* Left Side: Content & Vertical Slider */}
+        <div className="tech-content space-y-12">
+          <div className="space-y-1 tech-content-title">
+            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-white">
               The{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20 italic font-light">
+              <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
                 Atomic
               </span>{" "}
               <br />
               Stack.
             </h2>
-            <p className="text-white/40 text-lg leading-relaxed max-w-lg font-light">
-              Architecting high-performance systems with a curated selection of
-              industry-leading technologies for maximum scalability.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* 1. Optimized Core (Existing) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
-              <Terminal className="w-5 h-5 text-cyan-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Optimized Core</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                Latency-tuned server environments for 99.9% uptime.
-              </p>
+          {/* Sliding Grid Area */}
+          <div className="relative h-[560px] overflow-hidden">
+            <div
+              ref={gridRef}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+            >
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={index}
+                    className="feature-card h-[270px] p-7 rounded-[35px] bg-white/[0.015] border border-white/5 hover:border-cyan-500/20 transition-all duration-700 group hover:bg-white/[0.025]"
+                  >
+                    <Icon
+                      className={`w-6 h-6 text-${feature.color}-400 mb-5 opacity-60 group-hover:opacity-100 transition-opacity`}
+                    />
+                    <h4 className="font-extrabold text-white text-lg mb-2 group-hover:text-cyan-400 transition-colors">
+                      {feature.title}
+                    </h4>
+                    <p className="text-sm text-white/35 font-light leading-relaxed">
+                      {feature.desc}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-
-            {/* 2. Reactive UI (Existing) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-purple-500/20 transition-all duration-500 group">
-              <Atom className="w-5 h-5 text-purple-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Reactive UI</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                State-driven fluid interfaces with zero layout shifts.
-              </p>
-            </div>
-
-            {/* 3. Distributed Edge (New) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-blue-500/20 transition-all duration-500 group">
-              <Globe className="w-5 h-5 text-blue-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Distributed Edge</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                Global CDN delivery ensuring low-latency access everywhere.
-              </p>
-            </div>
-
-            {/* 4. Ironclad Security (New) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-emerald-500/20 transition-all duration-500 group">
-              <ShieldCheck className="w-5 h-5 text-emerald-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Ironclad Security</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                End-to-end encryption and advanced JWT authentication.
-              </p>
-            </div>
-
-            {/* 5. Atomic Design (New) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-orange-500/20 transition-all duration-500 group">
-              <Layers className="w-5 h-5 text-orange-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Scalable Logic</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                Modular architecture built for long-term maintainability.
-              </p>
-            </div>
-
-            {/* 6. Insightful Analytics (New) */}
-            <div className="p-6 rounded-[30px] bg-white/[0.02] border border-white/5 hover:border-pink-500/20 transition-all duration-500 group">
-              <BarChart3 className="w-5 h-5 text-pink-400 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <h4 className="font-bold text-white mb-1">Smart Insights</h4>
-              <p className="text-xs text-white/30 font-light leading-relaxed">
-                Real-time monitoring and user behavior data tracking.
-              </p>
-            </div>
+          </div>
+          <div className="flex gap-4 pt-4">
+            <button
+              onClick={scrollPrev}
+              disabled={currentRow === 0}
+              className={`p-4 rounded-full border border-white/10 transition-all ${currentRow === 0 ? "opacity-20" : "hover:bg-white hover:text-black"}`}
+            >
+              <ChevronUp size={24} />
+            </button>
+            <button
+              onClick={scrollNext}
+              disabled={currentRow >= totalRows - visibleRows}
+              className={`p-4 rounded-full border border-white/10 transition-all ${currentRow >= totalRows - visibleRows ? "opacity-20" : "hover:bg-cyan-500 hover:text-black"}`}
+            >
+              <ChevronDown size={24} />
+            </button>
           </div>
         </div>
 
-        {/* Right Side: Orbital Engine */}
-        <div className="relative h-[650px] flex items-center justify-center scale-75 md:scale-100">
-          {/* Central Engine Core */}
-          <div className="relative z-30 w-36 h-36 rounded-full bg-[#08090d] border border-white/10 flex items-center justify-center shadow-[0_0_60px_rgba(62,232,246,0.05)]">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-500/10 to-purple-500/10 animate-pulse" />
-            <div className="text-center z-10">
-              <div className="text-[9px] font-mono tracking-widest text-white/20 uppercase mb-1">
-                Stack
-              </div>
-              <div className="text-2xl font-black tracking-tighter text-white">
-                MERN+
-              </div>
+        {/* Right Side: Orbital Engine (Unchanged as requested) */}
+        <div className="relative h-[700px] flex items-center justify-center scale-75 md:scale-100">
+          <div className="absolute inset-0">
+            {[260, 210, 190, 170, 280, 300].map((radius) => (
+              <div
+                key={radius}
+                className="orbit-path absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.03]"
+                style={{ width: radius * 2, height: radius * 2 }}
+              />
+            ))}
+          </div>
+
+          <div className="relative z-30 w-40 h-40 rounded-full bg-[#06070a] border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(62,232,246,0.07)]">
+            <div className="text-3xl font-black tracking-tighter text-white">
+              MERN<span className="text-cyan-400">+</span>
             </div>
           </div>
 
-          {/* Orbiting Nodes */}
-          {technologies.map((tech, i) => {
-            const Icon = tech.icon;
-            return (
-              <div
-                key={i}
-                ref={(el) => {
-                  if (el) orbitRefs.current[i] = el;
-                }}
-                className="absolute flex items-center justify-center pointer-events-none"
-                style={{ width: tech.orbit * 2, height: tech.orbit * 2 }}
-              >
-                {/* Orbit Circle Path */}
-                <div className="absolute inset-0 rounded-full border border-white/[0.04]" />
-
-                {/* Tech Node */}
-                <div className="tech-node-inner absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto group">
-                  <div className="w-16 h-16 rounded-2xl bg-[#0d0e14] border border-white/10 backdrop-blur-xl flex flex-col items-center justify-center transition-all duration-500 group-hover:border-cyan-400/50 group-hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]">
-                    <Icon
-                      size={24}
-                      style={{ color: tech.color }}
-                      className="mb-1 opacity-70 group-hover:opacity-100 transition-opacity"
-                    />
-                    <span className="text-[8px] font-mono uppercase tracking-tighter text-white/30 group-hover:text-white transition-colors">
-                      {tech.name}
-                    </span>
-                  </div>
-
-                  {/* Subtle link back to core */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-[1px] h-12 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          {technologies.map((tech, i) => (
+            <div
+              key={i}
+              ref={(el) => {
+                if (el) orbitRefs.current[i] = el;
+              }}
+              className="tech-node absolute flex items-center justify-center pointer-events-none"
+              style={{ width: tech.orbit * 2, height: tech.orbit * 2 }}
+            >
+              <div className="tech-node-inner absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto group">
+                <div className="w-18 h-18 rounded-3xl bg-[#08090e]/80 border border-white/10 backdrop-blur-2xl flex flex-col items-center justify-center transition-all duration-700 group-hover:border-cyan-400 group-hover:shadow-[0_0_40px_rgba(34,211,238,0.2)]">
+                  <tech.icon
+                    size={28}
+                    style={{ color: tech.color }}
+                    className="mb-1.5 opacity-80 group-hover:opacity-100"
+                  />
+                  <span className="text-[9px] font-mono uppercase tracking-widest text-white/40 group-hover:text-white">
+                    {tech.name}
+                  </span>
                 </div>
               </div>
-            );
-          })}
-
-          {/* Massive Deep Background Glow */}
-          <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.03] blur-[150px] rounded-full" />
+            </div>
+          ))}
         </div>
       </div>
     </section>

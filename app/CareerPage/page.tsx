@@ -50,22 +50,41 @@ function Manifesto() {
   return (
     <section className="bg-[#0b0f0e] py-24 px-6 md:px-16 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
       <div>
-        <SectionLabel>// Zone: Manifesto</SectionLabel>
+        <SectionLabel>Zone: Manifesto</SectionLabel>
         <h2 className="text-4xl md:text-5xl font-black leading-tight text-white mb-6">
-          PRECISION OVER<br />CONVENIENCE.
+          PRECISION OVER
+          <br />
+          CONVENIENCE.
         </h2>
         <p className="text-sm text-white/40 leading-relaxed mb-10 max-w-sm">
-          We don't just build software. We forge digital environments where data flows with architectural elegance. Our culture is rooted in deep focus, radical autonomy, and a relentless pursuit of engineering prestige.
+          We don&apos;t just build software. We forge digital environments where
+          data flows with architectural elegance. Our culture is rooted in deep
+          focus, radical autonomy, and a relentless pursuit of engineering
+          prestige.
         </p>
         <div className="grid grid-cols-2 gap-6">
           {[
-            { num: "01.", title: "Async Native", desc: "Designed for deep work. No useless stand-ups." },
-            { num: "02.", title: "Tech Sovereign", desc: "We own the stack. No technical debt compromises." },
+            {
+              num: "01.",
+              title: "Async Native",
+              desc: "Designed for deep work. No useless stand-ups.",
+            },
+            {
+              num: "02.",
+              title: "Tech Sovereign",
+              desc: "We own the stack. No technical debt compromises.",
+            },
           ].map((item) => (
             <div key={item.num}>
-              <p className="text-[#6c5ce7] font-black text-lg mb-1">{item.num}</p>
-              <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">{item.title}</p>
-              <p className="text-white/35 text-xs leading-relaxed">{item.desc}</p>
+              <p className="text-[#6c5ce7] font-black text-lg mb-1">
+                {item.num}
+              </p>
+              <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">
+                {item.title}
+              </p>
+              <p className="text-white/35 text-xs leading-relaxed">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -135,7 +154,9 @@ function VacancyCard({ role }: { role: (typeof roles)[0] }) {
         <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-xl">
           +
         </div>
-        <p className="text-white font-bold text-sm tracking-wide uppercase">{role.title}</p>
+        <p className="text-white font-bold text-sm tracking-wide uppercase">
+          {role.title}
+        </p>
         <p className="text-white/35 text-xs leading-relaxed">{role.desc}</p>
       </div>
     );
@@ -205,7 +226,9 @@ function Vacancies() {
       <SectionLabel>Operational Series</SectionLabel>
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
         <h2 className="text-5xl md:text-6xl font-black text-white leading-none">
-          AVAILABLE<br />VACANCIES
+          AVAILABLE
+          <br />
+          VACANCIES
         </h2>
         <div className="flex gap-8">
           {[
@@ -213,7 +236,9 @@ function Vacancies() {
             { dept: "Design", count: "04 Roles" },
           ].map((d) => (
             <div key={d.dept}>
-              <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">{d.dept}</p>
+              <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">
+                {d.dept}
+              </p>
               <p className="text-white font-black text-lg">{d.count}</p>
             </div>
           ))}
@@ -244,7 +269,7 @@ const perks = [
   {
     icon: "🛡",
     title: "Health Protocol",
-    desc: "Premium global health coverage and a mandatory 4-week \"Deep Sabbath\" sabbatical every year.",
+    desc: 'Premium global health coverage and a mandatory 4-week "Deep Sabbath" sabbatical every year.',
   },
 ];
 
@@ -253,7 +278,9 @@ function WhyBuild() {
     <section className="bg-[#0b0f0e] py-24 px-6 md:px-16 max-w-7xl mx-auto">
       <div className="text-center mb-14">
         <SectionLabel>Protocol · Rewards</SectionLabel>
-        <h2 className="text-4xl md:text-5xl font-black text-white">WHY BUILD WITH US</h2>
+        <h2 className="text-4xl md:text-5xl font-black text-white">
+          WHY BUILD WITH US
+        </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {perks.map((p) => (
@@ -262,7 +289,9 @@ function WhyBuild() {
             className="border border-white/10 bg-[#121a18] rounded-xl p-7 flex flex-col gap-4 hover:border-[#6c5ce7]/40 transition-colors"
           >
             <span className="text-2xl">{p.icon}</span>
-            <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase">{p.title}</h3>
+            <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase">
+              {p.title}
+            </h3>
             <p className="text-white/35 text-xs leading-relaxed">{p.desc}</p>
           </div>
         ))}
@@ -295,7 +324,8 @@ function CtaBanner() {
           SEQUENCE?
         </h2>
         <p className="mt-6 text-sm text-white/40 max-w-sm mx-auto leading-relaxed">
-          Join a team that values technical mastery over corporate tradition. Your best work starts here.
+          Join a team that values technical mastery over corporate tradition.
+          Your best work starts here.
         </p>
         <button className="mt-10 bg-[#6c5ce7] hover:bg-[#7d6ff0] transition-colors px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">
           Initiate Application
@@ -309,7 +339,7 @@ function CtaBanner() {
 export default function CareersPage() {
   return (
     <main className="bg-[#0b0f0e] text-white min-h-screen">
-      <CareerHeroPage/>
+      <CareerHeroPage />
       <Manifesto />
       <Vacancies />
       <WhyBuild />

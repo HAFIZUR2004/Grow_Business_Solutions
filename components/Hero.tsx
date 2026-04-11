@@ -133,28 +133,27 @@ export default function HeroSection() {
         <div className="content">
           <div className="badge">
             <span className="badge-dot" />
-            AI &amp; Data Solutions Excellence
+            Grow Business Solutions BD
           </div>
 
           <h1 className="heading">
-            Grow Business
-            <br />
-            Solutions BD
+            Your Vision, Our Expertise- Engineering Success Together.
           </h1>
 
           <p className="desc">
-            Architecting high-performance digital ecosystems
-            <br />
-            for a data-driven future. Harness the power of AI to
-            <br />
-            transform complex processes into elegant, obsidian-
-            <br />
-            grade automated solutions.
+            Your vision combined with our technical expertise will pave the way
+            for future success. We go beyond mere project delivery; we act as
+            your dedicated partner at every step of your business journey, all
+            within an affordable budget. Through cutting-edge AI and
+            high-performance solutions, we will elevate your dreams to
+            extraordinary heights. Consult with our expert team today at no cost
+            to discover the best strategy for your business. We are by your
+            side, always.
           </p>
 
           <div className="btns">
-            <button className="btn btn-primary">Explore AI Solutions</button>
-            <button className="btn btn-secondary">Request a Demo</button>
+            <button className="btn btn-primary">Get a Free Consultation</button>
+            <button className="btn btn-secondary">Our Success Stories</button>
           </div>
         </div>
       </section>
@@ -600,6 +599,7 @@ const css = `
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
     font-family: 'Inter', sans-serif;
   }
   .hero-canvas {
@@ -644,11 +644,11 @@ const css = `
   }
   .globe-wrap {
     position: absolute;
-    right: -55px;
+    right: 10%;
     top: 50%;
     transform: translateY(-50%);
-    width: min(640px, 55vw);
-    aspect-ratio: 1.25;
+    width: min(600px, 45vw);
+    aspect-ratio: 1;
     z-index: 2;
     pointer-events: none;
     animation: floatG 7s ease-in-out infinite;
@@ -659,8 +659,8 @@ const css = `
   }
   .stat-card {
     position: absolute;
-    top: 19%;
-    left: 50%;
+    top: 20%;
+    right: 35%;
     transform: translateX(-50%);
     background: rgba(22,19,42,0.78);
     border: 1px solid rgba(110,75,210,0.38);
@@ -688,8 +688,8 @@ const css = `
   }
   .chart-widget {
     position: absolute;
-    top: 17%;
-    right: 2.5%;
+    top: 15%;
+    right: 10%;
     background: rgba(18,15,38,0.72);
     border: 1px solid rgba(90,70,190,0.32);
     border-radius: 8px;
@@ -714,7 +714,9 @@ const css = `
     position: relative;
     z-index: 10;
     padding: 0 0 0 clamp(2rem, 6.5vw, 7.5rem);
-    max-width: 580px;
+    max-width: 700px;
+    margin-left: 10%;
+    margin-right: auto;
     animation: fadeUp 0.8s ease both;
   }
   @keyframes fadeUp {
@@ -750,7 +752,7 @@ const css = `
   }
   .heading {
     font-size: clamp(2.9rem, 5.2vw, 4.7rem);
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1.06;
     color: #ffffff;
     margin: 0 0 20px;

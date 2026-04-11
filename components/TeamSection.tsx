@@ -14,7 +14,8 @@ const teamMembers = [
     id: 1,
     name: "Hafizur Rahman",
     role: "Founder & Lead Developer",
-    description: "Architecting high-performance digital ecosystems with MERN stack expertise.",
+    description:
+      "Architecting high-performance digital ecosystems with MERN stack expertise.",
     imageUrl: "/team/profile.jpg",
     wireColor: "#6d28d9", // Purple
   },
@@ -61,7 +62,10 @@ const TeamSection = () => {
           vx: (Math.random() - 0.5) * 0.3,
           vy: (Math.random() - 0.5) * 0.3,
           r: Math.random() * 1.5 + 0.5,
-          color: Math.random() > 0.5 ? "rgba(109, 40, 217, 0.2)" : "rgba(34, 211, 238, 0.15)",
+          color:
+            Math.random() > 0.5
+              ? "rgba(109, 40, 217, 0.2)"
+              : "rgba(34, 211, 238, 0.15)",
         }));
 
         const draw = () => {
@@ -71,7 +75,8 @@ const TeamSection = () => {
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             ctx.fillStyle = p.color;
             ctx.fill();
-            p.x += p.vx; p.y += p.vy;
+            p.x += p.vx;
+            p.y += p.vy;
             if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
             if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
           });
@@ -117,18 +122,28 @@ const TeamSection = () => {
           trigger: containerRef.current,
           start: "top 50%",
         },
-      }
+      },
     );
   }, []);
 
   return (
-    <section ref={containerRef} className="bg-[#0b0c18] py-32 px-6 relative overflow-hidden">
+    <section
+      ref={containerRef}
+      className="bg-[#0b0c18] py-20 px-6 relative overflow-hidden"
+    >
       {/* Background Layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-40" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
+      />
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.08),transparent_50%)] pointer-events-none" />
 
       {/* dynamic SVG Wires - Engineering Style */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="none"
+      >
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#6d28d9" stopOpacity="0" />
@@ -139,37 +154,48 @@ const TeamSection = () => {
             <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.6" />
           </linearGradient>
         </defs>
-        
+
         {/* Left Wire */}
-        <path 
-          className="circuit-path" 
-          d="M 500 150 C 500 250, 200 250, 180 500" 
-          fill="none" stroke="url(#grad1)" strokeWidth="1.5" 
+        <path
+          className="circuit-path"
+          d="M 500 150 C 500 250, 200 250, 180 500"
+          fill="none"
+          stroke="url(#grad1)"
+          strokeWidth="1.5"
         />
         {/* Center Wire */}
-        <path 
-          className="circuit-path" 
-          d="M 500 150 C 500 300, 500 400, 500 580" 
-          fill="none" stroke="url(#grad2)" strokeWidth="1.5" 
+        <path
+          className="circuit-path"
+          d="M 500 150 C 500 300, 500 400, 500 580"
+          fill="none"
+          stroke="url(#grad2)"
+          strokeWidth="1.5"
         />
         {/* Right Wire */}
-        <path 
-          className="circuit-path" 
-          d="M 500 150 C 500 250, 800 250, 820 500" 
-          fill="none" stroke="url(#grad1)" strokeWidth="1.5" 
+        <path
+          className="circuit-path"
+          d="M 500 150 C 500 250, 800 250, 820 500"
+          fill="none"
+          stroke="url(#grad1)"
+          strokeWidth="1.5"
         />
       </svg>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-screen-2xl mx-auto relative z-10">
         {/* Switchboard Header */}
         <div className="flex flex-col items-center mb-48 text-center">
           <div className="w-1 h-20 bg-gradient-to-b from-transparent via-cyan-500/50 to-cyan-500 mb-6" />
           <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
-            The <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10">Team</span>
+            The{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10">
+              Team
+            </span>
           </h2>
           <div className="mt-8 flex items-center gap-4">
             <div className="w-2 h-2 rounded-full bg-cyan-500 animate-ping shadow-[0_0_15px_#22d3ee]" />
-            <span className="text-cyan-400 font-mono text-[10px] tracking-[0.4em] uppercase">System Link Established</span>
+            <span className="text-cyan-400 font-mono text-[10px] tracking-[0.4em] uppercase">
+              System Link Established
+            </span>
           </div>
         </div>
 
@@ -178,16 +204,18 @@ const TeamSection = () => {
           {teamMembers.map((member, idx) => (
             <div
               key={member.id}
-              ref={(el) => { if (el) cardRefs.current[idx] = el; }}
+              ref={(el) => {
+                if (el) cardRefs.current[idx] = el;
+              }}
               className={`relative group ${idx === 1 ? "md:mt-32" : ""}`}
             >
               {/* Point Node Light */}
-              <div 
+              <div
                 className="absolute -top-10 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full z-20"
-                style={{ 
-                  backgroundColor: member.wireColor, 
+                style={{
+                  backgroundColor: member.wireColor,
                   boxShadow: `0 0 20px ${member.wireColor}`,
-                  filter: 'brightness(1.5)'
+                  filter: "brightness(1.5)",
                 }}
               />
 
@@ -204,9 +232,15 @@ const TeamSection = () => {
 
                 {/* Info Text */}
                 <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.3em] mb-2">Protocol_{member.id}</p>
-                  <h3 className="text-3xl font-bold text-white mb-1">{member.name}</h3>
-                  <p className="text-white/40 text-xs font-medium uppercase tracking-widest mb-4">{member.role}</p>
+                  <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.3em] mb-2">
+                    Protocol_{member.id}
+                  </p>
+                  <h3 className="text-3xl font-bold text-white mb-1">
+                    {member.name}
+                  </h3>
+                  <p className="text-white/40 text-xs font-medium uppercase tracking-widest mb-4">
+                    {member.role}
+                  </p>
                   <p className="text-white/60 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
                     {member.description}
                   </p>
@@ -215,8 +249,12 @@ const TeamSection = () => {
 
               {/* Outside Label (Visible initially) */}
               <div className="mt-8 text-center group-hover:opacity-0 transition-opacity duration-300">
-                <span className="text-white/20 font-mono text-[10px] block mb-2">— POSITION_{idx + 1}</span>
-                <h4 className="text-white font-bold text-lg tracking-tight uppercase">{member.name}</h4>
+                <span className="text-white/20 font-mono text-[10px] block mb-2">
+                  — POSITION_{idx + 1}
+                </span>
+                <h4 className="text-white font-bold text-lg tracking-tight uppercase">
+                  {member.name}
+                </h4>
               </div>
             </div>
           ))}

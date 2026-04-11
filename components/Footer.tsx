@@ -67,7 +67,7 @@ export default function Footer() {
         <div className="absolute inset-0 bg-linear-to-b from-[#02040a]/80 via-transparent to-[#02040a]/90" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 max-w-screen-2xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
           {/* Brand Section */}
           <div className="lg:col-span-5 space-y-8 reveal-item">
@@ -137,7 +137,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="lg:col-span-3 space-y-8 reveal-item lg:text-right">
-            <h4 className="text-[12px] font-mono tracking-[0.4em] text-emerald-400 uppercase font-bold">
+            <h4 className="text-[12px]  font-mono tracking-[0.4em] text-emerald-400 uppercase font-bold">
               Terminal
             </h4>
             <div className="space-y-4">
@@ -147,7 +147,7 @@ export default function Footer() {
               >
                 contact@growbusiness.solutions
               </a>
-              {/* Social Icons সেকশনে এই পরিবর্তনটি করুন */}
+              {/* Social Icons */}
               <div className="flex gap-4 lg:justify-end">
                 {[
                   {
@@ -172,7 +172,7 @@ export default function Footer() {
                   <a
                     key={i}
                     href={social.url}
-                    target="_blank" // নতুন ট্যাবে খোলার জন্য
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 border border-white/10 text-white hover:bg-emerald-500 hover:text-black transition-all duration-300 shadow-lg"
                   >

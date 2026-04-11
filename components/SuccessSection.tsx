@@ -73,7 +73,7 @@ const SuccessSection = () => {
   }, []);
 
   return (
-    <section className="relative bg-[#0b0c18] text-white py-32 px-6 overflow-hidden">
+    <section className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden">
       {/* Canvas Background */}
       <canvas
         ref={canvasRef}
@@ -83,13 +83,13 @@ const SuccessSection = () => {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 z-0" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 z-0" />
 
-      <div className="max-w-7xl mx-auto relative z-10 text-center">
+      <div className="max-w-screen-2xl mx-auto relative z-10 text-center">
         <p className="text-cyan-400 tracking-[0.4em] text-xs mb-6 uppercase">
           MILESTONES
         </p>
 
         <div className="relative inline-block mb-24">
-          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight">
+          <h2 className="text-6xl md:text-8xl font-extrabold tracking-tight">
             <span className="text-white">Success in </span>
             <span className="bg-gradient-to-r from-[#c4b5fd] to-[#a5f3fc] text-transparent bg-clip-text">
               Motion.
@@ -100,31 +100,38 @@ const SuccessSection = () => {
           <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-full w-[1000px] h-[100px] pointer-events-none">
             <svg width="100%" height="100%" viewBox="0 0 1000 100" fill="none">
               {/* Left Wire */}
-              <path 
-                d="M500 0 C 500 50, 166 50, 166 100" 
-                stroke="url(#wireGradient)" 
-                strokeWidth="1.5" 
+              <path
+                d="M500 0 C 500 50, 166 50, 166 100"
+                stroke="url(#wireGradient)"
+                strokeWidth="1.5"
                 strokeDasharray="4 4"
                 className="opacity-30"
               />
               {/* Middle Wire */}
-              <path 
-                d="M500 0 L 500 100" 
-                stroke="url(#wireGradient)" 
-                strokeWidth="1.5" 
+              <path
+                d="M500 0 L 500 100"
+                stroke="url(#wireGradient)"
+                strokeWidth="1.5"
                 strokeDasharray="4 4"
                 className="opacity-30"
               />
               {/* Right Wire */}
-              <path 
-                d="M500 0 C 500 50, 833 50, 833 100" 
-                stroke="url(#wireGradient)" 
-                strokeWidth="1.5" 
+              <path
+                d="M500 0 C 500 50, 833 50, 833 100"
+                stroke="url(#wireGradient)"
+                strokeWidth="1.5"
                 strokeDasharray="4 4"
                 className="opacity-30"
               />
               <defs>
-                <linearGradient id="wireGradient" x1="500" y1="0" x2="500" y2="100" gradientUnits="userSpaceOnUse">
+                <linearGradient
+                  id="wireGradient"
+                  x1="500"
+                  y1="0"
+                  x2="500"
+                  y2="100"
+                  gradientUnits="userSpaceOnUse"
+                >
                   <stop stopColor="#c4b5fd" />
                   <stop offset="1" stopColor="#a5f3fc" stopOpacity="0" />
                 </linearGradient>
@@ -144,8 +151,12 @@ const SuccessSection = () => {
               <div className="w-14 h-14 mx-auto mb-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10">
                 <span className="text-lg text-white/80">{item.icon}</span>
               </div>
-              <h3 className="text-4xl font-bold mb-4 tracking-tight">{item.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed max-w-[220px] mx-auto">{item.desc}</p>
+              <h3 className="text-4xl font-bold mb-4 tracking-tight">
+                {item.title}
+              </h3>
+              <p className="text-white/50 text-sm leading-relaxed max-w-[220px] mx-auto">
+                {item.desc}
+              </p>
               <div className="mt-8 flex justify-center">
                 <div className="w-10 h-[2px] bg-white/20 rounded-full" />
               </div>

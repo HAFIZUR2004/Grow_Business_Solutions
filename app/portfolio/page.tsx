@@ -86,11 +86,9 @@ export default function Portfolio() {
   return (
     <section
       ref={sectionRef}
-      className="bg-[#0b0c18] py-32 px-6 relative overflow-hidden min-h-screen"
+      className="bg-[#0b0c18] px-6 relative overflow-hidden py-20"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(62,232,246,0.03),transparent_70%)] pointer-events-none" />
-
-      <div className="max-w-[1440px] mx-auto relative z-10">
+      <div className="max-w-screen-2xl mx-auto relative z-10">
         <div className="mb-24 portfolio-title">
           <div className="flex items-center gap-4 mb-4">
             <span className="h-[1px] w-12 bg-cyan-500" />
@@ -99,7 +97,10 @@ export default function Portfolio() {
             </p>
           </div>
           <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
-            Digital <span className="text-white/20">Artifacts.</span>
+            Digital{" "}
+            <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
+              Artifacts.
+            </span>
           </h2>
         </div>
 
@@ -118,12 +119,13 @@ export default function Portfolio() {
                   background: `radial-gradient(circle at 50% 0%, ${project.color}10, transparent 70%)`,
                 }}
               />
-
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.08),transparent_50%)] pointer-events-none" />
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-12">
                   <span className="text-4xl font-black text-white/5">
                     {project.id}
                   </span>
+
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center border border-white/10 group-hover:rotate-45 transition-transform duration-500"
                     style={{ color: project.color }}
@@ -160,7 +162,7 @@ export default function Portfolio() {
         <div className="mt-20 flex justify-center portfolio-title">
           <button className="group relative px-8 py-4 bg-transparent border border-white/10 overflow-hidden rounded-full transition-all duration-300 hover:border-cyan-500/50">
             <span className="relative z-10 text-white/80 font-mono text-xs uppercase tracking-widest group-hover:text-cyan-400 transition-colors">
-              Explore All Protocols
+              Explore All Artifacts
             </span>
             <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-[0.02] transition-opacity" />
           </button>

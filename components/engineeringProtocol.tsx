@@ -70,7 +70,10 @@ const EngineeringProtocol = () => {
       vy: (Math.random() - 0.5) * 0.3,
       r: Math.random() * 1.5 + 0.5,
       // হিরো সেকশনের পার্পল এবং সায়ান কালার মিক্স
-      color: Math.random() > 0.5 ? "rgba(140, 100, 240, 0.4)" : "rgba(62, 232, 246, 0.3)",
+      color:
+        Math.random() > 0.5
+          ? "rgba(140, 100, 240, 0.4)"
+          : "rgba(62, 232, 246, 0.3)",
     }));
 
     const draw = () => {
@@ -80,7 +83,7 @@ const EngineeringProtocol = () => {
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-        
+
         p.x += p.vx;
         p.y += p.vy;
 
@@ -104,7 +107,7 @@ const EngineeringProtocol = () => {
           end: "bottom 80%",
           scrub: 1,
         },
-      }
+      },
     );
 
     steps.forEach((_, i) => {
@@ -122,7 +125,7 @@ const EngineeringProtocol = () => {
             end: "top 50%",
             scrub: 0.5,
           },
-        }
+        },
       );
     });
 
@@ -146,10 +149,12 @@ const EngineeringProtocol = () => {
       {/* Hero Section এর মত সাইড গ্লো (Glow effect) */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <h2 className="text-4xl md:text-6xl font-black text-center mb-40 tracking-tighter">
+      <div className="max-w-screen-2xl mx-auto relative z-10">
+        <h2 className="text-6xl md:text-8xl font-black text-center mb-40 tracking-tighter">
           The Engineering{" "}
-          <span className="text-white/30 italic font-light">Protocol.</span>
+          <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
+            Protocol.
+          </span>
         </h2>
 
         {/* Central Vertical Timeline */}
@@ -170,7 +175,9 @@ const EngineeringProtocol = () => {
               >
                 <div
                   className={`w-full md:w-1/2 ${
-                    step.align === "left" ? "md:text-right md:pr-20" : "md:text-left md:pl-20"
+                    step.align === "left"
+                      ? "md:text-right md:pr-20"
+                      : "md:text-left md:pl-20"
                   } relative`}
                 >
                   <div className="relative inline-block">
@@ -179,7 +186,7 @@ const EngineeringProtocol = () => {
                     </span>
 
                     <h4
-                      className="text-xl font-bold mb-2"
+                      className="text-2xl font-bold mb-2"
                       style={{ color: step.color }}
                     >
                       {step.id}. {step.title}
@@ -205,7 +212,7 @@ const EngineeringProtocol = () => {
                     step.align === "left" ? "pl-20" : "pr-20"
                   }`}
                 >
-                  <span className="text-4xl font-black text-white/[0.03] uppercase tracking-widest italic select-none">
+                  <span className="text-4xl font-black text-white/5 uppercase tracking-widest italic select-none">
                     {step.bgText}
                   </span>
                 </div>

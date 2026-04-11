@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import { Inter, Hind_Siliguri } from "next/font/google";
+import "./globals.css"; // পাথ আবার আগের মতো ঠিক করা হলো
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -8,6 +8,12 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
   variable: "--font-inter",
+});
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-hind",
 });
 
 export const metadata: Metadata = {
@@ -27,18 +33,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable}`}
-      suppressHydrationWarning
+      className={`dark ${inter.variable} ${hindSiliguri.variable}`}
+      suppressHydrationWarning={true}
     >
       <body
         className={`${inter.className} bg-[#0b0c18] antialiased text-white flex flex-col min-h-screen`}
         suppressHydrationWarning={true}
       >
         <Navbar />
-
-        {/* flex-grow ensures this area fills space so footer stays at the bottom */}
-        <main className="flex-grow">{children}</main>
-
+        <main className="grow relative z-10">{children}</main>
         <Footer />
       </body>
     </html>
