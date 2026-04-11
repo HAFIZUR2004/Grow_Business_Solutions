@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import { translations } from "@/constants/translations";
 
-// React Icons
 import {
   FaGithub,
   FaLinkedinIn,
@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 import { FiArrowUpRight } from "react-icons/fi";
 import { FaInstagram, FaXTwitter } from "react-icons/fa6";
+import { useLanguage } from "@/constants/LanguageContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -23,23 +24,31 @@ if (typeof window !== "undefined") {
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const currentYear = new Date().getFullYear();
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   useEffect(() => {
+    const refreshTrigger = () => ScrollTrigger.refresh();
     const ctx = gsap.context(() => {
-      // Smooth Reveal Animation
       gsap.from(".reveal-item", {
-        y: 40,
+        y: 30,
         opacity: 0,
-        duration: 1,
+        duration: 0.8,
         stagger: 0.1,
         ease: "power3.out",
         scrollTrigger: {
           trigger: footerRef.current,
-          start: "top 85%",
+          start: "top 92%",
+          onEnter: refreshTrigger,
         },
       });
     }, footerRef);
-    return () => ctx.revert();
+
+    window.addEventListener("load", refreshTrigger);
+    return () => {
+      ctx.revert();
+      window.removeEventListener("load", refreshTrigger);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -49,86 +58,77 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative bg-[#02040a] text-white pt-28 pb-10 px-8 overflow-hidden font-sans border-t border-white/10"
+      className="relative bg-[#02040a] text-white pt-20 pb-10 px-6 md:px-12 overflow-hidden border-t border-white/5"
     >
-      {/* --- HIGH VISIBILITY BACKGROUND --- */}
-      <div className="absolute inset-0 z-0 opacity-40">
-        {" "}
-        {/* অপাসিটি বাড়িয়েছি যাতে ইমেজ দেখা যায় */}
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0 opacity-30">
         <Image
           src="https://i.postimg.cc/mZ3G5tqg/5542.jpg"
-          alt="Network Abstract"
+          alt="bg"
           fill
           priority
           unoptimized
-          className="object-cover object-center"
+          className="object-cover"
         />
-        {/* হালকা গ্রাডিয়েন্ট যাতে টেক্সট পড়া যায় কিন্তু ইমেজ না ঢাকে */}
-        <div className="absolute inset-0 bg-linear-to-b from-[#02040a]/80 via-transparent to-[#02040a]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#02040a] via-transparent to-[#02040a]" />
       </div>
 
       <div className="relative z-10 max-w-screen-2xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20">
-          {/* Brand Section */}
-          <div className="lg:col-span-5 space-y-8 reveal-item">
-            <div className="flex items-center gap-5 group">
-              <div className="relative w-16 h-16 bg-white rounded-2xl p-1 shadow-2xl shadow-emerald-500/20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12">
+          {/* Brand - Font size optimized */}
+          <div className="lg:col-span-5 space-y-6 reveal-item">
+            <div className="flex items-center gap-4">
+              <div className="relative w-12 h-12 bg-white rounded-xl p-1">
                 <Image
                   src="https://i.postimg.cc/yYds37Q3/logo-preview.png"
-                  alt="Grow Business Solutions"
+                  alt="Logo"
                   fill
                   unoptimized
                   className="object-contain"
                 />
               </div>
-              <div className="flex flex-col">
-                <h2 className="text-4xl font-black tracking-tighter italic leading-none drop-shadow-md">
+              <div>
+                <h2 className="text-2xl font-black italic leading-none tracking-tight">
                   GROW
                 </h2>
-                <span className="text-[12px] font-mono text-emerald-400 tracking-[0.3em] font-bold uppercase mt-1 drop-shadow">
+                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest">
                   Business Solutions
                 </span>
               </div>
             </div>
-            <p className="text-xl text-white/60 leading-relaxed font-normal max-w-md drop-shadow-sm">
-              Building{" "}
-              <span className="text-emerald-400 font-bold underline decoration-white/20">
-                scalable networks
-              </span>{" "}
-              and technical excellence for global business expansion.
+            <p className="text-base text-white/50 leading-relaxed max-w-sm">
+              {t.footerDesc}
             </p>
           </div>
 
-          {/* Links Grid */}
-          <div className="lg:col-span-4 grid grid-cols-2 gap-8 reveal-item">
-            <div className="space-y-6">
-              <h4 className="text-[12px] font-mono tracking-[0.4em] text-emerald-400 uppercase font-bold">
-                Solutions
+          {/* Links - Scaled down */}
+          <div className="lg:col-span-4 grid grid-cols-2 gap-4 reveal-item">
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-mono text-emerald-400 uppercase font-bold tracking-[0.2em]">
+                {t.solutions}
               </h4>
-              <ul className="space-y-4 text-base font-semibold text-white/50">
-                {["Development", "Strategy", "Security"].map((item) => (
+              <ul className="space-y-3 text-sm font-medium text-white/40">
+                {[t.development, t.strategy, t.security].map((item) => (
                   <li
                     key={item}
-                    className="hover:text-emerald-400 transition-all cursor-pointer flex items-center gap-2 group"
+                    className="hover:text-emerald-400 transition-colors cursor-pointer flex items-center gap-2"
                   >
-                    <FiArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    {item}
+                    <FiArrowUpRight size={14} /> {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <div className="space-y-6">
-              <h4 className="text-[12px] font-mono tracking-[0.4em] text-emerald-400 uppercase font-bold">
-                Protocol
+            <div className="space-y-4">
+              <h4 className="text-[11px] font-mono text-emerald-400 uppercase font-bold tracking-[0.2em]">
+                {t.protocol}
               </h4>
-              <ul className="space-y-4 text-base font-semibold text-white/50">
-                {["Core V3", "Uptime", "Nodes"].map((item) => (
+              <ul className="space-y-3 text-sm font-medium text-white/40">
+                {[t.corev3, t.uptime, t.nodes].map((item) => (
                   <li
                     key={item}
-                    className="hover:text-emerald-400 transition-all cursor-pointer flex items-center gap-2 group"
+                    className="hover:text-emerald-400 transition-colors cursor-pointer flex items-center gap-2"
                   >
-                    <FiArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    {item}
+                    <FiArrowUpRight size={14} /> {item}
                   </li>
                 ))}
               </ul>
@@ -136,25 +136,23 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="lg:col-span-3 space-y-8 reveal-item lg:text-right">
-            <h4 className="text-[12px]  font-mono tracking-[0.4em] text-emerald-400 uppercase font-bold">
-              Terminal
+          <div className="lg:col-span-3 space-y-6 reveal-item lg:text-right">
+            <h4 className="text-[11px] font-mono text-emerald-400 uppercase font-bold tracking-[0.2em]">
+              {t.terminal}
             </h4>
             <div className="space-y-4">
               <a
                 href="mailto:contact@growbusiness.solutions"
-                className="text-xl font-black block hover:text-emerald-400 transition-colors drop-shadow-md"
+                className="text-lg font-bold block hover:text-emerald-400 transition-colors"
               >
                 contact@growbusiness.solutions
               </a>
-              {/* Social Icons */}
-              <div className="flex gap-4 lg:justify-end">
+              <div className="flex gap-3 lg:justify-end">
                 {[
                   {
                     Icon: FaFacebookF,
                     url: "https://www.facebook.com/growbusinesssolutionsbd",
                   },
-
                   {
                     Icon: FaGithub,
                     url: "https://github.com/Grow-Business-Solutions",
@@ -172,11 +170,9 @@ export default function Footer() {
                   <a
                     key={i}
                     href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 border border-white/10 text-white hover:bg-emerald-500 hover:text-black transition-all duration-300 shadow-lg"
+                    className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500 hover:text-black transition-all"
                   >
-                    <social.Icon className="text-xl" />
+                    <social.Icon size={16} />
                   </a>
                 ))}
               </div>
@@ -185,21 +181,21 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="reveal-item pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-8 text-[12px] font-mono text-white/20 uppercase tracking-[0.2em]">
+        <div className="reveal-item border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-6 text-[10px] font-mono text-white/20 uppercase tracking-widest">
             <span>© {currentYear} GROW_BUSINESS_SOLUTIONS</span>
-            <span className="hidden md:flex items-center gap-2 italic text-emerald-900">
+            <span className="hidden md:flex items-center gap-2">
               <FaShieldAlt /> ENCRYPTED_V4
             </span>
           </div>
 
           <button
             onClick={scrollToTop}
-            className="group flex items-center gap-4 text-[13px] font-black text-white/40 hover:text-white transition-all uppercase tracking-widest"
+            className="group flex items-center gap-3 text-xs font-bold text-white/30 hover:text-white transition-all uppercase tracking-tighter"
           >
-            <span>Return to Top</span>
-            <div className="w-12 h-12 rounded-full border-2 border-white/10 flex items-center justify-center group-hover:border-emerald-500 group-hover:bg-emerald-500 group-hover:text-black transition-all duration-500 shadow-xl">
-              <FaChevronUp className="group-hover:-translate-y-1 transition-transform" />
+            <span>{t.returnTop}</span>
+            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-black transition-all">
+              <FaChevronUp size={14} />
             </div>
           </button>
         </div>
