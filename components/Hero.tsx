@@ -133,11 +133,12 @@ export default function HeroSection() {
         <div className="content">
           <div className="badge">
             <span className="badge-dot" />
+
             Grow Business Solutions BD
           </div>
 
           <h1 className="heading">
-            Your Vision, Our Expertise- Engineering Success Together.
+            Your Vision, Our Expertise<br/>Engineering Success Together.
           </h1>
 
           <p className="desc">
@@ -587,7 +588,6 @@ function hexPts(cx: number, cy: number, s: number): string {
     .join(" ");
 }
 
-/* ── CSS ── */
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -595,8 +595,10 @@ const css = `
     position: relative;
     width: 100%;
     min-height: 100vh;
+    min-height: 100svh;
     background: #0b0c18;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -644,10 +646,11 @@ const css = `
   }
   .globe-wrap {
     position: absolute;
-    right: 10%;
+    right: 5%;
     top: 50%;
     transform: translateY(-50%);
-    width: min(600px, 45vw);
+    width: min(550px, 42vw);
+    max-width: 550px;
     aspect-ratio: 1;
     z-index: 2;
     pointer-events: none;
@@ -658,9 +661,10 @@ const css = `
     50%      { transform: translateY(-50%) translateY(-16px); }
   }
   .stat-card {
+    margin-top: 10px;
     position: absolute;
-    top: 20%;
-    right: 35%;
+    top: 18%;
+    right: 30%;
     transform: translateX(-50%);
     background: rgba(22,19,42,0.78);
     border: 1px solid rgba(110,75,210,0.38);
@@ -687,9 +691,10 @@ const css = `
     letter-spacing: 0.05em;
   }
   .chart-widget {
+    margin-top: 50px;
     position: absolute;
-    top: 15%;
-    right: 10%;
+    top: 12%;
+    right: 8%;
     background: rgba(18,15,38,0.72);
     border: 1px solid rgba(90,70,190,0.32);
     border-radius: 8px;
@@ -697,26 +702,14 @@ const css = `
     backdrop-filter: blur(8px);
     z-index: 10;
   }
-  .star {
-    position: absolute;
-    bottom: 8%;
-    right: 3.5%;
-    z-index: 10;
-    opacity: 0.92;
-    filter: drop-shadow(0 0 7px rgba(255,255,255,0.65));
-    animation: starP 3s ease-in-out infinite;
-  }
-  @keyframes starP {
-    0%,100% { opacity: 0.92; transform: scale(1); }
-    50%      { opacity: 0.55; transform: scale(0.86); }
-  }
-  .content {
+  .content { 
     position: relative;
     z-index: 10;
-    padding: 0 0 0 clamp(2rem, 6.5vw, 7.5rem);
-    max-width: 700px;
-    margin-left: 10%;
-    margin-right: auto;
+    width: 100%;
+    max-width: 1536px;
+    padding: 0 2rem;
+    margin: 0 auto;
+    margin-top: 60px;
     animation: fadeUp 0.8s ease both;
   }
   @keyframes fadeUp {
@@ -734,6 +727,7 @@ const css = `
     font-size: 13px;
     color: rgba(255,255,255,0.88);
     letter-spacing: 0.01em;
+    margin-top: 40px;
     margin-bottom: 22px;
     backdrop-filter: blur(6px);
   }
@@ -751,19 +745,20 @@ const css = `
     50%      { opacity: 0.55; transform: scale(1.28); }
   }
   .heading {
-    font-size: clamp(2.9rem, 5.2vw, 4.7rem);
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
     font-weight: 900;
-    line-height: 1.06;
+    line-height: 1.2;
     color: #ffffff;
     margin: 0 0 20px;
     letter-spacing: -0.025em;
     animation: fadeUp 0.8s 0.12s ease both;
   }
   .desc {
-    font-size: clamp(0.87rem, 1.05vw, 0.99rem);
-    line-height: 1.76;
-    color: rgba(195,185,228,0.65);
+    font-size: clamp(0.85rem, 1vw, 1rem);
+    line-height: 1.7;
+    color: rgba(195,185,228,0.7);
     margin: 0 0 36px;
+    max-width: 90%;
     animation: fadeUp 0.8s 0.22s ease both;
   }
   .btns {
@@ -773,9 +768,9 @@ const css = `
     animation: fadeUp 0.8s 0.34s ease both;
   }
   .btn {
-    padding: 15px 30px;
+    padding: 14px 28px;
     border-radius: 999px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
@@ -803,9 +798,258 @@ const css = `
     background: rgba(52,46,80,0.92);
   }
 
+  /* 1536px and above - center content like EngineeringProtocol */
+  @media (min-width: 1536px) {
+    .content {
+      max-width: 1536px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0 3rem;
+    }
+    .globe-wrap {
+      right: 8%;
+      width: min(550px, 35vw);
+    }
+    .heading {
+      font-size: clamp(3rem, 3.5vw, 4rem);
+    }
+  }
+
+  /* 14-inch Laptop (zoom 90% fix) */
+  @media (min-width: 1280px) and (max-width: 1440px) {
+    .hero {
+      min-height: 100vh;
+      padding: 0;
+    }
+    .content {
+      margin-left: 6%;
+      margin-top: 80px;
+      max-width: 780px;
+      padding: 0 1.5rem;
+    }
+    .heading {
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      margin-bottom: 16px;
+    }
+    .desc {
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+      max-width: 95%;
+    }
+    .globe-wrap {
+      right: 4%;
+      width: min(450px, 38vw);
+      top: 45%;
+    }
+    .btn {
+      padding: 12px 24px;
+      font-size: 0.85rem;
+    }
+    .badge {
+      margin-bottom: 18px;
+      font-size: 12px;
+    }
+  }
+
+  /* Large Desktop (1600px and above) */
+  @media (min-width: 1600px) {
+    .content {
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 80px;
+    }
+    .globe-wrap {
+      right: 6%;
+      width: min(550px, 32vw);
+    }
+    .heading {
+      font-size: clamp(3rem, 3.8rem, 4.2rem);
+    }
+  }
+
+  /* Ultra Wide (2000px and above) */
+  @media (min-width: 2000px) {
+    .content {
+      max-width: 1600px;
+      margin-top: 100px;
+    }
+    .globe-wrap {
+      right: 8%;
+      width: min(600px, 30vw);
+    }
+    .heading {
+      font-size: 4.2rem;
+    }
+  }
+
+  /* Tablet Landscape */
+  @media (max-width: 1200px) {
+    .hero {
+      min-height: auto;
+      padding: 60px 0;
+    }
+    .globe-wrap {
+      right: 3%;
+      width: min(380px, 35vw);
+      top: 45%;
+    }
+    .content {
+      margin-left: 5%;
+      margin-top: 40px;
+      max-width: 55%;
+      padding: 0 1rem;
+    }
+    .desc {
+      max-width: 100%;
+      font-size: 0.85rem;
+    }
+    .stat-card {
+      right: 28%;
+      top: 17%;
+      padding: 8px 16px;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+    }
+    .chart-widget {
+      right: 4%;
+      top: 11%;
+    }
+    .heading {
+      font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+      margin-bottom: 14px;
+    }
+    .badge {
+      margin-bottom: 16px;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Tablet Portrait */
+  @media (max-width: 992px) {
+    .globe-wrap {
+      width: min(300px, 35vw);
+      right: 2%;
+      top: 42%;
+    }
+    .content {
+      margin-left: 4%;
+      margin-top: 30px;
+      max-width: 52%;
+      padding: 0 0.8rem;
+    }
+    .heading {
+      font-size: clamp(1.5rem, 3.5rem, 2.5rem);
+    }
+    .desc {
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .btn {
+      padding: 10px 18px;
+      font-size: 0.75rem;
+    }
+    .stat-card {
+      right: 25%;
+      top: 10%;
+      padding: 6px 12px;
+    }
+    .stat-value {
+      font-size: 1.2rem;
+    }
+  }
+
+  /* Mobile & small tablet */
   @media (max-width: 860px) {
-    .globe-wrap, .stat-card, .chart-widget, .star { display: none; }
-    .content { padding: 4rem 2rem; max-width: 100%; }
-    .glow-left, .glow-bottom { display: none; }
+    .globe-wrap, 
+    .stat-card, 
+    .chart-widget { 
+      display: none; 
+    }
+    .hero {
+      padding: 0;
+      min-height: 100vh;
+    }
+    .content { 
+      padding: 4rem 1.5rem; 
+      max-width: 100%; 
+      margin-left: 0;
+      margin-top: 0;
+      text-align: center;
+    }
+    .glow-left, 
+    .glow-bottom { 
+      display: none; 
+    }
+    .badge {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .heading {
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      text-align: center;
+    }
+    .desc {
+      max-width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .btns {
+      justify-content: center;
+    }
+    .waves {
+      opacity: 0.4;
+    }
+  }
+
+  /* Small mobile */
+  @media (max-width: 480px) {
+    .content {
+      max-width: 100%;
+      padding: 3rem 1rem;
+    }
+    .heading {
+      font-size: 1.5rem;
+      line-height: 1.3;
+    }
+    .desc {
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+    .btn {
+      padding: 8px 16px;
+      font-size: 0.7rem;
+      width: 100%;
+      max-width: 240px;
+    }
+    .badge {
+      font-size: 10px;
+      padding: 5px 12px 5px 8px;
+    }
+  }
+
+  /* Extra small height fix for zoom out */
+  @media (max-height: 700px) {
+    .hero {
+      min-height: auto;
+      padding: 40px 0;
+    }
+    .content {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+    .heading {
+      margin-bottom: 12px;
+    }
+    .desc {
+      margin-bottom: 24px;
+    }
+    .badge {
+      margin-bottom: 14px;
+    }
   }
 `;
