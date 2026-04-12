@@ -18,7 +18,7 @@ const projects = [
       "Next-gen banking infrastructure with real-time transaction tracking.",
     tech: ["Next.js", "PostgreSQL", "Prisma"],
     color: "#b5a7ff",
-    image: "/projects/quantum-ledger.jpg", // আপনার ইমেজ পাথ দিন
+    image: "https://i.postimg.cc/D0b9WyKF/6560470.jpg", // আপনার ইমেজ পাথ দিন
     imageAlt: "Quantum Ledger Dashboard",
   },
   {
@@ -29,7 +29,7 @@ const projects = [
       "Seamless IoT integration for smart energy monitoring and management.",
     tech: ["React Native", "Firebase", "Zustand"],
     color: "#3ee8f6",
-    image: "/projects/ecopulse.jpg",
+    image: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
     imageAlt: "EcoPulse Mobile App",
   },
   {
@@ -40,7 +40,7 @@ const projects = [
       "High-performance data processing engine for enterprise-level analytics.",
     tech: ["MERN Stack", "Redis", "Docker"],
     color: "#ffffff",
-    image: "/projects/nova-engine.jpg",
+    image: "https://i.postimg.cc/qB5Bzzyn/Nova.jpg",
     imageAlt: "Nova Engine Analytics",
   },
 ];
@@ -94,7 +94,10 @@ export default function Portfolio() {
       // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -105,7 +108,7 @@ export default function Portfolio() {
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y
+              nodes[j].y,
             );
             gradient.addColorStop(0, "rgba(181, 167, 255, " + opacity + ")");
             gradient.addColorStop(1, "rgba(62, 232, 246, " + opacity + ")");
@@ -194,7 +197,7 @@ export default function Portfolio() {
               trigger: sectionRef.current,
               start: "top 60%",
             },
-          }
+          },
         );
       }
     }, sectionRef);
@@ -252,13 +255,14 @@ export default function Portfolio() {
                   onError={(e) => {
                     // ফallback ইমেজ যদি লোড না হয়
                     const target = e.target as HTMLImageElement;
-                    target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
+                    target.src =
+                      "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121323] via-transparent to-transparent opacity-60" />
-                
+
                 {/* Overlay Color */}
-                <div 
+                <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
                   style={{ backgroundColor: project.color }}
                 />
@@ -272,7 +276,7 @@ export default function Portfolio() {
                     background: `radial-gradient(circle at 50% 0%, ${project.color}10, transparent 70%)`,
                   }}
                 />
-                
+
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-6">
                     <span className="text-4xl font-black text-white/5">
@@ -287,7 +291,7 @@ export default function Portfolio() {
                     </div>
                   </div>
 
-                  <p 
+                  <p
                     className="font-mono text-[10px] uppercase tracking-widest mb-2"
                     style={{ color: project.color }}
                   >
