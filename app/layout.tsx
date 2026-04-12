@@ -3,6 +3,7 @@ import { Inter, Hind_Siliguri } from "next/font/google";
 import "./globals.css"; // পাথ আবার আগের মতো ঠিক করা হলো
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { LanguageProvider } from "@/constants/LanguageContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,9 +41,11 @@ export default function RootLayout({
         className={`${inter.className} bg-[#0b0c18] antialiased text-white flex flex-col min-h-screen`}
         suppressHydrationWarning={true}
       >
-        <Navbar />
-        <main className="grow relative z-10">{children}</main>
-        <Footer />
+        <LanguageProvider>
+          <Navbar />
+          <main className="grow relative z-10">{children}</main>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );
