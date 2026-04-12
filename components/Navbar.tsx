@@ -102,7 +102,7 @@ export default function Navbar() {
                   src={currentLang.flag}
                   alt={currentLang.code}
                   fill
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "cover", width: "100%", height: "100%" }}
                   unoptimized
                   className="object-cover rounded-[1px]"
                 />
@@ -138,6 +138,7 @@ export default function Navbar() {
                         width={18}
                         height={12}
                         style={{ width: "18px", height: "auto" }}
+                        className="w-[18px] h-auto"
                         unoptimized
                       />
                       {l.name}
@@ -148,13 +149,13 @@ export default function Navbar() {
             )}
           </div>
 
-          <button className="p-2 md:px-5 md:py-2.5 rounded-xl bg-secondary text-[#0b0c18] font-black transition-all flex items-center gap-2">
+          <button className="p-2 md:px-5 md:py-2.5 rounded-xl bg-secondary text-white font-black transition-all flex items-center gap-2">
             <span className="hidden sm:inline text-xs uppercase">
-              {t.startProject} {/* অনুবাদিত টেক্সট */}
+              {t.startProject}
             </span>
             <Rocket
               size={18}
-              className="sm:hidden md:block lg:hidden xl:block"
+              className="sm:hidden md:block lg:hidden xl:block text-red-500"
             />
           </button>
 

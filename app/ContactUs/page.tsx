@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { translations } from "@/constants/translations";
 import { useLanguage } from "@/constants/LanguageContext";
 
+interface Dot {
+  x: number;
+  y: number;
+  size: number;
+  id: number;
+}
+
 export default function ContactSection() {
   const { lang } = useLanguage();
   const t = translations[lang];
-
-  const [dots] = useState(() => {
-    return Array.from({ length: 15 }, (_, i) => ({
-      x: (Math.random() - 0.5) * 300,
-      y: (Math.random() - 0.5) * 300,
-      size: Math.random() * 2 + 1,
-      id: i,
-    }));
-  });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,6 +22,21 @@ export default function ContactSection() {
     email: "",
     message: "",
   });
+
+  const [dots, setDots] = useState<Dot[]>([]);
+
+  useEffect(() => {
+    const dotsArray = Array.from({ length: 15 }, (_, i) => ({
+      x: (Math.random() - 0.5) * 300,
+      y: (Math.random() - 0.5) * 300,
+      size: Math.random() * 2 + 1,
+      id: i,
+    }));
+
+    requestAnimationFrame(() => {
+      setDots(dotsArray);
+    });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +48,12 @@ export default function ContactSection() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <section className="relative min-h-screen bg-[#0b0c18] text-white flex items-center px-4 md:px-10 py-40 overflow-hidden border-t border-white/5 font-sans">
-      {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-5%] right-[5%] w-[40%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -63,7 +76,7 @@ export default function ContactSection() {
                 {t.secureChannel}
               </span>
             </div>
-            <h2 className="text-6xl md:text-8xl font-black leading-[1] tracking-tighter uppercase">
+            <h2 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase">
               {t.initiate} <br />
               <span
                 className="text-transparent italic relative"
@@ -95,8 +108,8 @@ export default function ContactSection() {
                   placeholder: t.emailPlaceholder,
                   type: "email",
                 },
-              ].map((field, i) => (
-                <div key={i} className="relative group">
+              ].map((field) => (
+                <div key={field.name} className="relative group">
                   <div className="absolute -inset-[1px] bg-gradient-to-r from-emerald-500/50 to-[#6c5ce7]/50 rounded-xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity" />
                   <div className="relative bg-[#0a0c0f]/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden">
                     <label className="absolute top-2 left-4 text-[9px] tracking-widest text-emerald-500/50 uppercase font-bold">
@@ -138,14 +151,14 @@ export default function ContactSection() {
               type="submit"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="relative group w-full py-5 bg-white text-black rounded-xl font-black text-[11px] uppercase transition-all overflow-hidden shadow-2xl"
+              className="relative group w-full py-5 bg-white text-black hover:text-white rounded-xl font-black text-[11px] uppercase transition-all overflow-hidden shadow-2xl"
             >
               <span className="relative z-10">{t.executeProtocol}</span>
               <div className="absolute inset-0 bg-secondary translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
             </motion.button>
           </form>
 
-          {/* Contact Details Footer */}
+          {/* Footer Details */}
           <div className="flex gap-10 pt-6 border-t border-white/5">
             {[
               { label: t.quantumLine, val: t.phone },
@@ -172,7 +185,6 @@ export default function ContactSection() {
         >
           <div className="relative w-[320px] h-[320px] md:w-[450px] md:h-[450px]">
             <div className="absolute inset-0 border border-emerald-500/10 rounded-full bg-[#030507]/40 backdrop-blur-[2px] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
-              {/* Spinning Radar Scan */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
@@ -185,24 +197,24 @@ export default function ContactSection() {
                 <div className="absolute top-0 left-1/2 w-[1px] h-1/2 bg-gradient-to-b from-emerald-500 to-transparent shadow-[0_0_15px_#10b981]" />
               </motion.div>
 
-              {/* Data Dots (Nodes) */}
-              {dots.map((dot) => (
-                <motion.div
-                  key={dot.id}
-                  animate={{ opacity: [0.2, 1, 0.2] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981]"
-                  style={{
-                    top: `calc(50% + ${dot.y}px)`,
-                    left: `calc(50% + ${dot.x}px)`,
-                    width: dot.size,
-                    height: dot.size,
-                  }}
-                />
-              ))}
+              {/* Dots with a fallback check */}
+              {dots.length > 0 &&
+                dots.map((dot) => (
+                  <motion.div
+                    key={dot.id}
+                    animate={{ opacity: [0.2, 1, 0.2] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="absolute rounded-full bg-emerald-400 shadow-[0_0_10px_#10b981]"
+                    style={{
+                      top: `calc(50% + ${dot.y}px)`,
+                      left: `calc(50% + ${dot.x}px)`,
+                      width: dot.size,
+                      height: dot.size,
+                    }}
+                  />
+                ))}
             </div>
 
-            {/* Central Identity Hub */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#030507] border border-white/10 rounded-full flex flex-col items-center justify-center shadow-2xl">
               <span className="text-[10px] font-black text-emerald-400 tracking-widest uppercase">
                 Grow
@@ -215,7 +227,6 @@ export default function ContactSection() {
         </motion.div>
       </div>
 
-      {/* Success Notification Popup */}
       <AnimatePresence>
         {isSubmitted && (
           <motion.div
