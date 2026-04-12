@@ -68,62 +68,86 @@ export default function ServicesPage() {
     if (!ctx) return;
 
     let animId: number;
+    let nodes: Array<{x: number, y: number, vx: number, vy: number, r: number}> = [];
+    
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
+      
+      nodes = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        r: Math.random() * 2.5 + 0.5,
+      }));
     };
+    
     resize();
     window.addEventListener("resize", resize);
 
-    const nodes = Array.from({ length: 40 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 2 + 1,
-    }));
-
     const draw = () => {
+      if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 180) {
+          if (d < 150) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.strokeStyle = `rgba(108, 92, 231, ${0.2 * (1 - d / 180)})`;
-            ctx.lineWidth = 0.5;
+            const opacity = 0.15 * (1 - d / 150);
+            ctx.strokeStyle = `rgba(108, 92, 231, ${opacity})`;
+            ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
       }
+      
+      // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(162, 155, 254, 0.6)";
+        ctx.fillStyle = `rgba(162, 155, 254, 0.5)`;
         ctx.fill();
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+        
+        n.x += n.vx;
+        n.y += n.vy;
+        
+        if (n.x < 0) { n.x = 0; n.vx *= -1; }
+        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
+        if (n.y < 0) { n.y = 0; n.vy *= -1; }
+        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
       });
+      
       animId = requestAnimationFrame(draw);
     };
+    
     draw();
-    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+    
+    return () => { 
+      cancelAnimationFrame(animId); 
+      window.removeEventListener("resize", resize); 
+    };
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#05070a] text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
+    <main className="relative min-h-screen bg-[#05070a] text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
       
-      {/* --- HERO SECTION --- */}
-      <section className="relative min-h-[90vh] flex items-center pt-20 px-6 overflow-hidden">
+      {/* --- Particle Background - পুরো পেজ জুড়ে --- */}
+      <canvas 
+        ref={canvasRef} 
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-40 z-0" 
+      />
+      
+      {/* --- Hero Section --- */}
+      <section className="relative z-10 min-h-[90vh] flex items-center pt-20 px-6 overflow-hidden">
         <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[50%] bg-[#6c5ce7]/15 blur-[120px] rounded-full" />
         <div className="absolute bottom-[10%] right-[0%] w-[30%] h-[40%] bg-[#00cec9]/5 blur-[100px] rounded-full" />
-        
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-50" />
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto w-full relative grid lg:grid-cols-2 gap-10 items-center">
           <motion.div 
             initial={{ opacity: 0, x: -30 }} 
             animate={{ opacity: 1, x: 0 }}
@@ -179,7 +203,7 @@ export default function ServicesPage() {
       </section>
 
       {/* --- BENTO GRID --- */}
-      <section className="max-w-7xl mx-auto px-6 py-32 relative">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-32">
         <div className="mb-20 text-center md:text-left">
           <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4 uppercase">Precise Instrumentality</h2>
           <p className="text-white/40 max-w-xl font-medium">প্রতিটি কম্পোনেন্ট এমনভাবে তৈরি যা স্বাধীনভাবে এবং সম্মিলিতভাবে সর্বোচ্চ আউটপুট নিশ্চিত করে।</p>
@@ -211,7 +235,7 @@ export default function ServicesPage() {
       </section>
 
       {/* --- TIMELINE --- */}
-      <section className="py-32 px-6 relative bg-black/40">
+      <section className="relative z-10 py-32 px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-24">
              <h2 className="text-3xl font-black tracking-[0.3em] uppercase opacity-40 mb-2">Process</h2>
@@ -225,6 +249,7 @@ export default function ServicesPage() {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
                 key={idx} 
                 className={`relative flex items-center w-full ${idx % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
               >
@@ -246,7 +271,7 @@ export default function ServicesPage() {
       </section>
 
       {/* --- CTA --- */}
-      <section className="max-w-7xl mx-auto px-6 py-40">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-40">
         <div className="relative p-12 md:p-24 rounded-[3rem] bg-gradient-to-br from-[#111319] to-transparent border border-white/10 overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#6c5ce7]/10 blur-[100px] rounded-full" />
           
@@ -267,7 +292,7 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            <div className="space-y-6 bg-white/[0.02] backdrop-blur-3xl p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
+            <div className="space-y-6 bg-white/[0.02] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
               <input type="text" placeholder="Identity_Full_Name" className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm" />
               <input type="email" placeholder="Signal_Endpoint (Email)" className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm" />
               <textarea placeholder="Mission_Brief..." className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm h-32 resize-none" />
