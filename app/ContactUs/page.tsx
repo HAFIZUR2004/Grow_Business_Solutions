@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { translations } from "@/constants/translations";
 import { useLanguage } from "@/constants/LanguageContext";
@@ -24,6 +24,120 @@ export default function ContactSection() {
   });
 
   const [dots, setDots] = useState<Dot[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Particle Network Canvas Effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      nodes = Array.from({ length: 65 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 2.2 + 0.6,
+        color:
+          Math.random() > 0.6
+            ? "rgba(16, 185, 129, 0.4)"
+            : "rgba(108, 92, 231, 0.35)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // লাইন কানেক্ট করা
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 160) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.1 * (1 - d / 160);
+
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(16, 185, 129, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(108, 92, 231, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ডট আঁকা এবং মুভ করা
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        if (n.r > 1.5) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(16, 185, 129, 0.06)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   useEffect(() => {
     const dotsArray = Array.from({ length: 15 }, (_, i) => ({
@@ -54,10 +168,19 @@ export default function ContactSection() {
 
   return (
     <section className="relative min-h-screen bg-[#0b0c18] text-white flex items-center px-4 md:px-10 py-40 overflow-hidden border-t border-white/5 font-sans">
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-5%] right-[5%] w-[40%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
+      
+      {/* Particle Network Canvas - Full Background */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
+      />
 
-      <div className="max-w-screen-2xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center px-6">
+      {/* Gradient Glow Effects */}
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-500/8 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.03),transparent_70%)] pointer-events-none z-0" />
+
+      <div className="max-w-screen-2xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center px-6 relative z-10">
         {/* LEFT SIDE: Heading & Form */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -154,7 +277,7 @@ export default function ContactSection() {
               className="relative group w-full py-5 bg-white text-black hover:text-white rounded-xl font-black text-[11px] uppercase transition-all overflow-hidden shadow-2xl"
             >
               <span className="relative z-10">{t.executeProtocol}</span>
-              <div className="absolute inset-0 bg-secondary translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#6c5ce7] to-emerald-500 translate-y-[101%] group-hover:translate-y-0 transition-transform duration-500" />
             </motion.button>
           </form>
 
@@ -184,7 +307,7 @@ export default function ContactSection() {
           className="lg:col-span-5 relative flex items-center justify-center"
         >
           <div className="relative w-[320px] h-[320px] md:w-[450px] md:h-[450px]">
-            <div className="absolute inset-0 border border-emerald-500/10 rounded-full bg-[#030507]/40 backdrop-blur-[2px] overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
+            <div className="absolute inset-0 border border-emerald-500/10 rounded-full bg-[#030507]/60 backdrop-blur-sm overflow-hidden shadow-[inset_0_0_50px_rgba(0,0,0,0.5)]">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
@@ -215,7 +338,7 @@ export default function ContactSection() {
                 ))}
             </div>
 
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#030507] border border-white/10 rounded-full flex flex-col items-center justify-center shadow-2xl">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-[#030507]/80 backdrop-blur-sm border border-white/10 rounded-full flex flex-col items-center justify-center shadow-2xl">
               <span className="text-[10px] font-black text-emerald-400 tracking-widest uppercase">
                 Grow
               </span>
@@ -233,7 +356,7 @@ export default function ContactSection() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-black px-8 py-4 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl"
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-emerald-500 to-[#6c5ce7] text-white px-8 py-4 rounded-full font-black text-xs tracking-widest uppercase shadow-2xl"
           >
             {t.successMessage}
           </motion.div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import CareerHeroPage from "./Careerheropage/page";
 
 /* ─── tiny helpers ─── */
 const Tag = ({ children }: { children: React.ReactNode }) => (
@@ -43,56 +42,234 @@ function BlobVisual() {
   );
 }
 
-/* ─── HERO ─── */
+/* ─── HERO SECTION ─── */
+function CareerHero() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      nodes = Array.from({ length: 70 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 2.5 + 0.8,
+        color:
+          Math.random() > 0.6
+            ? "rgba(108, 92, 231, 0.45)"
+            : "rgba(162, 155, 254, 0.35)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 170) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.12 * (1 - d / 170);
+
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(108, 92, 231, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(162, 155, 254, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        if (n.r > 1.8) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(108, 92, 231, 0.08)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* Particle Network Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
+      />
+
+      {/* Gradient Glow Effects */}
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
+
+      {/* Bottom wave lines */}
+      <svg
+        className="absolute bottom-0 left-0 w-full h-[220px] pointer-events-none z-1"
+        viewBox="0 0 1440 220"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0,140 C200,80 400,200 600,130 C800,60 1000,180 1200,110 C1320,75 1400,130 1440,120"
+          fill="none"
+          stroke="rgba(108,92,231,0.35)"
+          strokeWidth="1.5"
+        />
+        <path
+          d="M0,170 C180,110 380,210 580,155 C780,100 980,200 1180,145 C1340,105 1420,155 1440,148"
+          fill="none"
+          stroke="rgba(100,60,200,0.22)"
+          strokeWidth="1"
+        />
+      </svg>
+
+      {/* Star Icon */}
+      
+
+      {/* Content - Centered with max-width */}
+      <div className="relative z-10 w-full  mx-auto px-6 md:px-16 lg:px-24 text-center">
+        
+
+        <h1 className="font-black md:mt-9 leading-[0.9] tracking-tighter text-white text-[clamp(3rem,8vw,5.5rem)] mb-6">
+          JOIN THE DIGITAL
+          <br />
+          PROTOCOL
+        </h1>
+
+        <p className="max-w-2xl mx-auto text-base md:text-lg text-white/60 leading-relaxed mb-10">
+          Architecting high-performance digital ecosystems for a data-driven future.
+          Harness the power of AI to transform complex processes into elegant,
+          obsidian-grade automated solutions.
+        </p>
+
+        <div className="flex flex-wrap gap-4 justify-center">
+          <button className="bg-[#6c5ce7] hover:bg-[#7c3aed] transition-all px-8 py-4 rounded-full text-sm font-black tracking-wider uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)]">
+            Explore Open Roles
+          </button>
+          <button className="border border-white/20 hover:bg-white/5 transition-all px-8 py-4 rounded-full text-sm font-black tracking-wider uppercase backdrop-blur-sm">
+            Our Philosophy
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ─── MANIFESTO ─── */
 function Manifesto() {
   return (
-    <section className="bg-[#0b0f0e] py-24 px-6 md:px-16 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-      <div>
-        <SectionLabel>Zone: Manifesto</SectionLabel>
-        <h2 className="text-4xl md:text-5xl font-black leading-tight text-white mb-6">
-          PRECISION OVER
-          <br />
-          CONVENIENCE.
-        </h2>
-        <p className="text-sm text-white/40 leading-relaxed mb-10 max-w-sm">
-          We don&apos;t just build software. We forge digital environments where
-          data flows with architectural elegance. Our culture is rooted in deep
-          focus, radical autonomy, and a relentless pursuit of engineering
-          prestige.
-        </p>
-        <div className="grid grid-cols-2 gap-6">
-          {[
-            {
-              num: "01.",
-              title: "Async Native",
-              desc: "Designed for deep work. No useless stand-ups.",
-            },
-            {
-              num: "02.",
-              title: "Tech Sovereign",
-              desc: "We own the stack. No technical debt compromises.",
-            },
-          ].map((item) => (
-            <div key={item.num}>
-              <p className="text-[#6c5ce7] font-black text-lg mb-1">
-                {item.num}
-              </p>
-              <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">
-                {item.title}
-              </p>
-              <p className="text-white/35 text-xs leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-          ))}
+    <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+          <SectionLabel>Zone: Manifesto</SectionLabel>
+          <h2 className="text-4xl md:text-5xl font-black leading-tight text-white mb-6">
+            PRECISION OVER
+            <br />
+            CONVENIENCE.
+          </h2>
+          <p className="text-sm text-white/40 leading-relaxed mb-10 max-w-sm">
+            We don&apos;t just build software. We forge digital environments where
+            data flows with architectural elegance. Our culture is rooted in deep
+            focus, radical autonomy, and a relentless pursuit of engineering
+            prestige.
+          </p>
+          <div className="grid grid-cols-2 gap-6">
+            {[
+              {
+                num: "01.",
+                title: "Async Native",
+                desc: "Designed for deep work. No useless stand-ups.",
+              },
+              {
+                num: "02.",
+                title: "Tech Sovereign",
+                desc: "We own the stack. No technical debt compromises.",
+              },
+            ].map((item) => (
+              <div key={item.num}>
+                <p className="text-[#6c5ce7] font-black text-lg mb-1">
+                  {item.num}
+                </p>
+                <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">
+                  {item.title}
+                </p>
+                <p className="text-white/35 text-xs leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* 3-D blob */}
-      <div className="h-[340px] md:h-[420px]">
-        <BlobVisual />
+        {/* 3-D blob */}
+        <div className="h-[340px] md:h-[420px]">
+          <BlobVisual />
+        </div>
       </div>
     </section>
   );
@@ -150,7 +327,7 @@ const roles = [
 function VacancyCard({ role }: { role: (typeof roles)[0] }) {
   if (role.icon) {
     return (
-      <div className="border border-white/10 bg-[#121a18] rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[180px]">
+      <div className="border border-white/10 bg-[#121a18]/80 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[180px]">
         <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-xl">
           +
         </div>
@@ -164,13 +341,12 @@ function VacancyCard({ role }: { role: (typeof roles)[0] }) {
 
   return (
     <div
-      className={`border rounded-xl p-6 flex flex-col gap-4 ${
+      className={`border rounded-xl p-6 flex flex-col gap-4 backdrop-blur-sm ${
         role.featured
-          ? "border-[#6c5ce7]/40 bg-[#13112a] col-span-1 md:col-span-2"
-          : "border-white/10 bg-[#121a18]"
+          ? "border-[#6c5ce7]/40 bg-[#13112a]/80 col-span-1 md:col-span-2"
+          : "border-white/10 bg-[#121a18]/80"
       }`}
     >
-      {/* Tags */}
       {role.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {role.tags.map((t) => (
@@ -222,7 +398,7 @@ function VacancyCard({ role }: { role: (typeof roles)[0] }) {
 
 function Vacancies() {
   return (
-    <section className="bg-[#0b0f0e] py-24 px-6 md:px-16 max-w-7xl mx-auto">
+    <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
       <SectionLabel>Operational Series</SectionLabel>
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
         <h2 className="text-5xl md:text-6xl font-black text-white leading-none">
@@ -275,7 +451,7 @@ const perks = [
 
 function WhyBuild() {
   return (
-    <section className="bg-[#0b0f0e] py-24 px-6 md:px-16 max-w-7xl mx-auto">
+    <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
       <div className="text-center mb-14">
         <SectionLabel>Protocol · Rewards</SectionLabel>
         <h2 className="text-4xl md:text-5xl font-black text-white">
@@ -286,7 +462,7 @@ function WhyBuild() {
         {perks.map((p) => (
           <div
             key={p.title}
-            className="border border-white/10 bg-[#121a18] rounded-xl p-7 flex flex-col gap-4 hover:border-[#6c5ce7]/40 transition-colors"
+            className="border border-white/10 bg-[#121a18]/80 backdrop-blur-sm rounded-xl p-7 flex flex-col gap-4 hover:border-[#6c5ce7]/40 transition-colors"
           >
             <span className="text-2xl">{p.icon}</span>
             <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase">
@@ -303,8 +479,7 @@ function WhyBuild() {
 /* ─── CTA ─── */
 function CtaBanner() {
   return (
-    <section className="bg-[#0b0f0e] py-32 px-6 text-center relative overflow-hidden">
-      {/* Glow */}
+    <section className="relative bg-transparent py-32 px-6 text-center overflow-hidden z-10">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[700px] h-[300px] rounded-full bg-[#6c5ce7]/10 blur-3xl" />
       </div>
@@ -327,7 +502,7 @@ function CtaBanner() {
           Join a team that values technical mastery over corporate tradition.
           Your best work starts here.
         </p>
-        <button className="mt-10 bg-[#6c5ce7] hover:bg-[#7d6ff0] transition-colors px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase">
+        <button className="mt-10 bg-[#6c5ce7] hover:bg-[#7d6ff0] transition-colors px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_30px_rgba(108,92,231,0.3)]">
           Initiate Application
         </button>
       </div>
@@ -337,9 +512,115 @@ function CtaBanner() {
 
 /* ─── ROOT ─── */
 export default function CareersPage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      nodes = Array.from({ length: 80 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 2.2 + 0.6,
+        color:
+          Math.random() > 0.6
+            ? "rgba(108, 92, 231, 0.4)"
+            : "rgba(162, 155, 254, 0.3)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 160) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.1 * (1 - d / 160);
+            ctx.strokeStyle = `rgba(108, 92, 231, ${opacity})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   return (
-    <main className="bg-[#0b0f0e] text-white min-h-screen">
-      <CareerHeroPage />
+    <main className="relative min-h-screen bg-[#0b0f0e] text-white overflow-x-hidden">
+      {/* Full Page Particle Network Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-30 z-0"
+      />
+
+      {/* Fixed Gradient Glows */}
+      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
+
+      {/* Page Content */}
+      <CareerHero />
       <Manifesto />
       <Vacancies />
       <WhyBuild />

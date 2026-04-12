@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 // Font Awesome Imports
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -85,9 +85,137 @@ const projects = [
 ];
 
 export default function ModernProjectsPage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Particle Network Canvas Effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      nodes = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 2.2 + 0.6,
+        color:
+          Math.random() > 0.6
+            ? "rgba(168, 85, 247, 0.45)"
+            : "rgba(6, 182, 212, 0.35)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // লাইন কানেক্ট করা
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 155) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.09 * (1 - d / 155);
+
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(168, 85, 247, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(6, 182, 212, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.55;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ডট আঁকা এবং মুভ করা
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        // গ্লো ইফেক্ট বড় ডটের জন্য
+        if (n.r > 1.5) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(168, 85, 247, 0.06)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   return (
-    <div className="bg-[#0b0c18] text-white py-24 px-6 selection:bg-purple-500/30 font-sans">
-      <div className="max-w-7xl mx-auto">
+    <div className="relative bg-[#0b0c18] text-white py-24 px-6 selection:bg-purple-500/30 font-sans overflow-hidden">
+      
+      {/* Particle Network Canvas - Full Background */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
+      />
+
+      {/* Gradient Glow Effects */}
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-600/8 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-cyan-500/8 blur-[140px] rounded-full pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.03),transparent_70%)] pointer-events-none z-0" />
+
+      <div className="max-w-7xl mx-auto relative z-10">
         
         <div className="mb-32">
           <motion.div
@@ -114,7 +242,7 @@ export default function ModernProjectsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative p-10 rounded-[40px] bg-[#11111e] border border-white/5 overflow-hidden transition-all duration-500 hover:border-purple-500/20"
+                className="group relative p-10 rounded-[40px] bg-[#11111e]/80 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-500 hover:border-purple-500/20"
               >
                 <div className={`absolute top-0 right-0 w-72 h-72 ${colors.bg} blur-[100px] ${colors.hoverBg} transition-all duration-500`} />
 
@@ -124,7 +252,6 @@ export default function ModernProjectsPage() {
                       <FontAwesomeIcon icon={project.icon} className="text-2xl" />
                     </div>
                     <div className="flex gap-4 opacity-30 group-hover:opacity-100 transition-opacity">
-                      {/* GitHub FontAwesome Icon */}
                       <FontAwesomeIcon 
                         icon={faGithub} 
                         className="text-xl cursor-pointer hover:text-white transition-colors" 
