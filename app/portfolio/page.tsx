@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -17,6 +18,8 @@ const projects = [
       "Next-gen banking infrastructure with real-time transaction tracking.",
     tech: ["Next.js", "PostgreSQL", "Prisma"],
     color: "#b5a7ff",
+    image: "/projects/quantum-ledger.jpg", // আপনার ইমেজ পাথ দিন
+    imageAlt: "Quantum Ledger Dashboard",
   },
   {
     id: "02",
@@ -26,6 +29,8 @@ const projects = [
       "Seamless IoT integration for smart energy monitoring and management.",
     tech: ["React Native", "Firebase", "Zustand"],
     color: "#3ee8f6",
+    image: "/projects/ecopulse.jpg",
+    imageAlt: "EcoPulse Mobile App",
   },
   {
     id: "03",
@@ -35,15 +40,130 @@ const projects = [
       "High-performance data processing engine for enterprise-level analytics.",
     tech: ["MERN Stack", "Redis", "Docker"],
     color: "#ffffff",
+    image: "/projects/nova-engine.jpg",
+    imageAlt: "Nova Engine Analytics",
   },
 ];
 
 export default function Portfolio() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Particle Network Canvas Effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      nodes = Array.from({ length: 55 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2.5 + 0.8,
+        color:
+          Math.random() > 0.6
+            ? "rgba(181, 167, 255, 0.5)"
+            : "rgba(62, 232, 246, 0.4)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // লাইন কানেক্ট করা
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 160) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.1 * (1 - d / 160);
+
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(181, 167, 255, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(62, 232, 246, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ডট আঁকা এবং মুভ করা
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        if (n.r > 1.8) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(181, 167, 255, 0.08)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   useEffect(() => {
-    // 1. Using gsap.context ensures all animations are cleaned up on unmount
     const ctx = gsap.context(() => {
       // Reveal Animation for Title
       gsap.from(".portfolio-title", {
@@ -57,7 +177,6 @@ export default function Portfolio() {
         },
       });
 
-      // 2. Filter out any null references before passing to GSAP
       const validCards = cardRefs.current.filter((el) => el !== null);
 
       if (validCards.length > 0) {
@@ -75,19 +194,29 @@ export default function Portfolio() {
               trigger: sectionRef.current,
               start: "top 60%",
             },
-          },
+          }
         );
       }
-    }, sectionRef); // 3. Scope the context to this section
+    }, sectionRef);
 
-    return () => ctx.revert(); // 4. Clean up
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="bg-[#0b0c18] px-6 relative overflow-hidden py-20"
+      className="relative bg-[#0b0c18] px-6 overflow-hidden py-20"
     >
+      {/* Particle Network Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
+      />
+
+      {/* Glow Effects */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
+
       <div className="max-w-screen-2xl mx-auto relative z-10">
         <div className="mb-24 portfolio-title">
           <div className="flex items-center gap-4 mb-4">
@@ -98,7 +227,7 @@ export default function Portfolio() {
           </div>
           <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
             Digital{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
+            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
               Artifacts.
             </span>
           </h2>
@@ -111,48 +240,76 @@ export default function Portfolio() {
               ref={(el) => {
                 cardRefs.current[idx] = el;
               }}
-              className="group relative bg-[#121323] border border-white/5 rounded-2xl p-8 hover:border-white/20 transition-all duration-500"
+              className="group relative bg-[#121323] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-500"
             >
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none"
-                style={{
-                  background: `radial-gradient(circle at 50% 0%, ${project.color}10, transparent 70%)`,
-                }}
-              />
-              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.08),transparent_50%)] pointer-events-none" />
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-12">
-                  <span className="text-4xl font-black text-white/5">
-                    {project.id}
-                  </span>
+              {/* Image Section */}
+              <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
+                <Image
+                  src={project.image}
+                  alt={project.imageAlt}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => {
+                    // ফallback ইমেজ যদি লোড না হয়
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#121323] via-transparent to-transparent opacity-60" />
+                
+                {/* Overlay Color */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+                  style={{ backgroundColor: project.color }}
+                />
+              </div>
 
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center border border-white/10 group-hover:rotate-45 transition-transform duration-500"
+              {/* Content Section */}
+              <div className="relative p-8">
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at 50% 0%, ${project.color}10, transparent 70%)`,
+                  }}
+                />
+                
+                <div className="relative z-10">
+                  <div className="flex justify-between items-start mb-6">
+                    <span className="text-4xl font-black text-white/5">
+                      {project.id}
+                    </span>
+
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center border border-white/10 group-hover:rotate-45 transition-transform duration-500"
+                      style={{ color: project.color }}
+                    >
+                      ↗
+                    </div>
+                  </div>
+
+                  <p 
+                    className="font-mono text-[10px] uppercase tracking-widest mb-2"
                     style={{ color: project.color }}
                   >
-                    ↗
+                    {project.tag}
+                  </p>
+                  <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                    {project.title}
+                  </h3>
+                  <p className="text-white/40 text-sm leading-relaxed mb-6">
+                    {project.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-white/60 font-mono"
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                </div>
-
-                <p className="text-cyan-400 font-mono text-[10px] uppercase tracking-widest mb-2">
-                  {project.tag}
-                </p>
-                <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">
-                  {project.title}
-                </h3>
-                <p className="text-white/40 text-sm leading-relaxed mb-8">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-white/60 font-mono"
-                    >
-                      {t}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>

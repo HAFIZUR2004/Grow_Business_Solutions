@@ -86,6 +86,7 @@ const TechStack = () => {
   const sectionRef = useRef(null);
   const orbitRefs = useRef<HTMLDivElement[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentRow, setCurrentRow] = useState(0);
 
   const totalRows = Math.ceil(features.length / 2);
@@ -98,6 +99,119 @@ const TechStack = () => {
   const scrollPrev = () => {
     if (currentRow > 0) setCurrentRow((prev) => prev - 1);
   };
+
+  // Particle Network Canvas Effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      nodes = Array.from({ length: 55 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2.5 + 0.8,
+        color:
+          Math.random() > 0.6
+            ? "rgba(97, 218, 251, 0.5)"
+            : "rgba(104, 160, 99, 0.4)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // লাইন কানেক্ট করা
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 160) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.1 * (1 - d / 160);
+
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(97, 218, 251, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(104, 160, 99, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ডট আঁকা এবং মুভ করা
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        if (n.r > 1.8) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(97, 218, 251, 0.08)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -148,10 +262,16 @@ const TechStack = () => {
   return (
     <section
       ref={sectionRef}
-      className="py-20 px-8 overflow-hidden relative bg-[#0b0c18] text-[#E5E2E1]"
+      className="relative py-20 px-8 overflow-hidden bg-[#0b0c18] text-[#E5E2E1]"
     >
+      {/* Particle Network Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
+      />
+
       {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#0b0c18_0%,transparent_85%)]" />
         <div
           className="absolute top-0 left-0 w-full h-full opacity-10"
@@ -162,13 +282,17 @@ const TechStack = () => {
         />
       </div>
 
+      {/* Glow Effects */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
+
       <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
         {/* Left Side: Content & Vertical Slider */}
         <div className="tech-content space-y-12">
           <div className="space-y-1 tech-content-title">
             <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-white">
               The{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
+              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
                 Atomic
               </span>{" "}
               <br />
@@ -184,13 +308,22 @@ const TechStack = () => {
             >
               {features.map((feature, index) => {
                 const Icon = feature.icon;
+                const colorMap: Record<string, string> = {
+                  cyan: "#22d3ee",
+                  purple: "#a78bfa",
+                  blue: "#3b82f6",
+                  emerald: "#10b981",
+                  orange: "#f97316",
+                  pink: "#ec4899",
+                };
                 return (
                   <div
                     key={index}
                     className="feature-card h-[270px] p-7 rounded-[35px] bg-white/[0.015] border border-white/5 hover:border-cyan-500/20 transition-all duration-700 group hover:bg-white/[0.025]"
                   >
                     <Icon
-                      className={`w-6 h-6 text-${feature.color}-400 mb-5 opacity-60 group-hover:opacity-100 transition-opacity`}
+                      className="w-6 h-6 mb-5 opacity-60 group-hover:opacity-100 transition-opacity"
+                      style={{ color: colorMap[feature.color] }}
                     />
                     <h4 className="font-extrabold text-white text-lg mb-2 group-hover:text-cyan-400 transition-colors">
                       {feature.title}
@@ -203,25 +336,34 @@ const TechStack = () => {
               })}
             </div>
           </div>
+          
           <div className="flex gap-4 pt-4">
             <button
               onClick={scrollPrev}
               disabled={currentRow === 0}
-              className={`p-4 rounded-full border border-white/10 transition-all ${currentRow === 0 ? "opacity-20" : "hover:bg-white hover:text-black"}`}
+              className={`p-4 rounded-full border border-white/10 transition-all duration-300 ${
+                currentRow === 0 
+                  ? "opacity-30 cursor-not-allowed" 
+                  : "hover:bg-white/10 hover:border-cyan-400/50"
+              }`}
             >
               <ChevronUp size={24} />
             </button>
             <button
               onClick={scrollNext}
               disabled={currentRow >= totalRows - visibleRows}
-              className={`p-4 rounded-full border border-white/10 transition-all ${currentRow >= totalRows - visibleRows ? "opacity-20" : "hover:bg-cyan-500 hover:text-black"}`}
+              className={`p-4 rounded-full border border-white/10 transition-all duration-300 ${
+                currentRow >= totalRows - visibleRows 
+                  ? "opacity-30 cursor-not-allowed" 
+                  : "hover:bg-cyan-500/20 hover:border-cyan-400"
+              }`}
             >
               <ChevronDown size={24} />
             </button>
           </div>
         </div>
 
-        {/* Right Side: Orbital Engine (Unchanged as requested) */}
+        {/* Right Side: Orbital Engine */}
         <div className="relative h-[700px] flex items-center justify-center scale-75 md:scale-100">
           <div className="absolute inset-0">
             {[260, 210, 190, 170, 280, 300].map((radius) => (
