@@ -24,10 +24,48 @@ export const translations = {
     uptime: "Uptime",
     nodes: "Nodes",
 
+    //Hero
+    heroBadge: "Grow Business Solutions BD",
+    heroHeading1: "Your Vision, Our Expertise -",
+    heroHeading2: "Engineering Success Together.",
+    heroDesc:
+      "Your vision combined with our technical expertise will pave the way for future success. We go beyond mere project delivery; we act as your dedicated partner at every step of your business journey, all within an affordable budget. Through cutting-edge AI and high-performance solutions, we will elevate your dreams to extraordinary heights. Consult with our expert team today at no cost to discover the best strategy for your business. We are by your side, always.",
+    heroBtnPrimary: "Get a Free Consultation",
+    heroBtnSecondary: "Our Success Stories",
+    statLabel: "Data SLA",
+    statValue: "99.99%",
+
+    //Engineering Protocol
+
+    protocolTitle: "The Engineering",
+    protocolTitleItalic: "Protocol.",
+    steps: [
+      {
+        title: "Discovery",
+        desc: "Deep-dive audit into existing systems and market opportunities.",
+        bgText: "architecture",
+      },
+      {
+        title: "Blueprint",
+        desc: "Wireframing the high-fidelity user journey and technical stack mapping.",
+        bgText: "code",
+      },
+      {
+        title: "Engineering",
+        desc: "Sprinting through development with modular, test-driven architecture.",
+        bgText: "speed",
+      },
+      {
+        title: "Optimization",
+        desc: "Iterative fine-tuning and deployment on high-speed global nodes.",
+        bgText: "global",
+      },
+    ],
+
     //contact Us
     secureChannel: "DIRECT ADVISORY GATEWAY",
-    initiate: "TRANSFORM YOUR",
-    connection: "VISION TO REALITY",
+    initiate: "Evolve",
+    connection: "Your Brand",
     contactDesc:
       "Ready to dominate the digital landscape? Reach out through our secure protocol to start building a high-conversion platform that works for your business 24/7.",
     nameLabel: "Name",
@@ -68,10 +106,49 @@ export const translations = {
     uptime: "আপটাইম",
     nodes: "নোড",
 
+    //Hero
+
+    heroBadge: "গ্রো বিজনেস সলিউশনস বিডি",
+    heroHeading1: "আপনার লক্ষ্য, আমাদের দক্ষতা -",
+    heroHeading2: "একসাথেই গড়ি সফলতা।",
+    heroDesc:
+      "আপনার স্বপ্নের সাথে আমাদের কারিগরি দক্ষতার সমন্বয় নিশ্চিত করবে ভবিষ্যৎ সাফল্য। আমরা শুধু প্রজেক্ট ডেলিভারি করি না; বরং আপনার ব্যবসার প্রতিটি পদক্ষেপে সাশ্রয়ী বাজেটে আপনার বিশ্বস্ত পার্টনার হিসেবে কাজ করি। অত্যাধুনিক AI এবং হাই-পারফরম্যান্স সলিউশনের মাধ্যমে আমরা আপনার স্বপ্নকে নিয়ে যাব এক অনন্য উচ্চতায়। আপনার ব্যবসার সঠিক কৌশল নির্ধারণে আজই আমাদের বিশেষজ্ঞ টিমের সাথে বিনামূল্যে পরামর্শ করুন। আমরা আছি সবসময় আপনার পাশে।",
+    heroBtnPrimary: "ফ্রি কনসালটেশন নিন",
+    heroBtnSecondary: "আমাদের সফলতার গল্প",
+    statLabel: "ডেটা এসএলএ (SLA)",
+    statValue: "৯৯.৯৯%",
+
+    //Engineering Protocol
+
+    protocolTitle: "ইঞ্জিনিয়ারিং",
+    protocolTitleItalic: "প্রটোকল",
+    steps: [
+      {
+        title: "অনুসন্ধান",
+        desc: "বিদ্যমান সিস্টেম এবং বাজারের সুযোগগুলো গভীরভাবে বিশ্লেষণ করা।",
+        bgText: "স্থাপত্য",
+      },
+      {
+        title: "পরিকল্পনা ",
+        desc: "উচ্চমানের ইউজার জার্নি ডিজাইন এবং টেকনিক্যাল স্ট্যাক ম্যাপ তৈরি করা।",
+        bgText: "কোড",
+      },
+      {
+        title: "প্রকৌশল ",
+        desc: "মডুলার এবং টেস্ট-ড্রিভেন আর্কিটেকচারের মাধ্যমে দ্রুত ডেভেলপমেন্ট সম্পন্ন করা।",
+        bgText: "গতি",
+      },
+      {
+        title: "অপ্টিমাইজেশন ",
+        desc: "ক্রমাগত উন্নতি এবং হাই-স্পিড গ্লোবাল নোডগুলোতে অ্যাপ্লিকেশন স্থাপন করা।",
+        bgText: "গ্লোবাল",
+      },
+    ],
+
     // contact us
     secureChannel: "সরাসরি পরামর্শ গেটওয়ে",
-    initiate: "আপনার স্বপ্নকে রূপ",
-    connection: "দিন বাস্তবতায়",
+    initiate: "আপনার ব্র্যান্ডকে",
+    connection: "বিকশিত করুন",
     contactDesc:
       "ডিজিটাল দুনিয়ায় রাজত্ব করতে প্রস্তুত? আপনার বিজনেসের জন্য ২৪/৭ কাজ করবে এমন একটি হাই-কনভার্সন প্ল্যাটফর্ম তৈরি করতে আমাদের নিরাপদ প্রোটোকলের মাধ্যমে যোগাযোগ করুন।",
     nameLabel: "নাম",

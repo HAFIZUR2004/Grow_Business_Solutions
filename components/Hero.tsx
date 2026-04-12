@@ -1,9 +1,13 @@
 "use client";
 
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 import { useEffect, useRef } from "react";
 
 export default function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -112,8 +116,8 @@ export default function HeroSection() {
 
         {/* 99.99% stat card */}
         <div className="stat-card">
-          <span className="stat-value">99.99%</span>
-          <span className="stat-label">Data SLA</span>
+          <span className="stat-value">{t.statValue}</span>
+          <span className="stat-label">{t.statLabel}</span>
         </div>
 
         {/* Mini chart widget */}
@@ -133,28 +137,20 @@ export default function HeroSection() {
         <div className="content">
           <div className="badge">
             <span className="badge-dot" />
-
-            Grow Business Solutions BD
+            {t.heroBadge}
           </div>
 
           <h1 className="heading">
-            Your Vision, Our Expertise<br/>Engineering Success Together.
+            {t.heroHeading1}
+            <br />
+            {t.heroHeading2}
           </h1>
 
-          <p className="desc">
-            Your vision combined with our technical expertise will pave the way
-            for future success. We go beyond mere project delivery; we act as
-            your dedicated partner at every step of your business journey, all
-            within an affordable budget. Through cutting-edge AI and
-            high-performance solutions, we will elevate your dreams to
-            extraordinary heights. Consult with our expert team today at no cost
-            to discover the best strategy for your business. We are by your
-            side, always.
-          </p>
+          <p className="desc">{t.heroDesc}</p>
 
           <div className="btns">
-            <button className="btn btn-primary">Get a Free Consultation</button>
-            <button className="btn btn-secondary">Our Success Stories</button>
+            <button className="btn btn-primary">{t.heroBtnPrimary}</button>
+            <button className="btn btn-secondary">{t.heroBtnSecondary}</button>
           </div>
         </div>
       </section>

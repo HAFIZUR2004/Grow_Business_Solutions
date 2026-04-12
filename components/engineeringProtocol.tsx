@@ -3,40 +3,30 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
     id: "01",
-    title: "Discovery",
-    desc: "Deep-dive audit into existing systems and market opportunities.",
     color: "#b5a7ff",
-    bgText: "architecture",
     align: "left",
   },
   {
     id: "02",
-    title: "Blueprint",
-    desc: "Wireframing the high-fidelity user journey and technical stack mapping.",
     color: "#3ee8f6",
-    bgText: "code",
     align: "right",
   },
   {
     id: "03",
-    title: "Engineering",
-    desc: "Sprinting through development with modular, test-driven architecture.",
     color: "#b5a7ff",
-    bgText: "speed",
     align: "left",
   },
   {
     id: "04",
-    title: "Optimization",
-    desc: "Iterative fine-tuning and deployment on high-speed global nodes.",
     color: "#3ee8f6",
-    bgText: "global",
     align: "right",
   },
 ];
@@ -45,6 +35,9 @@ const EngineeringProtocol = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   useEffect(() => {
     // --- Particle Network Canvas Logic ---
@@ -91,25 +84,28 @@ const EngineeringProtocol = () => {
       // লাইন কানেক্ট করা (distance based)
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            
+
             // দূরত্ব অনুযায়ী opacity এবং গ্রেডিয়েন্ট স্টাইল
             const opacity = 0.12 * (1 - d / 160);
-            
+
             // দুটি কালার মিক্স করে লাইনের কালার
             const gradient = ctx.createLinearGradient(
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y
+              nodes[j].y,
             );
             gradient.addColorStop(0, "rgba(181, 167, 255, " + opacity + ")");
             gradient.addColorStop(1, "rgba(62, 232, 246, " + opacity + ")");
-            
+
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 0.6;
             ctx.stroke();
@@ -173,7 +169,7 @@ const EngineeringProtocol = () => {
             end: "bottom 80%",
             scrub: 1,
           },
-        }
+        },
       );
     }
 
@@ -192,7 +188,7 @@ const EngineeringProtocol = () => {
             end: "top 50%",
             scrub: 0.5,
           },
-        }
+        },
       );
     });
 
@@ -202,6 +198,11 @@ const EngineeringProtocol = () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+  type StepType = {
+    bgText: string;
+    title: string;
+    desc: string;
+  };
 
   return (
     <section
@@ -220,9 +221,9 @@ const EngineeringProtocol = () => {
 
       <div className="max-w-screen-2xl mx-auto relative z-10">
         <h2 className="text-6xl md:text-8xl font-black text-center mb-40 tracking-tighter">
-          The Engineering{" "}
+          {t.protocolTitle}{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
-            Protocol.
+            {t.protocolTitleItalic}
           </span>
         </h2>
 
@@ -235,58 +236,63 @@ const EngineeringProtocol = () => {
           />
 
           <div className="space-y-40 md:space-y-20">
-            {steps.map((step, idx) => (
-              <div
-                key={idx}
-                className={`step-item-${idx} flex flex-col md:flex-row items-center w-full ${
-                  step.align === "left" ? "md:flex-row" : "md:flex-row-reverse"
-                }`}
-              >
+            {t.steps.map((step: StepType, idx: number) => {
+              const design = steps[idx];
+              return (
                 <div
-                  className={`w-full md:w-1/2 ${
-                    step.align === "left"
-                      ? "md:text-right md:pr-20"
-                      : "md:text-left md:pl-20"
-                  } relative`}
-                >
-                  <div className="relative inline-block">
-                    <span className="absolute -top-10 left-0 w-full text-center text-6xl font-black text-white/[0.02] uppercase pointer-events-none select-none">
-                      {step.bgText}
-                    </span>
-
-                    <h4
-                      className="text-2xl font-bold mb-2"
-                      style={{ color: step.color }}
-                    >
-                      {step.id}. {step.title}
-                    </h4>
-                    <p className="text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0">
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="relative z-20 my-10 md:my-0">
-                  <div
-                    className="w-4 h-4 rounded-full border-4 border-[#0b0c18]"
-                    style={{
-                      backgroundColor: step.color,
-                      boxShadow: `0 0 15px ${step.color}`,
-                    }}
-                  />
-                </div>
-
-                <div
-                  className={`hidden md:block w-1/2 ${
-                    step.align === "left" ? "pl-20" : "pr-20"
+                  key={idx}
+                  className={`step-item-${idx} flex flex-col md:flex-row items-center w-full ${
+                    design.align === "left"
+                      ? "md:flex-row"
+                      : "md:flex-row-reverse"
                   }`}
                 >
-                  <span className="text-4xl font-black text-white/5 uppercase tracking-widest italic select-none">
-                    {step.bgText}
-                  </span>
+                  <div
+                    className={`w-full md:w-1/2 ${
+                      design.align === "left"
+                        ? "md:text-right md:pr-20"
+                        : "md:text-left md:pl-20"
+                    } relative`}
+                  >
+                    <div className="relative inline-block">
+                      <span className="absolute -top-10 left-0 w-full text-center text-6xl font-black text-white/[0.02] uppercase pointer-events-none select-none">
+                        {step.bgText}
+                      </span>
+
+                      <h4
+                        className="text-2xl font-bold mb-2"
+                        style={{ color: design.color }}
+                      >
+                        {design.id}. {step.title}
+                      </h4>
+                      <p className="text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative z-20 my-10 md:my-0">
+                    <div
+                      className="w-4 h-4 rounded-full border-4 border-[#0b0c18]"
+                      style={{
+                        backgroundColor: design.color,
+                        boxShadow: `0 0 15px ${design.color}`,
+                      }}
+                    />
+                  </div>
+
+                  <div
+                    className={`hidden md:block w-1/2 ${
+                      design.align === "left" ? "pl-20" : "pr-20"
+                    }`}
+                  >
+                    <span className="text-4xl font-black text-white/5 uppercase tracking-widest italic select-none">
+                      {step.bgText}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
