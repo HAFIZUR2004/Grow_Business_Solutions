@@ -102,6 +102,7 @@ export default function Navbar() {
                   src={currentLang.flag}
                   alt={currentLang.code}
                   fill
+                  style={{ objectFit: "cover" }}
                   unoptimized
                   className="object-cover rounded-[1px]"
                 />
@@ -136,6 +137,7 @@ export default function Navbar() {
                         alt={l.name}
                         width={18}
                         height={12}
+                        style={{ width: "18px", height: "auto" }}
                         unoptimized
                       />
                       {l.name}
