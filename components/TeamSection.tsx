@@ -17,7 +17,7 @@ const teamMembers = [
     description:
       "Architecting high-performance digital ecosystems with MERN stack expertise.",
     imageUrl: "/team/profile.jpg",
-    wireColor: "#6d28d9", // Purple
+    wireColor: "#6d28d9",
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const teamMembers = [
     role: "Head of Strategy",
     description: "Transforming complex market data into elegant roadmaps.",
     imageUrl: "/team/profile.jpg",
-    wireColor: "#22d3ee", // Cyan
+    wireColor: "#22d3ee",
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const teamMembers = [
     role: "Lead Systems Architect",
     description: "Building invisible foundations with zero-latency precision.",
     imageUrl: "/team/profile.jpg",
-    wireColor: "#b5a7ff", // Light Purple
+    wireColor: "#b5a7ff",
   },
 ];
 
@@ -43,55 +43,114 @@ const TeamSection = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // --- Hero Style Particles ---
+    // --- Particle Network Canvas ---
     const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        let animId: number;
-        const resize = () => {
-          canvas.width = canvas.offsetWidth;
-          canvas.height = canvas.offsetHeight;
-        };
-        resize();
-        window.addEventListener("resize", resize);
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-        const particles = Array.from({ length: 40 }, () => ({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          r: Math.random() * 1.5 + 0.5,
-          color:
-            Math.random() > 0.5
-              ? "rgba(109, 40, 217, 0.2)"
-              : "rgba(34, 211, 238, 0.15)",
-        }));
+    let animId: number;
+    let nodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      color: string;
+    }> = [];
 
-        const draw = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          particles.forEach((p) => {
+    const resize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      nodes = Array.from({ length: 60 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2.5 + 0.8,
+        color:
+          Math.random() > 0.6
+            ? "rgba(109, 40, 217, 0.6)"
+            : "rgba(34, 211, 238, 0.5)",
+      }));
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // লাইন কানেক্ট করা
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 170) {
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.fill();
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-          });
-          animId = requestAnimationFrame(draw);
-        };
-        draw();
-        return () => {
-          cancelAnimationFrame(animId);
-          window.removeEventListener("resize", resize);
-        };
-      }
-    }
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            const opacity = 0.12 * (1 - d / 170);
 
-    // --- Wire "Growth" Animation ---
-    // Engineering Protocol এর মত dashoffset এনিমেশন
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x,
+              nodes[i].y,
+              nodes[j].x,
+              nodes[j].y
+            );
+            gradient.addColorStop(0, "rgba(109, 40, 217, " + opacity + ")");
+            gradient.addColorStop(1, "rgba(34, 211, 238, " + opacity + ")");
+
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.7;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // ডট আঁকা এবং মুভ করা
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        // গ্লো ইফেক্ট বড় ডটের জন্য
+        if (n.r > 1.8) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r + 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(109, 40, 217, 0.08)`;
+          ctx.fill();
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
+      });
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    // --- SVG Wire Animation ---
     gsap.utils.toArray<SVGPathElement>(".circuit-path").forEach((path) => {
       const length = path.getTotalLength();
       gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
@@ -107,7 +166,7 @@ const TeamSection = () => {
       });
     });
 
-    // Cards Reveal
+    // Cards Reveal Animation
     gsap.fromTo(
       cardRefs.current,
       { opacity: 0, y: 100, scale: 0.9 },
@@ -122,23 +181,33 @@ const TeamSection = () => {
           trigger: containerRef.current,
           start: "top 50%",
         },
-      },
+      }
     );
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, []);
 
   return (
     <section
       ref={containerRef}
-      className="bg-[#0b0c18] py-20 px-6 relative overflow-hidden"
+      className="relative bg-[#0b0c18] py-20 px-6 overflow-hidden"
     >
-      {/* Background Layer */}
+      {/* Particle Network Canvas - Full Background */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-45 z-0"
       />
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.08),transparent_50%)] pointer-events-none" />
 
-      {/* dynamic SVG Wires - Engineering Style */}
+      {/* Gradient Glow Effects */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.06),transparent_60%)] pointer-events-none z-0" />
+
+      {/* Dynamic SVG Wires */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
         viewBox="0 0 1000 1000"
@@ -147,37 +216,64 @@ const TeamSection = () => {
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#6d28d9" stopOpacity="0" />
-            <stop offset="100%" stopColor="#6d28d9" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="#6d28d9" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#6d28d9" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#22d3ee" stopOpacity="0" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="#22d3ee" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#b5a7ff" stopOpacity="0" />
+            <stop offset="50%" stopColor="#b5a7ff" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#b5a7ff" stopOpacity="0" />
           </linearGradient>
         </defs>
 
-        {/* Left Wire */}
+        {/* Left Wire - to first card */}
         <path
           className="circuit-path"
-          d="M 500 150 C 500 250, 200 250, 180 500"
+          d="M 500 120 C 500 220, 180 250, 180 520"
           fill="none"
           stroke="url(#grad1)"
-          strokeWidth="1.5"
+          strokeWidth="1.8"
         />
-        {/* Center Wire */}
+        {/* Center Wire - to second card */}
         <path
           className="circuit-path"
-          d="M 500 150 C 500 300, 500 400, 500 580"
+          d="M 500 120 C 500 280, 500 380, 500 600"
           fill="none"
           stroke="url(#grad2)"
-          strokeWidth="1.5"
+          strokeWidth="1.8"
         />
-        {/* Right Wire */}
+        {/* Right Wire - to third card */}
         <path
           className="circuit-path"
-          d="M 500 150 C 500 250, 800 250, 820 500"
+          d="M 500 120 C 500 220, 820 250, 820 520"
+          fill="none"
+          stroke="url(#grad3)"
+          strokeWidth="1.8"
+        />
+        
+        {/* Horizontal connection wires */}
+        <path
+          className="circuit-path"
+          d="M 180 350 L 820 350"
+          fill="none"
+          stroke="url(#grad2)"
+          strokeWidth="0.8"
+          strokeDasharray="4 6"
+          opacity="0.3"
+        />
+        <path
+          className="circuit-path"
+          d="M 180 450 L 820 450"
           fill="none"
           stroke="url(#grad1)"
-          strokeWidth="1.5"
+          strokeWidth="0.8"
+          strokeDasharray="4 6"
+          opacity="0.3"
         />
       </svg>
 
@@ -219,7 +315,7 @@ const TeamSection = () => {
                 }}
               />
 
-              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-[#0f1120] border border-white/5 transition-all duration-700 group-hover:border-white/20">
+              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-[#0f1120] border border-white/5 transition-all duration-700 group-hover:border-white/20 backdrop-blur-sm">
                 <div className="relative w-full h-full scale-110 group-hover:scale-100 transition-transform duration-1000">
                   <Image
                     src={member.imageUrl}
@@ -247,7 +343,7 @@ const TeamSection = () => {
                 </div>
               </div>
 
-              {/* Outside Label (Visible initially) */}
+              {/* Outside Label */}
               <div className="mt-8 text-center group-hover:opacity-0 transition-opacity duration-300">
                 <span className="text-white/20 font-mono text-[10px] block mb-2">
                   — POSITION_{idx + 1}
