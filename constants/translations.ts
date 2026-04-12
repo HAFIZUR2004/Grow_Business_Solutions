@@ -23,6 +23,25 @@ export const translations = {
     corev3: "Core V3",
     uptime: "Uptime",
     nodes: "Nodes",
+
+    //contact Us
+    secureChannel: "DIRECT ADVISORY GATEWAY",
+    initiate: "TRANSFORM YOUR",
+    connection: "VISION TO REALITY",
+    contactDesc:
+      "Ready to dominate the digital landscape? Reach out through our secure protocol to start building a high-conversion platform that works for your business 24/7.",
+    nameLabel: "Name",
+    namePlaceholder: "DESIGNATION / ALIAS",
+    emailLabel: "Email",
+    emailPlaceholder: "ENCRYPTED_ENDPOINT",
+    messageLabel: "Write Your Message",
+    messagePlaceholder: "TRANSMIT SECURE MESSAGE...",
+    executeProtocol: "Execute Protocol",
+    successMessage: "Transmission successful. Node will respond within 24h.",
+    quantumLine: "Quantum_Line",
+    neuralLink: "Neural_Link",
+    phone: "+880 1234 567 890",
+    email: "contact@growbusiness.solutions",
   },
   BN: {
     //Navbar
@@ -48,6 +67,26 @@ export const translations = {
     corev3: "কোর ভি৩",
     uptime: "আপটাইম",
     nodes: "নোড",
+
+    // contact us
+    secureChannel: "সরাসরি পরামর্শ গেটওয়ে",
+    initiate: "আপনার স্বপ্নকে রূপ",
+    connection: "দিন বাস্তবতায়",
+    contactDesc:
+      "ডিজিটাল দুনিয়ায় রাজত্ব করতে প্রস্তুত? আপনার বিজনেসের জন্য ২৪/৭ কাজ করবে এমন একটি হাই-কনভার্সন প্ল্যাটফর্ম তৈরি করতে আমাদের নিরাপদ প্রোটোকলের মাধ্যমে যোগাযোগ করুন।",
+    nameLabel: "নাম",
+    namePlaceholder: "আপনার নাম বা পদবি",
+    emailLabel: "ইমেল",
+    emailPlaceholder: "আপনার ইমেল অ্যাড্রেস",
+    messageLabel: "আপনার বার্তা লিখুন",
+    messagePlaceholder: "আপনার বার্তাটি এখানে লিখুন...",
+    executeProtocol: "প্রোটোকল কার্যকর করুন",
+    successMessage:
+      "বার্তা সফলভাবে পাঠানো হয়েছে। ২৪ ঘণ্টার মধ্যে যোগাযোগ করা হবে।",
+    quantumLine: "কোয়ান্টাম লাইন",
+    neuralLink: "নিউরন লিংক",
+    phone: "+৮৮০ ১২৩৪ ৫৬৭ ৮৯০",
+    email: "contact@growbusiness.solutions",
   },
 };
 
