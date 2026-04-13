@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 /* ─── tiny helpers ─── */
 const Tag = ({ children }: { children: React.ReactNode }) => (
@@ -10,9 +11,14 @@ const Tag = ({ children }: { children: React.ReactNode }) => (
 );
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-[10px] tracking-[0.25em] text-[#6c5ce7] uppercase mb-3">
+  <motion.p 
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.5 }}
+    className="text-[10px] tracking-[0.25em] text-[#6c5ce7] uppercase mb-3"
+  >
     {children}
-  </p>
+  </motion.p>
 );
 
 /* ─── blob 3-D placeholder (pure CSS) ─── */
@@ -42,9 +48,12 @@ function BlobVisual() {
   );
 }
 
-/* ─── HERO SECTION ─── */
+/* ─── HERO SECTION (Enhanced) ─── */
 function CareerHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { scrollYProgress } = useScroll();
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -157,80 +166,129 @@ function CareerHero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
-      {/* Particle Network Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
-      />
+    <motion.section 
+  style={{ opacity: heroOpacity, scale: heroScale }}
+  className="relative min-h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-10"
+>
+  {/* Particle Canvas */}
+  <canvas
+    ref={canvasRef}
+    className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
+  />
 
-      {/* Gradient Glow Effects */}
-      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
+  {/* Gradient Glow */}
+  <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#6c5ce7]/10 blur-[120px] rounded-full pointer-events-none z-0" />
+  <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#00cec9]/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
-      {/* Bottom wave lines */}
-      <svg
-        className="absolute bottom-0 left-0 w-full h-[220px] pointer-events-none z-1"
-        viewBox="0 0 1440 220"
-        preserveAspectRatio="none"
+  {/* Wave */}
+  <svg
+    className="absolute bottom-0 left-0 w-full h-[160px] sm:h-[200px] pointer-events-none z-1"
+    viewBox="0 0 1440 220"
+    preserveAspectRatio="none"
+  >
+    <motion.path
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 2 }}
+      d="M0,140 C200,80 400,200 600,130 C800,60 1000,180 1200,110 C1320,75 1400,130 1440,120"
+      fill="none"
+      stroke="rgba(108,92,231,0.35)"
+      strokeWidth="1.5"
+    />
+  </svg>
+
+  {/* Content */}
+  <div className="relative z-10 w-full max-w-6xl mx-auto text-center md:text-left">
+    
+    {/* Hiring Badge */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="inline-flex items-center gap-2 border border-[#a29bfe]/30 bg-[#6c5ce7]/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-6"
+    >
+      <span className="w-2 h-2 rounded-full bg-[#00cec9] animate-pulse" />
+      <span className="text-[9px] sm:text-[11px] tracking-[0.3em] text-white uppercase font-bold">
+        WE ARE HIRING
+      </span>
+    </motion.div>
+
+    {/* Heading */}
+    <motion.h1 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="font-black leading-tight tracking-tight text-white 
+      text-[2.2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.5rem] mb-5"
+    >
+      JOIN THE DIGITAL
+      <br className="hidden sm:block" />
+      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9]">
+        PROTOCOL
+      </span>
+    </motion.h1>
+
+    {/* Paragraph */}
+    <motion.p 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-xl mx-auto md:mx-0 text-sm sm:text-base md:text-lg text-white/60 leading-relaxed mb-8"
+    >
+      Architecting high-performance digital ecosystems for a data-driven future.
+      Harness AI to transform complex processes into elegant automated solutions.
+    </motion.p>
+
+    {/* Buttons */}
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start"
+    >
+      <motion.button 
+        whileHover={{ scale: 1.05 }}
+        className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
       >
-        <path
-          d="M0,140 C200,80 400,200 600,130 C800,60 1000,180 1200,110 C1320,75 1400,130 1440,120"
-          fill="none"
-          stroke="rgba(108,92,231,0.35)"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M0,170 C180,110 380,210 580,155 C780,100 980,200 1180,145 C1340,105 1420,155 1440,148"
-          fill="none"
-          stroke="rgba(100,60,200,0.22)"
-          strokeWidth="1"
-        />
-      </svg>
+        Explore Open Roles
+      </motion.button>
 
-      {/* Star Icon */}
-      
+      <motion.button 
+        whileHover={{ scale: 1.05 }}
+        className="w-full sm:w-auto border border-white/20 px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
+      >
+        Our Philosophy
+      </motion.button>
+    </motion.div>
 
-      {/* Content - Centered with max-width */}
-      <div className="relative z-10 w-full  mx-auto px-6 md:px-16 lg:px-24 text-center">
-        
-
-        <h1 className="font-black md:mt-9 leading-[0.9] tracking-tighter text-white text-[clamp(3rem,8vw,5.5rem)] mb-6">
-          JOIN THE DIGITAL
-          <br />
-          PROTOCOL
-        </h1>
-
-        <p className="max-w-2xl mx-auto text-base md:text-lg text-white/60 leading-relaxed mb-10">
-          Architecting high-performance digital ecosystems for a data-driven future.
-          Harness the power of AI to transform complex processes into elegant,
-          obsidian-grade automated solutions.
-        </p>
-
-        <div className="flex flex-wrap gap-4 justify-center">
-          <button className="bg-[#6c5ce7] hover:bg-[#7c3aed] transition-all px-8 py-4 rounded-full text-sm font-black tracking-wider uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)]">
-            Explore Open Roles
-          </button>
-          <button className="border border-white/20 hover:bg-white/5 transition-all px-8 py-4 rounded-full text-sm font-black tracking-wider uppercase backdrop-blur-sm">
-            Our Philosophy
-          </button>
-        </div>
-      </div>
-    </section>
+    {/* Scroll */}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+    >
+      <span className="text-[8px] tracking-[0.3em] text-white/30 uppercase">
+        Scroll
+      </span>
+      <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
+    </motion.div>
+  </div>
+</motion.section>
   );
 }
 
-/* ─── MANIFESTO ─── */
+/* ─── MANIFESTO (Enhanced) ─── */
 function Manifesto() {
   return (
     <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
           <SectionLabel>Zone: Manifesto</SectionLabel>
           <h2 className="text-4xl md:text-5xl font-black leading-tight text-white mb-6">
             PRECISION OVER
             <br />
-            CONVENIENCE.
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe]">CONVENIENCE.</span>
           </h2>
           <p className="text-sm text-white/40 leading-relaxed mb-10 max-w-sm">
             We don&apos;t just build software. We forge digital environments where
@@ -250,8 +308,14 @@ function Manifesto() {
                 title: "Tech Sovereign",
                 desc: "We own the stack. No technical debt compromises.",
               },
-            ].map((item) => (
-              <div key={item.num}>
+            ].map((item, idx) => (
+              <motion.div 
+                key={item.num}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                viewport={{ once: true }}
+              >
                 <p className="text-[#6c5ce7] font-black text-lg mb-1">
                   {item.num}
                 </p>
@@ -261,21 +325,27 @@ function Manifesto() {
                 <p className="text-white/35 text-xs leading-relaxed">
                   {item.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* 3-D blob */}
-        <div className="h-[340px] md:h-[420px]">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="h-[340px] md:h-[420px]"
+        >
           <BlobVisual />
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-/* ─── VACANCIES ─── */
+/* ─── VACANCIES (Enhanced) ─── */
 const roles = [
   {
     id: 1,
@@ -285,66 +355,73 @@ const roles = [
     stack: ["Go", "Rust", "Kubernetes", "gRPC"],
     salary: "$160k – $220k",
     featured: true,
-    applyColor: "#6c5ce7",
+    color: "#6c5ce7",
   },
   {
     id: 2,
-    tags: ["Intelligence"],
+    tags: ["Intelligence", "AI/ML"],
     title: "AI Integration Specialist",
-    desc: "Deploying LLM frameworks within enterprise data pipelines for real-time inferences.",
-    stack: ["Python", "Keras", "CUDA"],
+    desc: "Deploying LLM frameworks within enterprise data pipelines for real-time inferences and autonomous decision-making.",
+    stack: ["Python", "LangChain", "CUDA", "TensorFlow"],
     featured: false,
-    cta: "View Protocol",
+    color: "#00cec9",
   },
   {
     id: 3,
-    tags: ["Frontend"],
+    tags: ["Frontend", "UI/UX"],
     title: "Frontend Engineer (Framer/Tailwind)",
-    desc: "Crafting cinematic web experiences with fluid motion and pixel-perfect shadow aesthetics.",
-    stack: ["Next.js", "Framer Motion", "TypeScript"],
+    desc: "Crafting cinematic web experiences with fluid motion, pixel-perfect shadow aesthetics, and micro-interactions.",
+    stack: ["Next.js", "Framer Motion", "TypeScript", "Tailwind"],
     featured: false,
-    applyColor: "#6c5ce7",
+    color: "#a29bfe",
   },
   {
     id: 4,
-    tags: [],
-    title: "General Application",
-    desc: "Don't see your role? Pitch your own engineering protocol.",
-    icon: true,
+    tags: ["Infrastructure", "SRE"],
+    title: "Site Reliability Engineer",
+    desc: "Managing the global node network with 99.98% uptime through automated self-healing systems and chaos engineering.",
+    stack: ["Terraform", "K8s", "AWS", "Prometheus"],
     featured: false,
+    color: "#6c5ce7",
   },
   {
     id: 5,
-    tags: ["Reliability"],
-    title: "Site Reliability Engineer",
-    desc: "Managing the global node network with 99.98% uptime through automated self-healing systems.",
-    stack: ["Terraform", "K8s", "Debian"],
+    tags: [],
+    title: "General Application",
+    desc: "Don't see your role? Pitch your own engineering protocol. We're always looking for exceptional talent.",
+    icon: true,
     featured: false,
-    applyColor: "#6c5ce7",
   },
 ];
 
 function VacancyCard({ role }: { role: (typeof roles)[0] }) {
   if (role.icon) {
     return (
-      <div className="border border-white/10 bg-[#121a18]/80 backdrop-blur-sm rounded-xl p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[180px]">
-        <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-xl">
+      <motion.div 
+        whileHover={{ y: -5, borderColor: "#6c5ce7" }}
+        className="border border-white/10 bg-[#11111e]/80 backdrop-blur-sm rounded-xl p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[220px] group cursor-pointer transition-all duration-300"
+      >
+        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-2xl group-hover:scale-110 transition-transform">
           +
         </div>
-        <p className="text-white font-bold text-sm tracking-wide uppercase">
+        <p className="text-white font-bold text-base tracking-wide uppercase">
           {role.title}
         </p>
         <p className="text-white/35 text-xs leading-relaxed">{role.desc}</p>
-      </div>
+        <button className="mt-2 text-[10px] tracking-[0.18em] uppercase text-[#6c5ce7] hover:text-white transition-colors">
+          Submit Pitch →
+        </button>
+      </motion.div>
     );
   }
 
   return (
-    <div
-      className={`border rounded-xl p-6 flex flex-col gap-4 backdrop-blur-sm ${
+    <motion.div
+      whileHover={{ y: -5 }}
+      className={`border rounded-xl p-6 flex flex-col gap-4 backdrop-blur-sm transition-all duration-300 ${
         role.featured
-          ? "border-[#6c5ce7]/40 bg-[#13112a]/80 col-span-1 md:col-span-2"
-          : "border-white/10 bg-[#121a18]/80"
+          ? "border-[#6c5ce7]/40 bg-gradient-to-br from-[#13112a]/90 to-[#11111e]/90 col-span-1 md:col-span-2 shadow-[0_0_30px_rgba(108,92,231,0.1)]"
+          : "border-white/10 bg-[#11111e]/80 hover:border-[#6c5ce7]/30"
       }`}
     >
       {role.tags.length > 0 && (
@@ -357,7 +434,7 @@ function VacancyCard({ role }: { role: (typeof roles)[0] }) {
 
       <h3
         className={`font-black text-white leading-tight ${
-          role.featured ? "text-2xl md:text-3xl" : "text-lg"
+          role.featured ? "text-2xl md:text-3xl" : "text-xl"
         }`}
       >
         {role.title}
@@ -378,21 +455,14 @@ function VacancyCard({ role }: { role: (typeof roles)[0] }) {
             Salary: {role.salary}
           </p>
         )}
-        {role.applyColor && (
-          <button
-            className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-opacity hover:opacity-80"
-            style={{ backgroundColor: role.applyColor }}
-          >
-            Apply Now
-          </button>
-        )}
-        {role.cta && (
-          <button className="text-[10px] tracking-[0.18em] uppercase text-white/50 hover:text-white transition-colors">
-            {role.cta} →
-          </button>
-        )}
+        <button
+          className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
+          style={{ backgroundColor: role.color || "#6c5ce7" }}
+        >
+          Apply Now →
+        </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -404,24 +474,26 @@ function Vacancies() {
         <h2 className="text-5xl md:text-6xl font-black text-white leading-none">
           AVAILABLE
           <br />
-          VACANCIES
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#00cec9]">VACANCIES</span>
         </h2>
         <div className="flex gap-8">
           {[
-            { dept: "Engineering", count: "12 Roles" },
-            { dept: "Design", count: "04 Roles" },
+            { dept: "Engineering", count: "12 Roles", color: "#6c5ce7" },
+            { dept: "Design", count: "04 Roles", color: "#00cec9" },
           ].map((d) => (
             <div key={d.dept}>
               <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">
                 {d.dept}
               </p>
-              <p className="text-white font-black text-lg">{d.count}</p>
+              <p className="text-white font-black text-lg" style={{ color: d.color }}>
+                {d.count}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {roles.map((r) => (
           <VacancyCard key={r.id} role={r} />
         ))}
@@ -430,22 +502,31 @@ function Vacancies() {
   );
 }
 
-/* ─── WHY BUILD WITH US ─── */
+/* ─── WHY BUILD WITH US (Enhanced) ─── */
 const perks = [
   {
     icon: "🚀",
     title: "Equity & Ownership",
     desc: "Generous stock options. You are not an employee; you are a primary stakeholder in the ecosystem's growth.",
+    color: "#6c5ce7"
   },
   {
     icon: "🌐",
     title: "Remote Autonomous",
     desc: "Work from any node in the world. We focus on output quality, not clock-in timestamps.",
+    color: "#00cec9"
   },
   {
     icon: "🛡",
     title: "Health Protocol",
-    desc: 'Premium global health coverage and a mandatory 4-week "Deep Sabbath" sabbatical every year.',
+    desc: "Premium global health coverage and a mandatory 4-week 'Deep Sabbath' sabbatical every year.",
+    color: "#a29bfe"
+  },
+  {
+    icon: "⚡",
+    title: "Learning Budget",
+    desc: "$5,000 annual budget for conferences, courses, and cutting-edge certifications.",
+    color: "#fdcb6e"
   },
 ];
 
@@ -455,56 +536,72 @@ function WhyBuild() {
       <div className="text-center mb-14">
         <SectionLabel>Protocol · Rewards</SectionLabel>
         <h2 className="text-4xl md:text-5xl font-black text-white">
-          WHY BUILD WITH US
+          WHY BUILD <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#00cec9]">WITH US</span>
         </h2>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {perks.map((p) => (
-          <div
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {perks.map((p, idx) => (
+          <motion.div
             key={p.title}
-            className="border border-white/10 bg-[#121a18]/80 backdrop-blur-sm rounded-xl p-7 flex flex-col gap-4 hover:border-[#6c5ce7]/40 transition-colors"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8, borderColor: p.color }}
+            className="border border-white/10 bg-[#11111e]/80 backdrop-blur-sm rounded-xl p-7 flex flex-col gap-4 transition-all duration-300 cursor-pointer"
           >
-            <span className="text-2xl">{p.icon}</span>
+            <span className="text-3xl">{p.icon}</span>
             <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase">
               {p.title}
             </h3>
             <p className="text-white/35 text-xs leading-relaxed">{p.desc}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
   );
 }
 
-/* ─── CTA ─── */
+/* ─── CTA BANNER (Enhanced) ─── */
 function CtaBanner() {
   return (
     <section className="relative bg-transparent py-32 px-6 text-center overflow-hidden z-10">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[700px] h-[300px] rounded-full bg-[#6c5ce7]/10 blur-3xl" />
+        <div className="w-[700px] h-[300px] rounded-full bg-[#6c5ce7]/10 blur-3xl animate-pulse" />
       </div>
 
       <div className="relative z-10">
-        <h2 className="font-black text-white leading-none text-[clamp(2.5rem,9vw,6rem)]">
-          READY TO INITIATE
-        </h2>
-        <h2
-          className="font-black italic text-[clamp(2.5rem,9vw,6rem)] leading-none underline decoration-[#6c5ce7] underline-offset-4"
-          style={{
-            background: "linear-gradient(135deg,#b0a8ff,#6c5ce7)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
         >
-          SEQUENCE?
-        </h2>
-        <p className="mt-6 text-sm text-white/40 max-w-sm mx-auto leading-relaxed">
-          Join a team that values technical mastery over corporate tradition.
-          Your best work starts here.
-        </p>
-        <button className="mt-10 bg-[#6c5ce7] hover:bg-[#7d6ff0] transition-colors px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_30px_rgba(108,92,231,0.3)]">
-          Initiate Application
-        </button>
+          <h2 className="font-black text-white leading-none text-[clamp(2.5rem,9vw,6rem)]">
+            READY TO INITIATE
+          </h2>
+          <h2
+            className="font-black italic text-[clamp(2.5rem,9vw,6rem)] leading-none underline decoration-[#6c5ce7] underline-offset-8 mt-2"
+            style={{
+              background: "linear-gradient(135deg,#b0a8ff,#6c5ce7,#00cec9)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            SEQUENCE?
+          </h2>
+          <p className="mt-6 text-sm text-white/40 max-w-sm mx-auto leading-relaxed">
+            Join a team that values technical mastery over corporate tradition.
+            Your best work starts here.
+          </p>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-10 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase"
+          >
+            Initiate Application
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );
@@ -608,7 +705,7 @@ export default function CareersPage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen bg-[#0b0f0e] text-white overflow-x-hidden">
+    <main className="relative min-h-screen bg-[#05070a] text-white overflow-x-hidden">
       {/* Full Page Particle Network Canvas */}
       <canvas
         ref={canvasRef}

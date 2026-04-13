@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 // Font Awesome Imports
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -19,26 +20,38 @@ const colorMap = {
     bg: "bg-purple-500/5",
     hoverBg: "group-hover:bg-purple-500/10",
     text: "text-purple-400",
-    accent: "text-purple-500/80"
+    accent: "text-purple-500/80",
+    gradient: "from-purple-500/20 to-transparent"
   },
   cyan: {
     bg: "bg-cyan-500/5",
     hoverBg: "group-hover:bg-cyan-500/10",
     text: "text-cyan-400",
-    accent: "text-cyan-500/80"
+    accent: "text-cyan-500/80",
+    gradient: "from-cyan-500/20 to-transparent"
   },
   blue: {
     bg: "bg-blue-500/5",
     hoverBg: "group-hover:bg-blue-500/10",
     text: "text-blue-400",
-    accent: "text-blue-500/80"
+    accent: "text-blue-500/80",
+    gradient: "from-blue-500/20 to-transparent"
   },
   emerald: {
     bg: "bg-emerald-500/5",
     hoverBg: "group-hover:bg-emerald-500/10",
     text: "text-emerald-400",
-    accent: "text-emerald-500/80"
+    accent: "text-emerald-500/80",
+    gradient: "from-emerald-500/20 to-transparent"
   }
+};
+
+// Project Images (Replace with your actual image paths)
+const projectImages = {
+  nexus: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
+  vanguard: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
+  securegate: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
+  digital: "https://i.postimg.cc/qRQRmwN5/3447497.jpg"
 };
 
 const projects = [
@@ -50,7 +63,9 @@ const projects = [
     tech: ["MERN Stack", "Next.js", "TypeScript"],
     icon: faLayerGroup,
     colorKey: "purple",
-    stats: "High Performance"
+    stats: "High Performance",
+    image: projectImages.nexus,
+    imageAlt: "Education Management System Dashboard"
   },
   {
     id: "02",
@@ -60,7 +75,9 @@ const projects = [
     tech: ["Node.js", "Express", "AI Model"],
     icon: faDatabase,
     colorKey: "cyan",
-    stats: "Real-time Sync"
+    stats: "Real-time Sync",
+    image: projectImages.vanguard,
+    imageAlt: "AI Inventory Management Dashboard"
   },
   {
     id: "03",
@@ -70,7 +87,9 @@ const projects = [
     tech: ["IoT", "RFID", "ZKTeco API"],
     icon: faMicrochip,
     colorKey: "blue",
-    stats: "Biometric Secured"
+    stats: "Biometric Secured",
+    image: projectImages.securegate,
+    imageAlt: "IoT Security System Interface"
   },
   {
     id: "04",
@@ -80,7 +99,9 @@ const projects = [
     tech: ["Next.js", "Tailwind", "Stripe"],
     icon: faBolt,
     colorKey: "emerald",
-    stats: "Premium Motion"
+    stats: "Premium Motion",
+    image: projectImages.digital,
+    imageAlt: "E-commerce Store Interface"
   }
 ];
 
@@ -242,55 +263,72 @@ export default function ModernProjectsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative p-10 rounded-[40px] bg-[#11111e]/80 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-500 hover:border-purple-500/20"
+                className="group relative rounded-[40px] bg-[#11111e]/80 backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-500 hover:border-purple-500/20 hover:shadow-2xl"
               >
-                <div className={`absolute top-0 right-0 w-72 h-72 ${colors.bg} blur-[100px] ${colors.hoverBg} transition-all duration-500`} />
-
-                <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${colors.text}`}>
-                      <FontAwesomeIcon icon={project.icon} className="text-2xl" />
-                    </div>
-                    <div className="flex gap-4 opacity-30 group-hover:opacity-100 transition-opacity">
-                      <FontAwesomeIcon 
-                        icon={faGithub} 
-                        className="text-xl cursor-pointer hover:text-white transition-colors" 
-                      />
-                      <FontAwesomeIcon 
-                        icon={faExternalLinkAlt} 
-                        className="text-lg cursor-pointer hover:text-white transition-colors" 
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-10">
-                    <span className={`text-[10px] font-mono font-bold ${colors.accent} uppercase tracking-widest mb-2 block`}>
+                {/* Image Section */}
+                <div className="relative h-56 md:h-64 overflow-hidden">
+                  <div className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} z-10`} />
+                  <Image
+                    src={project.image}
+                    alt={project.imageAlt}
+                    width={800}
+                    height={600}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* Overlay Badge */}
+                  <div className="absolute top-4 right-4 z-20">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/50 backdrop-blur-sm ${colors.text}`}>
                       {project.category}
                     </span>
-                    <h3 className="text-3xl font-bold tracking-tight mb-4 group-hover:text-purple-400 transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-gray-400 text-sm font-light leading-relaxed mb-6 italic">
-                      {project.desc}
-                    </p>
                   </div>
+                </div>
 
-                  <div className="flex flex-wrap gap-2 mb-10">
-                    {project.tech.map((tag, tIdx) => (
-                      <span key={tIdx} className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-gray-500 font-mono">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                <div className="relative p-8">
+                  <div className={`absolute top-0 right-0 w-72 h-72 ${colors.bg} blur-[100px] ${colors.hoverBg} transition-all duration-500`} />
 
-                  <div className="pt-6 border-t border-white/5 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-xs" />
-                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                        Efficiency: {project.stats}
-                      </span>
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${colors.text}`}>
+                        <FontAwesomeIcon icon={project.icon} className="text-2xl" />
+                      </div>
+                      <div className="flex gap-4 opacity-30 group-hover:opacity-100 transition-opacity">
+                        <FontAwesomeIcon 
+                          icon={faGithub} 
+                          className="text-xl cursor-pointer hover:text-white transition-colors" 
+                        />
+                        <FontAwesomeIcon 
+                          icon={faExternalLinkAlt} 
+                          className="text-lg cursor-pointer hover:text-white transition-colors" 
+                        />
+                      </div>
                     </div>
-                    <span className="text-3xl font-black text-white/[0.02] italic">{project.id}</span>
+
+                    <div className="mb-6">
+                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-3 group-hover:text-purple-400 transition-colors">
+                        {project.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm font-light leading-relaxed">
+                        {project.desc}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mb-8">
+                      {project.tech.map((tag, tIdx) => (
+                        <span key={tIdx} className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-gray-500 font-mono">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="pt-6 border-t border-white/5 flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-xs" />
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                          Efficiency: {project.stats}
+                        </span>
+                      </div>
+                      <span className="text-3xl font-black text-white/[0.02] italic">{project.id}</span>
+                    </div>
                   </div>
                 </div>
               </motion.div>

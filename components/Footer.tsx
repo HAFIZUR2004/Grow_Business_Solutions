@@ -268,7 +268,7 @@ export default function Footer() {
                   },
                   {
                     Icon: FaGithub,
-                    url: "https://github.com/Grow-Business-Solutions",
+                    url: "https://github.com/Grow-Businesssolutionsbd",
                   },
                   { Icon: FaXTwitter, url: "https://x.com/GrowBS_BD" },
                   {

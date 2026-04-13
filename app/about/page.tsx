@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Code2, Atom, Terminal, Database, Server, FileJson, Globe, ShieldCheck,
+  Rocket, Layers, Search, Cpu, Award, Users, TrendingUp, Zap
 } from "lucide-react";
 
 if (typeof window !== "undefined") {
@@ -20,36 +21,70 @@ const technologies = [
   { name: "TypeScript", color: "#3178c6", orbit: 160, speed: 35, icon: FileJson },
 ];
 
+// Enhanced Journey Steps with more details (like Services Page Timeline)
 const journeySteps = [
   {
+    id: "01",
     year: "2022",
     title: "The Genesis Protocol",
-    desc: "Grow Business Solutions founded as a boutique research firm focused on software architecture.",
-    color: "#b5a7ff",
+    desc: "Grow Business Solutions founded as a boutique research firm focused on software architecture and digital transformation.",
+    icon: Rocket,
+    color: "#6c5ce7",
     align: "left",
+    deliverables: ["Research", "Architecture", "MVP"],
+    duration: "Foundation Year"
   },
   {
+    id: "02",
+    year: "2023",
+    title: "The Expansion Era",
+    desc: "Expanded team and client base, delivering enterprise-grade solutions across fintech, edtech, and healthcare sectors.",
+    icon: TrendingUp,
+    color: "#a29bfe",
+    align: "right",
+    deliverables: ["20+ Projects", "10+ Clients", "Team Growth"],
+    duration: "Scaling Phase"
+  },
+  {
+    id: "03",
     year: "2024",
     title: "The Obsidian Shift",
-    desc: "Pivot to enterprise-grade AI integration and high-end MERN stack solutions.",
-    color: "#3ee8f6",
-    align: "right",
+    desc: "Pivot to enterprise-grade AI integration and high-end MERN stack solutions with global clientele.",
+    icon: Cpu,
+    color: "#00cec9",
+    align: "left",
+    deliverables: ["AI Integration", "Global Reach", "Innovation Lab"],
+    duration: "Tech Evolution"
   },
   {
+    id: "04",
     year: "2026",
     title: "Global Consensus",
-    desc: "Scaling digital infrastructure for the next generation of businesses worldwide.",
-    color: "#b5a7ff",
-    align: "left",
+    desc: "Scaling digital infrastructure for the next generation of businesses worldwide with cutting-edge technology.",
+    icon: Globe,
+    color: "#6c5ce7",
+    align: "right",
+    deliverables: ["Global Scale", "Next-Gen Tech", "Future Ready"],
+    duration: "Worldwide Impact"
   },
+];
+
+// Stats Data
+const stats = [
+  { value: 50, label: "Projects Delivered", suffix: "+", icon: Award },
+  { value: 30, label: "Happy Clients", suffix: "+", icon: Users },
+  { value: 99.9, label: "Uptime SLA", suffix: "%", icon: Zap },
+  { value: 24, label: "Support", suffix: "/7", icon: ShieldCheck },
 ];
 
 export default function AboutPage() {
   const orbitRefs = useRef<HTMLDivElement[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const journeyLineRef = useRef<HTMLDivElement>(null);
+  const journeyScrollRef = useRef<HTMLDivElement>(null);
 
+  // Full Page Particle Network Canvas
   useEffect(() => {
-    // --- Full Page Particle Network Canvas ---
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -69,7 +104,7 @@ export default function AboutPage() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      nodes = Array.from({ length: 70 }, () => ({
+      nodes = Array.from({ length: 80 }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.35,
@@ -89,7 +124,6 @@ export default function AboutPage() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
@@ -115,14 +149,12 @@ export default function AboutPage() {
         }
       }
 
-      // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
 
-        // গ্লো ইফেক্ট বড় ডটের জন্য
         if (n.r > 1.8) {
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
@@ -133,22 +165,10 @@ export default function AboutPage() {
         n.x += n.vx;
         n.y += n.vy;
 
-        if (n.x < 0) {
-          n.x = 0;
-          n.vx *= -1;
-        }
-        if (n.x > canvas.width) {
-          n.x = canvas.width;
-          n.vx *= -1;
-        }
-        if (n.y < 0) {
-          n.y = 0;
-          n.vy *= -1;
-        }
-        if (n.y > canvas.height) {
-          n.y = canvas.height;
-          n.vy *= -1;
-        }
+        if (n.x < 0) { n.x = 0; n.vx *= -1; }
+        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
+        if (n.y < 0) { n.y = 0; n.vy *= -1; }
+        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
       });
 
       animId = requestAnimationFrame(draw);
@@ -171,6 +191,49 @@ export default function AboutPage() {
     };
   }, []);
 
+  // GSAP Journey Timeline Animation (Same as Services Page)
+  useEffect(() => {
+    if (journeyLineRef.current && journeyScrollRef.current) {
+      gsap.fromTo(
+        journeyLineRef.current,
+        { height: 0 },
+        {
+          height: "100%",
+          ease: "none",
+          scrollTrigger: {
+            trigger: journeyScrollRef.current,
+            start: "top 20%",
+            end: "bottom 80%",
+            scrub: 1,
+          },
+        }
+      );
+    }
+
+    journeySteps.forEach((_, i) => {
+      gsap.fromTo(
+        `.journey-step-${i}`,
+        { opacity: 0, y: 50, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          scrollTrigger: {
+            trigger: `.journey-step-${i}`,
+            start: "top 85%",
+            end: "top 50%",
+            scrub: 0.5,
+          },
+        }
+      );
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, []);
+
   return (
     <main className="relative min-h-screen bg-[#05070a] text-white font-sans overflow-x-hidden">
       
@@ -180,7 +243,7 @@ export default function AboutPage() {
         className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0" 
       />
 
-      {/* Gradient Glow Effects - Full Page */}
+      {/* Gradient Glow Effects */}
       <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(108,92,231,0.03),transparent_70%)] pointer-events-none z-0" />
@@ -200,7 +263,9 @@ export default function AboutPage() {
 
           <h1 className="font-black leading-[0.9] tracking-tighter text-white text-[clamp(2.5rem,10vw,6.5rem)] mb-6">
             ENGINEERING <br /> 
-            <span className="text-transparent italic" style={{ WebkitTextStroke: "1px rgba(162,155,254,0.7)" }}>DIGITAL EQUITY</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9] italic">
+              DIGITAL EQUITY
+            </span>
           </h1>
 
           <p className="max-w-xl mx-auto lg:mx-0 text-base md:text-xl text-white/70 leading-relaxed mb-10 font-medium">
@@ -208,13 +273,33 @@ export default function AboutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <button className="w-full sm:w-auto bg-[#6c5ce7] hover:bg-[#8271ff] shadow-[0_0_30px_rgba(108,92,231,0.3)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
+            <button className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
               Explore Our Vision
             </button>
             <button className="w-full sm:w-auto border border-white/10 hover:bg-white/5 transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
               Contact Us
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* --- Stats Section --- */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              viewport={{ once: true }}
+              className="text-center p-6 rounded-2xl bg-white/[0.02] border border-white/5"
+            >
+              <stat.icon className="w-8 h-8 mx-auto mb-3 text-[#6c5ce7]" />
+              <div className="text-3xl md:text-4xl font-black text-white">{stat.value}{stat.suffix}</div>
+              <div className="text-white/40 text-xs uppercase tracking-wider mt-2">{stat.label}</div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -228,16 +313,23 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {[
-              { icon: Terminal, title: "Optimized Core", color: "#3ee8f6" },
-              { icon: Atom, title: "Reactive UI", color: "#a29bfe" },
-              { icon: Globe, title: "Distributed Edge", color: "#6c5ce7" },
-              { icon: ShieldCheck, title: "Ironclad Security", color: "#00cec9" },
+              { icon: Terminal, title: "Optimized Core", desc: "Engineered for peak dominance.", color: "#00cec9" },
+              { icon: Atom, title: "Reactive UI", desc: "Fluid, responsive interfaces.", color: "#a29bfe" },
+              { icon: Globe, title: "Distributed Edge", desc: "Global scale infrastructure.", color: "#6c5ce7" },
+              { icon: ShieldCheck, title: "Ironclad Security", desc: "Enterprise-grade protection.", color: "#00b894" },
             ].map((item, i) => (
-              <div key={i} className="p-6 md:p-8 rounded-[24px] bg-white/[0.02] border border-white/5 hover:border-[#6c5ce7]/30 transition-all group backdrop-blur-sm">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="p-6 md:p-8 rounded-[24px] bg-white/[0.02] border border-white/5 hover:border-[#6c5ce7]/30 transition-all group backdrop-blur-sm"
+              >
                 <item.icon className="w-6 h-6 mb-4 opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: item.color }} />
                 <h4 className="font-bold text-lg md:text-xl text-white mb-2">{item.title}</h4>
-                <p className="text-xs md:text-sm text-white/30 italic">Engineered for peak dominance.</p>
-              </div>
+                <p className="text-xs md:text-sm text-white/30 italic">{item.desc}</p>
+              </motion.div>
             ))}
           </div>
 
@@ -272,35 +364,111 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* --- JOURNEY SECTION --- */}
-      <section className="relative py-24 md:py-40 px-6 z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-24 md:mb-32">
-            <h2 className="text-4xl md:text-7xl font-black tracking-tighter uppercase">Our <span className="text-white/20 italic">Journey.</span></h2>
+      {/* --- JOURNEY SECTION (Redesigned like Services Page Timeline) --- */}
+      <section 
+        ref={journeyScrollRef} 
+        className="relative z-10 py-32 px-6 overflow-hidden"
+      >
+        {/* Side glows */}
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#6c5ce7]/5 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#00cec9]/5 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="text-center mb-24">
+            <h2 className="text-3xl font-black tracking-[0.3em] uppercase opacity-40 mb-2">Our Journey</h2>
+            <h3 className="text-5xl font-black tracking-tighter">THE EVOLUTION <span className="text-white/20 italic">OF EXCELLENCE</span></h3>
           </div>
-          
+
+          {/* Central Vertical Timeline */}
           <div className="relative">
-            {/* Center Line */}
-            <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-px h-full bg-gradient-to-b from-transparent via-white/15 to-transparent" />
+            {/* Static background line */}
+            <div className="absolute left-[24px] md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
             
-            <div className="space-y-24 md:space-y-32">
+            {/* Animated gradient line with GSAP */}
+            <div 
+              ref={journeyLineRef} 
+              className="absolute left-[24px] md:left-1/2 w-[2px] bg-gradient-to-b from-[#6c5ce7] via-[#a29bfe] to-[#00cec9] top-0 shadow-[0_0_15px_#00cec9]"
+              style={{ height: 0 }}
+            />
+
+            <div className="space-y-24">
               {journeySteps.map((step, idx) => (
-                <div key={idx} className={`relative flex items-start md:items-center ${step.align === "left" ? "md:flex-row" : "md:flex-row-reverse"}`}>
-                  <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${step.align === "left" ? "md:text-right md:pr-16" : "md:text-left md:pl-16"}`}>
-                    <span className="text-xs font-black tracking-tighter mb-2 block" style={{ color: step.color }}>{step.year}</span>
-                    <h4 className="text-2xl md:text-3xl font-black mb-3 text-white uppercase">{step.title}</h4>
-                    <p className="text-white/40 text-sm md:text-lg leading-relaxed italic">{step.desc}</p>
-                  </div>
+                <div
+                  key={idx}
+                  className={`journey-step-${idx} relative flex items-center w-full ${
+                    step.align === "left" ? 'md:flex-row-reverse' : ''
+                  }`}
+                >
+                  <div className="hidden md:block w-1/2" />
                   
-                  {/* Dot on Line */}
-                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full z-10" style={{ backgroundColor: step.color, boxShadow: `0 0 15px ${step.color}` }}>
-                    <div className="absolute inset-0 rounded-full animate-ping" style={{ backgroundColor: step.color, opacity: 0.5 }} />
+                  {/* Center Dot with Icon */}
+                  <div className="absolute left-[24px] md:left-1/2 -translate-x-1/2 z-10">
+                    <div
+                      className="w-14 h-14 rounded-full bg-[#05070a] border-2 border-white/10 flex items-center justify-center transition-all duration-300 hover:scale-150 cursor-pointer shadow-[0_0_20px_rgba(108,92,231,0.25)]"
+                      style={{
+                        boxShadow: `0 0 20px ${step.color}`,
+                      }}
+                    >
+                      <step.icon size={20} style={{ color: step.color }} />
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className={`w-full md:w-1/2 pl-20 md:pl-0 ${
+                    step.align === "left" ? 'md:pr-20 text-left md:text-right' : 'md:pl-20 text-left'
+                  }`}>
+                    <span className="text-[10px] font-mono text-[#6c5ce7] font-black mb-2 block uppercase tracking-[0.3em]">
+                      {step.id} • {step.year}
+                    </span>
+                    <h3 className="text-2xl md:text-3xl font-black mb-3 tracking-tight" style={{ color: step.color }}>
+                      {step.title}
+                    </h3>
+                    <p className="text-white/40 text-base font-medium leading-relaxed max-w-sm ml-0 md:ml-auto mr-0 md:mr-0">
+                      {step.desc}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-4 justify-start md:justify-end">
+                      {step.deliverables.map((d, i) => (
+                        <span key={i} className="text-[9px] font-mono bg-white/5 px-2 py-1 rounded-full text-white/30">
+                          {d}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 mt-3 justify-start">
+                      <span className="text-[10px] text-white/30 font-mono">{step.duration}</span>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+      </section>
+
+      {/* --- CTA Section --- */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-40">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="relative p-12 md:p-20 rounded-[3rem] bg-gradient-to-br from-[#111319] to-transparent border border-white/10 overflow-hidden shadow-2xl"
+        >
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#6c5ce7]/10 blur-[100px] rounded-full" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#00cec9]/5 blur-[100px] rounded-full" />
+          
+          <div className="text-center relative z-10">
+            <h2 className="text-4xl md:text-6xl font-black leading-[1.1] mb-6 tracking-tighter">
+              Ready to Write <br />
+              <span className="bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] bg-clip-text text-transparent">Your Success Story?</span>
+            </h2>
+            <p className="text-white/40 text-lg mb-10 max-w-2xl mx-auto">
+              Let's build something extraordinary together. Join the ranks of our global clients.
+            </p>
+            <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all">
+              Start Your Journey →
+            </button>
+          </div>
+        </motion.div>
       </section>
     </main>
   );
