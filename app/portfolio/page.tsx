@@ -1,54 +1,73 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import Link from "next/link";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const projects = [
-  {
-    id: "01",
-    tag: "FinTech",
-    title: "Quantum Ledger",
-    description:
-      "Next-gen banking infrastructure with real-time transaction tracking.",
-    tech: ["Next.js", "PostgreSQL", "Prisma"],
-    color: "#b5a7ff",
-    image: "https://i.postimg.cc/D0b9WyKF/6560470.jpg", // আপনার ইমেজ পাথ দিন
-    imageAlt: "Quantum Ledger Dashboard",
-  },
-  {
-    id: "02",
-    tag: "Mobile",
-    title: "EcoPulse App",
-    description:
-      "Seamless IoT integration for smart energy monitoring and management.",
-    tech: ["React Native", "Firebase", "Zustand"],
-    color: "#3ee8f6",
-    image: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
-    imageAlt: "EcoPulse Mobile App",
-  },
-  {
-    id: "03",
-    tag: "Data System",
-    title: "Nova Engine",
-    description:
-      "High-performance data processing engine for enterprise-level analytics.",
-    tech: ["MERN Stack", "Redis", "Docker"],
-    color: "#ffffff",
-    image: "https://i.postimg.cc/qB5Bzzyn/Nova.jpg",
-    imageAlt: "Nova Engine Analytics",
-  },
-];
+interface ProjectType {
+  _id: string;
+  id: string;
+  tag?: string;
+  title: string;
+  description: string;
+  tech: string[];
+  color: string;
+  image: string;
+  imageAlt: string;
+  category?: string;
+  colorKey?: string;
+}
 
-export default function Portfolio() {
+// কালার ম্যাপিং
+const colorMap: Record<string, string> = {
+  purple: "#b5a7ff",
+  cyan: "#3ee8f6",
+  blue: "#60a5fa",
+  emerald: "#34d399",
+};
+
+export default function HomePage() {
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [loading, setLoading] = useState(true);
+  
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Fetch data from API
+  useEffect(() => {
+    fetch('/api/portfolio')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        // ডাটাকে হোম পেজের ফরম্যাটে কনভার্ট করুন
+        const formattedProjects = data.map((item: any) => ({
+          _id: item._id,
+          id: item.id,
+          tag: item.category, // category কে tag হিসেবে ব্যবহার
+          title: item.title,
+          description: item.description,
+          tech: item.tech,
+          color: colorMap[item.colorKey as keyof typeof colorMap] || "#b5a7ff",
+          image: item.image?.trim() || '',
+          imageAlt: item.imageAlt,
+        }));
+        setProjects(formattedProjects);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching portfolio:', err);
+        setLoading(false);
+      });
+  }, []);
 
   // Particle Network Canvas Effect
   useEffect(() => {
@@ -91,13 +110,9 @@ export default function Portfolio() {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(
-            nodes[i].x - nodes[j].x,
-            nodes[i].y - nodes[j].y,
-          );
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -108,7 +123,7 @@ export default function Portfolio() {
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y,
+              nodes[j].y
             );
             gradient.addColorStop(0, "rgba(181, 167, 255, " + opacity + ")");
             gradient.addColorStop(1, "rgba(62, 232, 246, " + opacity + ")");
@@ -120,7 +135,6 @@ export default function Portfolio() {
         }
       }
 
-      // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
@@ -166,9 +180,11 @@ export default function Portfolio() {
     };
   }, []);
 
+  // GSAP Animations
   useEffect(() => {
+    if (loading || projects.length === 0) return;
+    
     const ctx = gsap.context(() => {
-      // Reveal Animation for Title
       gsap.from(".portfolio-title", {
         opacity: 0,
         y: 30,
@@ -197,13 +213,25 @@ export default function Portfolio() {
               trigger: sectionRef.current,
               start: "top 60%",
             },
-          },
+          }
         );
       }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [loading, projects]);
+
+  // Loading State
+  if (loading) {
+    return (
+      <section className="relative bg-[#0b0c18] px-6 overflow-hidden py-20 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white/60">Loading amazing projects...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -237,9 +265,9 @@ export default function Portfolio() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {projects.map((project, idx) => (
+          {projects.slice(0, 6).map((project, idx) => (
             <div
-              key={project.id}
+              key={project._id}
               ref={(el) => {
                 cardRefs.current[idx] = el;
               }}
@@ -248,15 +276,13 @@ export default function Portfolio() {
               {/* Image Section */}
               <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
                 <Image
-                  src={project.image}
+                  src={project.image || 'https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image'}
                   alt={project.imageAlt}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                   onError={(e) => {
-                    // ফallback ইমেজ যদি লোড না হয়
                     const target = e.target as HTMLImageElement;
-                    target.src =
-                      "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
+                    target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121323] via-transparent to-transparent opacity-60" />
@@ -300,12 +326,12 @@ export default function Portfolio() {
                   <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
                     {project.title}
                   </h3>
-                  <p className="text-white/40 text-sm leading-relaxed mb-6">
+                  <p className="text-white/40 text-sm leading-relaxed mb-6 line-clamp-3">
                     {project.description}
                   </p>
 
                   <div className="flex flex-wrap gap-2">
-                    {project.tech.map((t) => (
+                    {project.tech.slice(0, 3).map((t) => (
                       <span
                         key={t}
                         className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-white/60 font-mono"
@@ -313,6 +339,11 @@ export default function Portfolio() {
                         {t}
                       </span>
                     ))}
+                    {project.tech.length > 3 && (
+                      <span className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-white/60 font-mono">
+                        +{project.tech.length - 3}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -321,12 +352,14 @@ export default function Portfolio() {
         </div>
 
         <div className="mt-20 flex justify-center portfolio-title">
-          <button className="group relative px-8 py-4 bg-transparent border border-white/10 overflow-hidden rounded-full transition-all duration-300 hover:border-cyan-500/50">
-            <span className="relative z-10 text-white/80 font-mono text-xs uppercase tracking-widest group-hover:text-cyan-400 transition-colors">
-              Explore All Artifacts
-            </span>
-            <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-[0.02] transition-opacity" />
-          </button>
+          <Link href="/projects">
+            <button className="group relative px-8 py-4 bg-transparent border border-white/10 overflow-hidden rounded-full transition-all duration-300 hover:border-cyan-500/50">
+              <span className="relative z-10 text-white/80 font-mono text-xs uppercase tracking-widest group-hover:text-cyan-400 transition-colors">
+                Explore All Artifacts
+              </span>
+              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-[0.02] transition-opacity" />
+            </button>
+          </Link>
         </div>
       </div>
     </section>

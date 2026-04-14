@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 // Font Awesome Imports
@@ -14,6 +14,15 @@ import {
   faBolt, 
   faLayerGroup 
 } from "@fortawesome/free-solid-svg-icons";
+
+// আইকন ম্যাপিং
+const iconMap: Record<string, any> = {
+  faLayerGroup: faLayerGroup,
+  faDatabase: faDatabase,
+  faMicrochip: faMicrochip,
+  faBolt: faBolt,
+  faShieldAlt: faShieldAlt,
+};
 
 const colorMap = {
   purple: {
@@ -46,67 +55,45 @@ const colorMap = {
   }
 };
 
-// Project Images (Replace with your actual image paths)
-const projectImages = {
-  nexus: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
-  vanguard: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
-  securegate: "https://i.postimg.cc/qRQRmwN5/3447497.jpg",
-  digital: "https://i.postimg.cc/qRQRmwN5/3447497.jpg"
-};
+interface PortfolioItem {
+  _id: string;
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  tech: string[];
+  icon: string;
+  colorKey: string;
+  stats: string;
+  image: string;
+  imageAlt: string;
+  github?: string;
+  liveUrl?: string;
+}
 
-const projects = [
-  {
-    id: "01",
-    title: "Nexus Edu Management",
-    category: "Enterprise Solution",
-    desc: "A robust multi-branch Madrasa Management system. Architected to handle high-volume student data.",
-    tech: ["MERN Stack", "Next.js", "TypeScript"],
-    icon: faLayerGroup,
-    colorKey: "purple",
-    stats: "High Performance",
-    image: projectImages.nexus,
-    imageAlt: "Education Management System Dashboard"
-  },
-  {
-    id: "02",
-    title: "Vanguard AI Inventory",
-    category: "Industrial Intelligence",
-    desc: "Smart inventory manager for garments tracking with neural-driven analytics.",
-    tech: ["Node.js", "Express", "AI Model"],
-    icon: faDatabase,
-    colorKey: "cyan",
-    stats: "Real-time Sync",
-    image: projectImages.vanguard,
-    imageAlt: "AI Inventory Management Dashboard"
-  },
-  {
-    id: "03",
-    title: "SecureGate IoT",
-    category: "Hardware Integration",
-    desc: "IoT-based attendance system integrated with ZKTeco biometric terminals.",
-    tech: ["IoT", "RFID", "ZKTeco API"],
-    icon: faMicrochip,
-    colorKey: "blue",
-    stats: "Biometric Secured",
-    image: projectImages.securegate,
-    imageAlt: "IoT Security System Interface"
-  },
-  {
-    id: "04",
-    title: "Digital Sovereign Shop",
-    category: "Premium E-Commerce",
-    desc: "High-end retail ecosystem with premium motion kinetics and complex state management.",
-    tech: ["Next.js", "Tailwind", "Stripe"],
-    icon: faBolt,
-    colorKey: "emerald",
-    stats: "Premium Motion",
-    image: projectImages.digital,
-    imageAlt: "E-commerce Store Interface"
-  }
-];
-
-export default function ModernProjectsPage() {
+export default function DynamicPortfolioPage() {
+  const [projects, setProjects] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Fetch data from API
+  useEffect(() => {
+    fetch('/api/portfolio')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching portfolio:', err);
+        setError('Failed to load projects');
+        setLoading(false);
+      });
+  }, []);
 
   // Particle Network Canvas Effect
   useEffect(() => {
@@ -182,7 +169,6 @@ export default function ModernProjectsPage() {
         ctx.fillStyle = n.color;
         ctx.fill();
 
-        // গ্লো ইফেক্ট বড় ডটের জন্য
         if (n.r > 1.5) {
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r + 1.2, 0, Math.PI * 2);
@@ -222,6 +208,47 @@ export default function ModernProjectsPage() {
     };
   }, []);
 
+  // Loading State
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0b0c18] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white/60">Loading amazing projects...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error State
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0b0c18] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 text-xl mb-4">⚠️ {error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty State
+  if (projects.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#0b0c18] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white/60 text-xl mb-4">No projects found.</p>
+          <p className="text-white/40">Add some projects from the admin dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative bg-[#0b0c18] text-white py-24 px-6 selection:bg-purple-500/30 font-sans overflow-hidden">
       
@@ -255,10 +282,11 @@ export default function ModernProjectsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {projects.map((project, idx) => {
             const colors = colorMap[project.colorKey as keyof typeof colorMap];
+            const IconComponent = iconMap[project.icon] || faLayerGroup;
             
             return (
               <motion.div
-                key={idx}
+                key={project._id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -269,12 +297,16 @@ export default function ModernProjectsPage() {
                 <div className="relative h-56 md:h-64 overflow-hidden">
                   <div className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} z-10`} />
                   <Image
-                    src={project.image}
-                    alt={project.imageAlt}
-                    width={800}
-                    height={600}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
+  src={project.image?.trim() || ''} 
+  alt={project.imageAlt}
+  width={800}
+  height={600}
+  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+  onError={(e) => {
+    const target = e.target as HTMLImageElement;
+    target.src = 'https://placehold.co/800x600/1a1a2e/ffffff?text=Image+Not+Found';
+  }}
+/>
                   {/* Overlay Badge */}
                   <div className="absolute top-4 right-4 z-20">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/50 backdrop-blur-sm ${colors.text}`}>
@@ -289,17 +321,25 @@ export default function ModernProjectsPage() {
                   <div className="relative z-10">
                     <div className="flex justify-between items-start mb-6">
                       <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center ${colors.text}`}>
-                        <FontAwesomeIcon icon={project.icon} className="text-2xl" />
+                        <FontAwesomeIcon icon={IconComponent} className="text-2xl" />
                       </div>
                       <div className="flex gap-4 opacity-30 group-hover:opacity-100 transition-opacity">
-                        <FontAwesomeIcon 
-                          icon={faGithub} 
-                          className="text-xl cursor-pointer hover:text-white transition-colors" 
-                        />
-                        <FontAwesomeIcon 
-                          icon={faExternalLinkAlt} 
-                          className="text-lg cursor-pointer hover:text-white transition-colors" 
-                        />
+                        {project.github && (
+                          <a href={project.github} target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon 
+                              icon={faGithub} 
+                              className="text-xl cursor-pointer hover:text-white transition-colors" 
+                            />
+                          </a>
+                        )}
+                        {project.liveUrl && (
+                          <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon 
+                              icon={faExternalLinkAlt} 
+                              className="text-lg cursor-pointer hover:text-white transition-colors" 
+                            />
+                          </a>
+                        )}
                       </div>
                     </div>
 
@@ -308,7 +348,7 @@ export default function ModernProjectsPage() {
                         {project.title}
                       </h3>
                       <p className="text-gray-400 text-sm font-light leading-relaxed">
-                        {project.desc}
+                        {project.description}
                       </p>
                     </div>
 
@@ -324,7 +364,7 @@ export default function ModernProjectsPage() {
                       <div className="flex items-center gap-2">
                         <FontAwesomeIcon icon={faShieldAlt} className="text-emerald-500 text-xs" />
                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                          Efficiency: {project.stats}
+                          {project.stats}
                         </span>
                       </div>
                       <span className="text-3xl font-black text-white/[0.02] italic">{project.id}</span>
