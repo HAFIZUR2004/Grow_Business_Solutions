@@ -5,9 +5,24 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+// API Response Type
+interface PortfolioItem {
+  _id: string;
+  id: string;
+  category?: string;
+  title: string;
+  description: string;
+  tech: string[];
+  colorKey?: string;
+  image?: string;
+  imageAlt: string;
 }
 
 interface ProjectType {
@@ -30,43 +45,54 @@ const colorMap: Record<string, string> = {
   cyan: "#3ee8f6",
   blue: "#60a5fa",
   emerald: "#34d399",
+  default: "#b5a7ff",
 };
 
 export default function HomePage() {
+  const { lang } = useLanguage();
+  const t = translations[lang];
+
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Fetch data from API
   useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch');
-        return res.json();
-      })
-      .then(data => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("/api/portfolio");
+        if (!response.ok) throw new Error("Failed to fetch");
+        const data: PortfolioItem[] = await response.json();
+
         // ডাটাকে হোম পেজের ফরম্যাটে কনভার্ট করুন
-        const formattedProjects = data.map((item: any) => ({
-          _id: item._id,
-          id: item.id,
-          tag: item.category, // category কে tag হিসেবে ব্যবহার
-          title: item.title,
-          description: item.description,
-          tech: item.tech,
-          color: colorMap[item.colorKey as keyof typeof colorMap] || "#b5a7ff",
-          image: item.image?.trim() || '',
-          imageAlt: item.imageAlt,
-        }));
+        const formattedProjects: ProjectType[] = data.map(
+          (item: PortfolioItem) => ({
+            _id: item._id,
+            id: item.id,
+            tag: item.category,
+            title: item.title,
+            description: item.description,
+            tech: item.tech,
+            color: colorMap[item.colorKey ?? "default"],
+            image: item.image?.trim() || "",
+            imageAlt: item.imageAlt,
+            category: item.category,
+            colorKey: item.colorKey,
+          }),
+        );
+
         setProjects(formattedProjects);
+      } catch (err) {
+        console.error("Error fetching portfolio:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching portfolio:', err);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchProjects();
   }, []);
 
   // Particle Network Canvas Effect
@@ -77,16 +103,20 @@ export default function HomePage() {
     if (!ctx) return;
 
     let animId: number;
-    let nodes: Array<{
+
+    interface NodeType {
       x: number;
       y: number;
       vx: number;
       vy: number;
       r: number;
       color: string;
-    }> = [];
+    }
+
+    let nodes: NodeType[] = [];
 
     const resize = () => {
+      if (!canvas) return;
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
 
@@ -112,7 +142,10 @@ export default function HomePage() {
 
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -123,7 +156,7 @@ export default function HomePage() {
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y
+              nodes[j].y,
             );
             gradient.addColorStop(0, "rgba(181, 167, 255, " + opacity + ")");
             gradient.addColorStop(1, "rgba(62, 232, 246, " + opacity + ")");
@@ -183,7 +216,7 @@ export default function HomePage() {
   // GSAP Animations
   useEffect(() => {
     if (loading || projects.length === 0) return;
-    
+
     const ctx = gsap.context(() => {
       gsap.from(".portfolio-title", {
         opacity: 0,
@@ -196,7 +229,9 @@ export default function HomePage() {
         },
       });
 
-      const validCards = cardRefs.current.filter((el) => el !== null);
+      const validCards = cardRefs.current.filter(
+        (el): el is HTMLDivElement => el !== null,
+      );
 
       if (validCards.length > 0) {
         gsap.fromTo(
@@ -213,7 +248,7 @@ export default function HomePage() {
               trigger: sectionRef.current,
               start: "top 60%",
             },
-          }
+          },
         );
       }
     }, sectionRef);
@@ -227,7 +262,9 @@ export default function HomePage() {
       <section className="relative bg-[#0b0c18] px-6 overflow-hidden py-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white/60">Loading amazing projects...</p>
+          <p className="text-white/60">
+            {t.portfolio?.loading || "Loading amazing projects..."}
+          </p>
         </div>
       </section>
     );
@@ -253,13 +290,13 @@ export default function HomePage() {
           <div className="flex items-center gap-4 mb-4">
             <span className="h-[1px] w-12 bg-cyan-500" />
             <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.5em]">
-              Selected Works
+              {t.portfolio?.badge || "Selected Works"}
             </p>
           </div>
           <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
-            Digital{" "}
+            {t.portfolio?.title || "Digital"}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
-              Artifacts.
+              {t.portfolio?.titleGradient || "Artifacts."}
             </span>
           </h2>
         </div>
@@ -276,13 +313,17 @@ export default function HomePage() {
               {/* Image Section */}
               <div className="relative h-56 w-full overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
                 <Image
-                  src={project.image || 'https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image'}
-                  alt={project.imageAlt}
+                  src={
+                    project.image ||
+                    "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image"
+                  }
+                  alt={project.imageAlt || project.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
+                    target.src =
+                      "https://placehold.co/600x400/1a1a2e/ffffff?text=Project+Image";
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121323] via-transparent to-transparent opacity-60" />
@@ -331,12 +372,12 @@ export default function HomePage() {
                   </p>
 
                   <div className="flex flex-wrap gap-2">
-                    {project.tech.slice(0, 3).map((t) => (
+                    {project.tech.slice(0, 3).map((techName) => (
                       <span
-                        key={t}
+                        key={techName}
                         className="px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[10px] text-white/60 font-mono"
                       >
-                        {t}
+                        {techName}
                       </span>
                     ))}
                     {project.tech.length > 3 && (
@@ -355,7 +396,7 @@ export default function HomePage() {
           <Link href="/projects">
             <button className="group relative px-8 py-4 bg-transparent border border-white/10 overflow-hidden rounded-full transition-all duration-300 hover:border-cyan-500/50">
               <span className="relative z-10 text-white/80 font-mono text-xs uppercase tracking-widest group-hover:text-cyan-400 transition-colors">
-                Explore All Artifacts
+                {t.portfolio?.exploreBtn || "Explore All Artifacts"}
               </span>
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-[0.02] transition-opacity" />
             </button>

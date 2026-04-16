@@ -166,6 +166,50 @@ export const translations = {
     neuralLink: "Neural_Link",
     phone: "+880 1234 567 890",
     email: "contact@growbusiness.solutions",
+
+    // Tech Stack Section
+    techStack: {
+      title: "The",
+      titleGradient: "Atomic",
+      titleEnd: "Stack.",
+      features: [
+        {
+          title: "Optimized Core",
+          desc: "Latency-tuned server environments for near-zero downtime.",
+        },
+        {
+          title: "Reactive UI",
+          desc: "State-driven fluid interfaces with flawless user interactions.",
+        },
+        {
+          title: "Distributed Edge",
+          desc: "Global CDN delivery ensuring blazing-fast access everywhere.",
+        },
+        {
+          title: "Ironclad Security",
+          desc: "End-to-end encryption and advanced authentication protocols.",
+        },
+        {
+          title: "Scalable Logic",
+          desc: "Modular architecture built for long-term maintainability and growth.",
+        },
+        {
+          title: "Smart Insights",
+          desc: "Real-time monitoring and user behavior data tracking.",
+        },
+      ],
+      centerText: "MERN+",
+      prevButton: "Previous",
+      nextButton: "Next",
+    },
+    // portfolio
+    portfolio: {
+      badge: "Selected Works",
+      title: "Digital",
+      titleGradient: "Artifacts.",
+      exploreBtn: "Explore All Artifacts",
+      loading: "Loading amazing projects...",
+    },
   },
   BN: {
     //Navbar
@@ -308,6 +352,49 @@ export const translations = {
       },
     ],
 
+    // Tech Stack Section
+    techStack: {
+      title: "দ্যা",
+      titleGradient: "এটমিক",
+      titleEnd: "স্ট্যাক।",
+      features: [
+        {
+          title: "অপটিমাইজড কোর",
+          desc: "শূন্য ডাউনটাইমের জন্য লেটেন্সি-টিউনড সার্ভার পরিবেশ।",
+        },
+        {
+          title: "রিঅ্যাকটিভ ইউআই",
+          desc: "স্টেট-ড্রিভেন ফ্লুইড ইন্টারফেস যা নিখুঁত ইউজার ইন্টারঅ্যাকশন নিশ্চিত করে।",
+        },
+        {
+          title: "ডিস্ট্রিবিউটেড এজ",
+          desc: "গ্লোবাল সিডিএন ডেলিভারি যা সর্বত্র দ্রুতগতির অ্যাক্সেস নিশ্চিত করে।",
+        },
+        {
+          title: "আয়রনক্ল্যাড সিকিউরিটি",
+          desc: "এন্ড-টু-এন্ড এনক্রিপশন এবং অ্যাডভান্সড অথেন্টিকেশন প্রোটোকল।",
+        },
+        {
+          title: "স্কেলেবল লজিক",
+          desc: "দীর্ঘমেয়াদী রক্ষণাবেক্ষণ এবং বৃদ্ধির জন্য মডুলার আর্কিটেকচার।",
+        },
+        {
+          title: "স্মার্ট ইনসাইটস",
+          desc: "রিয়েল-টাইম মনিটরিং এবং ইউজার বিহেভিয়ার ডেটা ট্র্যাকিং।",
+        },
+      ],
+      centerText: "MERN+",
+      prevButton: "পূর্ববর্তী",
+      nextButton: "পরবর্তী",
+    },
+    // portfolio
+    portfolio: {
+      badge: "নির্বাচিত কাজ",
+      title: "ডিজিটাল",
+      titleGradient: "আর্টিফ্যাক্টস।",
+      exploreBtn: "সব আর্টিফ্যাক্ট দেখুন",
+      loading: "প্রকল্প লোড হচ্ছে...",
+    },
     // contact us
     secureChannel: "সরাসরি পরামর্শ গেটওয়ে",
     initiate: "আপনার ব্র্যান্ডকে",

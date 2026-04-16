@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 import {
   Code2,
   Atom,
@@ -43,51 +45,16 @@ const technologies = [
   },
 ];
 
-const features = [
-  {
-    icon: Terminal,
-    title: "Optimized Core",
-    desc: "Latency-tuned server environments for near-zero downtime.",
-    color: "cyan",
-  },
-  {
-    icon: Atom,
-    title: "Reactive UI",
-    desc: "State-driven fluid interfaces with flawless user interactions.",
-    color: "purple",
-  },
-  {
-    icon: Globe,
-    title: "Distributed Edge",
-    desc: "Global CDN delivery ensuring blazing-fast access everywhere.",
-    color: "blue",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Ironclad Security",
-    desc: "End-to-end encryption and advanced authentication protocols.",
-    color: "emerald",
-  },
-  {
-    icon: Layers,
-    title: "Scalable Logic",
-    desc: "Modular architecture built for long-term maintainability and growth.",
-    color: "orange",
-  },
-  {
-    icon: BarChart3,
-    title: "Smart Insights",
-    desc: "Real-time monitoring and user behavior data tracking.",
-    color: "pink",
-  },
-];
-
 const TechStack = () => {
   const sectionRef = useRef(null);
   const orbitRefs = useRef<HTMLDivElement[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentRow, setCurrentRow] = useState(0);
+
+  const { lang } = useLanguage();
+  const t = translations[lang];
+  const features = t.techStack.features;
 
   const totalRows = Math.ceil(features.length / 2);
   const visibleRows = 2;
@@ -141,10 +108,12 @@ const TechStack = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -155,7 +124,7 @@ const TechStack = () => {
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y
+              nodes[j].y,
             );
             gradient.addColorStop(0, "rgba(97, 218, 251, " + opacity + ")");
             gradient.addColorStop(1, "rgba(104, 160, 99, " + opacity + ")");
@@ -167,7 +136,6 @@ const TechStack = () => {
         }
       }
 
-      // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
@@ -215,7 +183,6 @@ const TechStack = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance Animations
       gsap.from(".tech-content-title", {
         opacity: 0,
         y: 60,
@@ -224,7 +191,6 @@ const TechStack = () => {
         scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
       });
 
-      // Orbital Animation
       orbitRefs.current.forEach((node, i) => {
         if (!node) return;
         const tech = technologies[i];
@@ -248,7 +214,6 @@ const TechStack = () => {
     return () => ctx.revert();
   }, []);
 
-  // Vertical Slide Effect
   useEffect(() => {
     if (gridRef.current) {
       gsap.to(gridRef.current, {
@@ -258,6 +223,19 @@ const TechStack = () => {
       });
     }
   }, [currentRow]);
+
+  // Color mapping for features
+  const colorMap: Record<string, string> = {
+    cyan: "#22d3ee",
+    purple: "#a78bfa",
+    blue: "#3b82f6",
+    emerald: "#10b981",
+    orange: "#f97316",
+    pink: "#ec4899",
+  };
+
+  const featureColors = ["cyan", "purple", "blue", "emerald", "orange", "pink"];
+  const featureIcons = [Terminal, Atom, Globe, ShieldCheck, Layers, BarChart3];
 
   return (
     <section
@@ -291,12 +269,12 @@ const TechStack = () => {
         <div className="tech-content space-y-12">
           <div className="space-y-1 tech-content-title">
             <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-white">
-              The{" "}
+              {t.techStack.title}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
-                Atomic
+                {t.techStack.titleGradient}
               </span>{" "}
               <br />
-              Stack.
+              {t.techStack.titleEnd}
             </h2>
           </div>
 
@@ -307,15 +285,8 @@ const TechStack = () => {
               className="grid grid-cols-1 sm:grid-cols-2 gap-5"
             >
               {features.map((feature, index) => {
-                const Icon = feature.icon;
-                const colorMap: Record<string, string> = {
-                  cyan: "#22d3ee",
-                  purple: "#a78bfa",
-                  blue: "#3b82f6",
-                  emerald: "#10b981",
-                  orange: "#f97316",
-                  pink: "#ec4899",
-                };
+                const Icon = featureIcons[index % featureIcons.length];
+                const colorKey = featureColors[index % featureColors.length];
                 return (
                   <div
                     key={index}
@@ -323,7 +294,7 @@ const TechStack = () => {
                   >
                     <Icon
                       className="w-6 h-6 mb-5 opacity-60 group-hover:opacity-100 transition-opacity"
-                      style={{ color: colorMap[feature.color] }}
+                      style={{ color: colorMap[colorKey] }}
                     />
                     <h4 className="font-extrabold text-white text-lg mb-2 group-hover:text-cyan-400 transition-colors">
                       {feature.title}
@@ -336,16 +307,17 @@ const TechStack = () => {
               })}
             </div>
           </div>
-          
+
           <div className="flex gap-4 pt-4">
             <button
               onClick={scrollPrev}
               disabled={currentRow === 0}
               className={`p-4 rounded-full border border-white/10 transition-all duration-300 ${
-                currentRow === 0 
-                  ? "opacity-30 cursor-not-allowed" 
+                currentRow === 0
+                  ? "opacity-30 cursor-not-allowed"
                   : "hover:bg-white/10 hover:border-cyan-400/50"
               }`}
+              aria-label={t.techStack.prevButton}
             >
               <ChevronUp size={24} />
             </button>
@@ -353,10 +325,11 @@ const TechStack = () => {
               onClick={scrollNext}
               disabled={currentRow >= totalRows - visibleRows}
               className={`p-4 rounded-full border border-white/10 transition-all duration-300 ${
-                currentRow >= totalRows - visibleRows 
-                  ? "opacity-30 cursor-not-allowed" 
+                currentRow >= totalRows - visibleRows
+                  ? "opacity-30 cursor-not-allowed"
                   : "hover:bg-cyan-500/20 hover:border-cyan-400"
               }`}
+              aria-label={t.techStack.nextButton}
             >
               <ChevronDown size={24} />
             </button>
@@ -377,7 +350,7 @@ const TechStack = () => {
 
           <div className="relative z-30 w-40 h-40 rounded-full bg-[#06070a] border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(62,232,246,0.07)]">
             <div className="text-3xl font-black tracking-tighter text-white">
-              MERN<span className="text-cyan-400">+</span>
+              {t.techStack.centerText}
             </div>
           </div>
 

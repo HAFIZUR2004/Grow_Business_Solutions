@@ -504,11 +504,6 @@ const TeamSection = () => {
           </button>
         </div>
       </div>
-
-      {/* Instruction Toast */}
-      <div className="fixed bottom-4 right-4 bg-black/60 backdrop-blur-md rounded-full px-4 py-2 text-white/50 text-[9px] font-mono z-50 pointer-events-none border border-white/10">
-        💡 Click cards to flip • Swipe for more
-      </div>
     </section>
   );
 };
