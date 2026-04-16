@@ -209,7 +209,7 @@ const EngineeringProtocol = () => {
       ref={scrollRef}
       className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden"
     >
-      {/* Particle Network Canvas - পুরো সেকশন জুড়ে */}
+      {/* Particle Network Canvas - */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none opacity-50 z-0"
@@ -219,10 +219,10 @@ const EngineeringProtocol = () => {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
 
-      <div className="max-w-screen-2xl mx-auto relative z-10">
+      <div className="max-w-screen-2xl mx-auto relative z-10 ">
         <h2 className="text-6xl md:text-8xl font-black text-center mb-40 tracking-tighter">
           {t.protocolTitle}{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
+          <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
             {t.protocolTitleItalic}
           </span>
         </h2>

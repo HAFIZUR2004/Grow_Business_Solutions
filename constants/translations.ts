@@ -1,3 +1,9 @@
+export type TeamMember = {
+  name: string;
+  role: string;
+  description: string;
+  image?: string;
+};
 export const translations = {
   EN: {
     // Navbar
@@ -62,6 +68,86 @@ export const translations = {
       },
     ],
 
+    //Success in Motion
+    successBadge: "MILESTONES",
+    successTitle: "Success in",
+    successTitleGradient: "Motion.",
+    stats: [
+      {
+        title: "8+ Years",
+        desc: "Of dedicated craft in digital architecture.",
+      },
+      {
+        title: "20+ Projects",
+        desc: "High-impact solutions delivered globally.",
+      },
+      {
+        title: "100% Client",
+        desc: "Satisfaction rate across all partnerships.",
+      },
+    ],
+    // Team Section
+    teamBadge: "System Link Established",
+    teamTitle: "The",
+    teamTitleGradient: "Team",
+    teamMembers: [
+      {
+        name: "Hafizur Rahman",
+        role: "Founder & Lead Developer",
+        description:
+          "Architecting high-performance digital ecosystems with MERN stack expertise.",
+        image: "/team/hafizur.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "Elena Vance",
+        role: "Head of Strategy",
+        description: "Transforming complex market data into elegant roadmaps.",
+        image: "/team/Elena.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "Julian Kross",
+        role: "Lead Systems Architect",
+        description:
+          "Building invisible foundations with zero-latency precision.",
+        image: "/team/Julian.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "Md. Shukur Mahmud",
+        role: "Founder & Developer",
+        description:
+          "Building invisible foundations with zero-latency precision.",
+        image: "/team/Shukur.png",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+    ],
+
     //contact Us
     secureChannel: "DIRECT ADVISORY GATEWAY",
     initiate: "Evolve",
@@ -119,7 +205,6 @@ export const translations = {
     statValue: "৯৯.৯৯%",
 
     //Engineering Protocol
-
     protocolTitle: "ইঞ্জিনিয়ারিং",
     protocolTitleItalic: "প্রটোকল",
     steps: [
@@ -142,6 +227,84 @@ export const translations = {
         title: "অপ্টিমাইজেশন ",
         desc: "ক্রমাগত উন্নতি এবং হাই-স্পিড গ্লোবাল নোডগুলোতে অ্যাপ্লিকেশন স্থাপন করা।",
         bgText: "গ্লোবাল",
+      },
+    ],
+
+    //Success in Motion
+    successBadge: "সাফল্যের মাইলফলক",
+    successTitle: "গতিশীল",
+    successTitleGradient: "সাফল্য",
+    stats: [
+      {
+        title: "৮+ বছর",
+        desc: "ডিজিটাল আর্কিটেকচার বা স্থাপত্যে নিবেদিত শিল্পশৈলী।",
+      },
+      {
+        title: "২০+ প্রজেক্ট",
+        desc: "বিশ্বজুড়ে ডেলিভারি করা হাই-ইমপ্যাক্ট সলিউশন।",
+      },
+      {
+        title: "১০০% ক্লায়েন্ট",
+        desc: "প্রতিটি পার্টনারশিপে পূর্ণ সন্তুষ্টির হার।",
+      },
+    ],
+    // Team Section
+    teamBadge: "সিস্টেম সংযোগ স্থাপিত",
+    teamTitle: "আমাদের",
+    teamTitleGradient: "দল",
+    teamMembers: [
+      {
+        name: "হাফিজুর রহমান",
+        role: "প্রতিষ্ঠাতা ও লিড ডেভেলপার",
+        description:
+          "MERN স্ট্যাক দক্ষতায় উচ্চ-ক্ষমতাসম্পন্ন ডিজিটাল ইকোসিস্টেম স্থাপত্যবিদ।",
+        image: "/team/hafizur.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "এলেনা ভ্যান্স",
+        role: "কৌশল প্রধান",
+        description: "জটিল মার্কেট ডেটাকে সুশৃঙ্খল রোডম্যাপে রূপান্তরিত করছেন।",
+        image: "/team/Elena.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "জুলিয়ান ক্রস",
+        role: "লিড সিস্টেম আর্কিটেক্ট",
+        description: "শূন্য লেটেন্সি নির্ভুলতায় অদৃশ্য ভিত্তি নির্মাণ করছেন।",
+        image: "/team/Julian.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+      {
+        name: "মোঃ শুকুর মাহমুদ",
+        role: "প্রতিষ্ঠাতা ও ডেভেলপার",
+        description: "শূন্য লেটেন্সি নির্ভুলতায় অদৃশ্য ভিত্তি নির্মাণ করছেন।",
+        image: "/team/Shukur.png",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
       },
     ],
 
