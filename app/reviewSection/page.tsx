@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { Star, Smile, Rocket, MessageCircle } from "lucide-react";
 
 const testimonials = [
   {
@@ -10,7 +10,7 @@ const testimonials = [
     name: "Alex Rivera",
     role: "CEO",
     comment: "The level of professionalism and technical depth provided was exceptional. Our conversion rate increased by 200% after the redesign.",
-    image: "https://i.ibb.co.com/KjmfmrTk/cropped-circle-image.png",
+    icon: "👨‍💼",
     rating: 5,
     company: "TechVibe"
   },
@@ -19,7 +19,7 @@ const testimonials = [
     name: "Sophia Chen",
     role: "Founder",
     comment: "Working with this team was a game-changer. Their understanding of MERN stack and eye for premium animations is unmatched in the industry.",
-    image: "https://i.ibb.co.com/KjmfmrTk/cropped-circle-image.png",
+    icon: "👩‍💼",
     rating: 5,
     company: "GreenLeaf"
   },
@@ -28,7 +28,7 @@ const testimonials = [
     name: "Marcus Thorne",
     role: "Product Manager",
     comment: "Fast, reliable, and incredibly creative. The custom dashboard they built for us is now our core competitive advantage.",
-    image: "https://i.ibb.co.com/KjmfmrTk/cropped-circle-image.png",
+    icon: "👨‍💻",
     rating: 5,
     company: "CloudScale"
   },
@@ -37,7 +37,7 @@ const testimonials = [
     name: "Isabella Martinez",
     role: "CTO",
     comment: "Absolutely outstanding! The attention to detail and commitment to excellence is rare to find. They delivered ahead of schedule.",
-    image: "https://i.ibb.co.com/KjmfmrTk/cropped-circle-image.png",
+    icon: "👩‍🔬",
     rating: 5,
     company: "InnovateHub"
   },
@@ -46,7 +46,7 @@ const testimonials = [
     name: "David Kim",
     role: "Technical Director",
     comment: "The best investment we've made this year. The team's expertise in modern web technologies transformed our digital presence completely.",
-    image: "https://i.ibb.co.com/KjmfmrTk/cropped-circle-image.png",
+    icon: "👨‍🎨",
     rating: 5,
     company: "DevOps Pro"
   }
@@ -381,15 +381,11 @@ const PremiumReviews = () => {
                     transition={{ delay: 0.4 }}
                     className="flex flex-col items-center"
                   >
+                    {/* Icon Circle with Gradient Background */}
                     <div className="relative group">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl">
-                        <Image 
-                          src={currentReview.image} 
-                          alt={currentReview.name} 
-                          fill
-                          className="object-cover"
-                        />
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+                        <span className="text-3xl md:text-4xl">{currentReview.icon}</span>
                       </div>
                     </div>
                     
@@ -480,7 +476,7 @@ const PremiumReviews = () => {
           ))}
         </div>
 
-        {/* Trust Badges - Enhanced Responsive */}
+        {/* Trust Badges - Enhanced Responsive with Lucide Icons */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -488,24 +484,49 @@ const PremiumReviews = () => {
           viewport={{ once: true }}
           className="flex flex-wrap justify-center gap-4 md:gap-8 mt-12 md:mt-16 pt-6 md:pt-8 border-t border-white/5"
         >
-          {[
-            { icon: "⭐", text: "4.9/5 Average Rating" },
-            { icon: "😊", text: "200+ Happy Clients" },
-            { icon: "🚀", text: "50+ Projects Delivered" },
-            { icon: "💬", text: "24/7 Support" }
-          ].map((badge, i) => (
-            <motion.div 
-              key={i} 
-              className="flex items-center gap-2"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              <span className="text-cyan-500 text-sm md:text-base">{badge.icon}</span>
-              <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-                {badge.text}
-              </span>
-            </motion.div>
-          ))}
+          <motion.div 
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
+            <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
+              4.9/5 Average Rating
+            </span>
+          </motion.div>
+
+          <motion.div 
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <Smile className="w-4 h-4 md:w-5 md:h-5 text-cyan-500" />
+            <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
+              200+ Happy Clients
+            </span>
+          </motion.div>
+
+          <motion.div 
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <Rocket className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+            <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
+              50+ Projects Delivered
+            </span>
+          </motion.div>
+
+          <motion.div 
+            className="flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+            <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
+              24/7 Support
+            </span>
+          </motion.div>
         </motion.div>
 
         {/* Swipe Hint for Mobile */}

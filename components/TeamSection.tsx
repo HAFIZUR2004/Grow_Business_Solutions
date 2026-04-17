@@ -324,7 +324,7 @@ const TeamSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-[#0b0c18]/40 to-transparent opacity-60" />
               </div>
 
-              <div className="p-6 bg-transparent">
+              <div className="p-6 bg-transparent relative z-10">
                 <h3 className="text-2xl font-semibold text-white leading-tight">
                   {member.name.split(' ')[0]} <span className="font-light text-white/50">{member.name.split(' ').slice(1).join(' ')}</span>
                 </h3>
@@ -336,11 +336,14 @@ const TeamSection = () => {
                 </p>
               </div>
 
-              <div className="absolute top-0 left-0 w-full h-14 bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm -translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out flex z-20">
-                <SocialLink href={member.social.twitter} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
-                <SocialLink href={member.social.github} icon={<FiGithub />} bgColor="hover:bg-[#333]" />
-                <SocialLink href={member.social.linkedin} icon={<FiLinkedin />} bgColor="hover:bg-[#0077B5]" />
-                <SocialLink href={member.social.instagram} icon={<FiInstagram />} bgColor="hover:bg-gradient-to-r from-[#833AB4] via-[#E4405F] to-[#F56040]" />
+              {/* Social Bar - Drops UP from bottom */}
+              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out z-20">
+                <div className="flex h-14">
+                  <SocialLink href={member.social.twitter} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
+                  <SocialLink href={member.social.github} icon={<FiGithub />} bgColor="hover:bg-[#333]" />
+                  <SocialLink href={member.social.linkedin} icon={<FiLinkedin />} bgColor="hover:bg-[#0077B5]" />
+                  <SocialLink href={member.social.instagram} icon={<FiInstagram />} bgColor="hover:bg-gradient-to-r from-[#833AB4] via-[#E4405F] to-[#F56040]" />
+                </div>
               </div>
 
               <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center z-10">

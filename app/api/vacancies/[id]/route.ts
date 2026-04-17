@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
-
+import clientPromise from '@/lib/mongodb';
 // PUT - Update vacancy
 export async function PUT(
   request: Request,

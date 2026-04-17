@@ -1,4 +1,4 @@
-import { dbConnect } from '@/app/lib/dbConnect';
+import { dbConnect } from '@/lib/dbConnect';
 import Portfolio from '@/app/models/Portfolio';
 import { NextRequest, NextResponse } from 'next/server';
 
