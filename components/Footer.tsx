@@ -258,7 +258,7 @@ export default function Footer() {
                 href="mailto:contact@growbusiness.solutions"
                 className="text-lg font-bold block hover:text-emerald-400 transition-colors"
               >
-                contact@growbusiness.solutions
+                growbusinesssolutionsbd@gmail.com
               </a>
               <div className="flex gap-3 lg:justify-end">
                 {[

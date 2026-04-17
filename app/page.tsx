@@ -3,7 +3,8 @@ import TechStack from "@/components/TechStack";
 import EngineeringProtocol from "@/components/engineeringProtocol";
 import TeamSection from "@/components/TeamSection";
 import SuccessSection from "@/components/SuccessSection";
-import Portfolio from "./portfolio/page";
+import PremiumReviews from "./reviewSection/page";
+import DynamicPortfolioPage from "./DynamicPortfolioPage/page";
 
 export default function Home() {
   return (
@@ -13,7 +14,8 @@ export default function Home() {
       <SuccessSection />
       <TeamSection />
       <TechStack />
-      <Portfolio />
+      <PremiumReviews/>
+      <DynamicPortfolioPage/>
     </main>
   );
 }

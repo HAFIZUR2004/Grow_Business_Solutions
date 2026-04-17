@@ -48,7 +48,7 @@ function BlobVisual() {
   );
 }
 
-/* ─── HERO SECTION (Enhanced) ─── */
+/* ─── HERO SECTION ─── */
 function CareerHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { scrollYProgress } = useScroll();
@@ -167,113 +167,102 @@ function CareerHero() {
 
   return (
     <motion.section 
-  style={{ opacity: heroOpacity, scale: heroScale }}
-  className="relative min-h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-10"
->
-  {/* Particle Canvas */}
-  <canvas
-    ref={canvasRef}
-    className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
-  />
-
-  {/* Gradient Glow */}
-  <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#6c5ce7]/10 blur-[120px] rounded-full pointer-events-none z-0" />
-  <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#00cec9]/10 blur-[120px] rounded-full pointer-events-none z-0" />
-
-  {/* Wave */}
-  <svg
-    className="absolute bottom-0 left-0 w-full h-[160px] sm:h-[200px] pointer-events-none z-1"
-    viewBox="0 0 1440 220"
-    preserveAspectRatio="none"
-  >
-    <motion.path
-      initial={{ pathLength: 0 }}
-      animate={{ pathLength: 1 }}
-      transition={{ duration: 2 }}
-      d="M0,140 C200,80 400,200 600,130 C800,60 1000,180 1200,110 C1320,75 1400,130 1440,120"
-      fill="none"
-      stroke="rgba(108,92,231,0.35)"
-      strokeWidth="1.5"
-    />
-  </svg>
-
-  {/* Content */}
-  <div className="relative z-10 w-full max-w-6xl mx-auto text-center md:text-left">
-    
-    {/* Hiring Badge */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="inline-flex items-center gap-2 border border-[#a29bfe]/30 bg-[#6c5ce7]/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-6"
+      style={{ opacity: heroOpacity, scale: heroScale }}
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-10"
     >
-      <span className="w-2 h-2 rounded-full bg-[#00cec9] animate-pulse" />
-      <span className="text-[9px] sm:text-[11px] tracking-[0.3em] text-white uppercase font-bold">
-        WE ARE HIRING
-      </span>
-    </motion.div>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
+      />
 
-    {/* Heading */}
-    <motion.h1 
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="font-black leading-tight tracking-tight text-white 
-      text-[2.2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.5rem] mb-5"
-    >
-      JOIN THE DIGITAL
-      <br className="hidden sm:block" />
-      <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9]">
-        PROTOCOL
-      </span>
-    </motion.h1>
+      <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#6c5ce7]/10 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#00cec9]/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
-    {/* Paragraph */}
-    <motion.p 
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-xl mx-auto md:mx-0 text-sm sm:text-base md:text-lg text-white/60 leading-relaxed mb-8"
-    >
-      Architecting high-performance digital ecosystems for a data-driven future.
-      Harness AI to transform complex processes into elegant automated solutions.
-    </motion.p>
-
-    {/* Buttons */}
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start"
-    >
-      <motion.button 
-        whileHover={{ scale: 1.05 }}
-        className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
+      <svg
+        className="absolute bottom-0 left-0 w-full h-[160px] sm:h-[200px] pointer-events-none z-1"
+        viewBox="0 0 1440 220"
+        preserveAspectRatio="none"
       >
-        Explore Open Roles
-      </motion.button>
+        <motion.path
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 2 }}
+          d="M0,140 C200,80 400,200 600,130 C800,60 1000,180 1200,110 C1320,75 1400,130 1440,120"
+          fill="none"
+          stroke="rgba(108,92,231,0.35)"
+          strokeWidth="1.5"
+        />
+      </svg>
 
-      <motion.button 
-        whileHover={{ scale: 1.05 }}
-        className="w-full sm:w-auto border border-white/20 px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
-      >
-        Our Philosophy
-      </motion.button>
-    </motion.div>
+      <div className="relative z-10 w-full max-w-6xl mx-auto text-center md:text-left">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 border border-[#a29bfe]/30 bg-[#6c5ce7]/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-6"
+        >
+          <span className="w-2 h-2 rounded-full bg-[#00cec9] animate-pulse" />
+          <span className="text-[9px] sm:text-[11px] tracking-[0.3em] text-white uppercase font-bold">
+            WE ARE HIRING
+          </span>
+        </motion.div>
 
-    {/* Scroll */}
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-    >
-      <span className="text-[8px] tracking-[0.3em] text-white/30 uppercase">
-        Scroll
-      </span>
-      <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
-    </motion.div>
-  </div>
-</motion.section>
+        <motion.h1 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="font-black leading-tight tracking-tight text-white text-[2.2rem] sm:text-[3rem] md:text-[4rem] lg:text-[5.5rem] mb-5"
+        >
+          JOIN THE DIGITAL
+          <br className="hidden sm:block" />
+          <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9]">
+            PROTOCOL
+          </span>
+        </motion.h1>
+
+        <motion.p 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl mx-auto md:mx-0 text-sm sm:text-base md:text-lg text-white/60 leading-relaxed mb-8"
+        >
+          Architecting high-performance digital ecosystems for a data-driven future.
+          Harness AI to transform complex processes into elegant automated solutions.
+        </motion.p>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start"
+        >
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
+          >
+            Explore Open Roles
+          </motion.button>
+
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            className="w-full sm:w-auto border border-white/20 px-6 py-3 rounded-full text-xs sm:text-sm font-black uppercase"
+          >
+            Our Philosophy
+          </motion.button>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <span className="text-[8px] tracking-[0.3em] text-white/30 uppercase">
+            Scroll
+          </span>
+          <div className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent" />
+        </motion.div>
+      </div>
+    </motion.section>
   );
 }
 
-/* ─── MANIFESTO (Enhanced) ─── */
+/* ─── MANIFESTO ─── */
 function Manifesto() {
   return (
     <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
@@ -298,16 +287,8 @@ function Manifesto() {
           </p>
           <div className="grid grid-cols-2 gap-6">
             {[
-              {
-                num: "01.",
-                title: "Async Native",
-                desc: "Designed for deep work. No useless stand-ups.",
-              },
-              {
-                num: "02.",
-                title: "Tech Sovereign",
-                desc: "We own the stack. No technical debt compromises.",
-              },
+              { num: "01.", title: "Async Native", desc: "Designed for deep work. No useless stand-ups." },
+              { num: "02.", title: "Tech Sovereign", desc: "We own the stack. No technical debt compromises." },
             ].map((item, idx) => (
               <motion.div 
                 key={item.num}
@@ -316,21 +297,14 @@ function Manifesto() {
                 transition={{ delay: idx * 0.1 }}
                 viewport={{ once: true }}
               >
-                <p className="text-[#6c5ce7] font-black text-lg mb-1">
-                  {item.num}
-                </p>
-                <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">
-                  {item.title}
-                </p>
-                <p className="text-white/35 text-xs leading-relaxed">
-                  {item.desc}
-                </p>
+                <p className="text-[#6c5ce7] font-black text-lg mb-1">{item.num}</p>
+                <p className="text-white text-xs font-bold tracking-widest uppercase mb-1">{item.title}</p>
+                <p className="text-white/35 text-xs leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* 3-D blob */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -345,160 +319,350 @@ function Manifesto() {
   );
 }
 
-/* ─── VACANCIES (Enhanced) ─── */
-const roles = [
-  {
-    id: 1,
-    tags: ["System Architecture", "Full-Time"],
-    title: "Senior System Architect",
-    desc: "Lead the foundation of our next-gen cloud orchestrator. Requires deep knowledge of distributed systems and low-level optimization.",
-    stack: ["Go", "Rust", "Kubernetes", "gRPC"],
-    salary: "$160k – $220k",
-    featured: true,
-    color: "#6c5ce7",
-  },
-  {
-    id: 2,
-    tags: ["Intelligence", "AI/ML"],
-    title: "AI Integration Specialist",
-    desc: "Deploying LLM frameworks within enterprise data pipelines for real-time inferences and autonomous decision-making.",
-    stack: ["Python", "LangChain", "CUDA", "TensorFlow"],
-    featured: false,
-    color: "#00cec9",
-  },
-  {
-    id: 3,
-    tags: ["Frontend", "UI/UX"],
-    title: "Frontend Engineer (Framer/Tailwind)",
-    desc: "Crafting cinematic web experiences with fluid motion, pixel-perfect shadow aesthetics, and micro-interactions.",
-    stack: ["Next.js", "Framer Motion", "TypeScript", "Tailwind"],
-    featured: false,
-    color: "#a29bfe",
-  },
-  {
-    id: 4,
-    tags: ["Infrastructure", "SRE"],
-    title: "Site Reliability Engineer",
-    desc: "Managing the global node network with 99.98% uptime through automated self-healing systems and chaos engineering.",
-    stack: ["Terraform", "K8s", "AWS", "Prometheus"],
-    featured: false,
-    color: "#6c5ce7",
-  },
-  {
-    id: 5,
-    tags: [],
-    title: "General Application",
-    desc: "Don't see your role? Pitch your own engineering protocol. We're always looking for exceptional talent.",
-    icon: true,
-    featured: false,
-  },
-];
+/* ─── DYNAMIC VACANCIES SECTION ─── */
+interface Vacancy {
+  _id?: string;
+  id: string;
+  tags: string[];
+  title: string;
+  desc: string;
+  stack: string[];
+  salary?: string;
+  featured: boolean;
+  color: string;
+  icon?: boolean;
+  department: string;
+}
 
-function VacancyCard({ role }: { role: (typeof roles)[0] }) {
-  if (role.icon) {
+function Vacancies() {
+  const [vacancies, setVacancies] = useState<Vacancy[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingVacancy, setEditingVacancy] = useState<Vacancy | null>(null);
+  const [formData, setFormData] = useState({
+    tags: '',
+    title: '',
+    desc: '',
+    stack: '',
+    salary: '',
+    featured: false,
+    color: '#6c5ce7',
+    department: 'Engineering',
+  });
+
+  const fetchVacancies = async () => {
+    try {
+      const res = await fetch('/api/vacancies');
+      const data = await res.json();
+      setVacancies(data);
+    } catch (error) {
+      console.error('Error fetching vacancies:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVacancies();
+    // Check admin (you can implement proper auth)
+    const checkAdmin = () => {
+      const user = localStorage.getItem('user');
+      setIsAdmin(user === 'admin');
+    };
+    checkAdmin();
+  }, []);
+
+  const openModal = (vacancy?: Vacancy) => {
+    if (vacancy) {
+      setEditingVacancy(vacancy);
+      setFormData({
+        tags: vacancy.tags.join(', '),
+        title: vacancy.title,
+        desc: vacancy.desc,
+        stack: vacancy.stack.join(', '),
+        salary: vacancy.salary || '',
+        featured: vacancy.featured,
+        color: vacancy.color,
+        department: vacancy.department,
+      });
+    } else {
+      setEditingVacancy(null);
+      setFormData({
+        tags: '',
+        title: '',
+        desc: '',
+        stack: '',
+        salary: '',
+        featured: false,
+        color: '#6c5ce7',
+        department: 'Engineering',
+      });
+    }
+    setModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const payload = {
+      tags: formData.tags.split(',').map(t => t.trim()),
+      title: formData.title,
+      desc: formData.desc,
+      stack: formData.stack.split(',').map(s => s.trim()),
+      salary: formData.salary,
+      featured: formData.featured,
+      color: formData.color,
+      department: formData.department,
+    };
+
+    try {
+      let response;
+      if (editingVacancy) {
+        response = await fetch(`/api/vacancies/${editingVacancy.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...payload, id: editingVacancy.id }),
+        });
+      } else {
+        response = await fetch('/api/vacancies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (response.ok) {
+        setModalOpen(false);
+        fetchVacancies();
+        alert(editingVacancy ? 'Vacancy updated!' : 'Vacancy created!');
+      } else {
+        throw new Error('Failed to save');
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      alert('Failed to save vacancy');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this vacancy?')) return;
+    
+    try {
+      const response = await fetch(`/api/vacancies/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        fetchVacancies();
+        alert('Vacancy deleted!');
+      } else {
+        throw new Error('Failed to delete');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete vacancy');
+    }
+  };
+
+  const engineeringCount = vacancies.filter(v => v.department === 'Engineering').length;
+  const designCount = vacancies.filter(v => v.department === 'Design').length;
+
+  const VacancyCard = ({ role }: { role: Vacancy }) => {
+    if (role.icon) {
+      return (
+        <motion.div 
+          whileHover={{ y: -5, borderColor: "#6c5ce7" }}
+          className="border border-white/10 bg-[#11111e]/80 backdrop-blur-sm rounded-xl p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[220px] group cursor-pointer transition-all duration-300"
+        >
+          <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-2xl group-hover:scale-110 transition-transform">
+            +
+          </div>
+          <p className="text-white font-bold text-base tracking-wide uppercase">{role.title}</p>
+          <p className="text-white/35 text-xs leading-relaxed">{role.desc}</p>
+          <button className="mt-2 text-[10px] tracking-[0.18em] uppercase text-[#6c5ce7] hover:text-white transition-colors">
+            Submit Pitch →
+          </button>
+        </motion.div>
+      );
+    }
+
     return (
-      <motion.div 
-        whileHover={{ y: -5, borderColor: "#6c5ce7" }}
-        className="border border-white/10 bg-[#11111e]/80 backdrop-blur-sm rounded-xl p-8 flex flex-col items-center justify-center text-center gap-4 min-h-[220px] group cursor-pointer transition-all duration-300"
+      <motion.div
+        whileHover={{ y: -5 }}
+        className={`border rounded-xl p-6 flex flex-col gap-4 backdrop-blur-sm transition-all duration-300 ${
+          role.featured
+            ? "border-[#6c5ce7]/40 bg-gradient-to-br from-[#13112a]/90 to-[#11111e]/90 col-span-1 md:col-span-2 shadow-[0_0_30px_rgba(108,92,231,0.1)]"
+            : "border-white/10 bg-[#11111e]/80 hover:border-[#6c5ce7]/30"
+        }`}
       >
-        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/50 text-2xl group-hover:scale-110 transition-transform">
-          +
-        </div>
-        <p className="text-white font-bold text-base tracking-wide uppercase">
+        {role.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {role.tags.map((t) => (<Tag key={t}>{t}</Tag>))}
+          </div>
+        )}
+
+        <h3 className={`font-black text-white leading-tight ${role.featured ? "text-2xl md:text-3xl" : "text-xl"}`}>
           {role.title}
-        </p>
-        <p className="text-white/35 text-xs leading-relaxed">{role.desc}</p>
-        <button className="mt-2 text-[10px] tracking-[0.18em] uppercase text-[#6c5ce7] hover:text-white transition-colors">
-          Submit Pitch →
-        </button>
+        </h3>
+        <p className="text-white/40 text-xs leading-relaxed">{role.desc}</p>
+
+        {role.stack && (
+          <div className="flex flex-wrap gap-2">
+            {role.stack.map((s) => (<Tag key={s}>{s}</Tag>))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between mt-auto flex-wrap gap-3">
+          {role.salary && (
+            <p className="text-[10px] tracking-widest text-white/40 uppercase">
+              Salary: {role.salary}
+            </p>
+          )}
+          <div className="flex gap-2">
+            {isAdmin && (
+              <>
+                <button
+                  onClick={() => openModal(role)}
+                  className="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all bg-amber-500 hover:bg-amber-600"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(role.id)}
+                  className="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all bg-red-500 hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </>
+            )}
+            <button
+              className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
+              style={{ backgroundColor: role.color || "#6c5ce7" }}
+            >
+              Apply Now →
+            </button>
+          </div>
+        </div>
       </motion.div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
+        <div className="text-center text-white/50">Loading vacancies...</div>
+      </section>
     );
   }
 
   return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className={`border rounded-xl p-6 flex flex-col gap-4 backdrop-blur-sm transition-all duration-300 ${
-        role.featured
-          ? "border-[#6c5ce7]/40 bg-gradient-to-br from-[#13112a]/90 to-[#11111e]/90 col-span-1 md:col-span-2 shadow-[0_0_30px_rgba(108,92,231,0.1)]"
-          : "border-white/10 bg-[#11111e]/80 hover:border-[#6c5ce7]/30"
-      }`}
-    >
-      {role.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {role.tags.map((t) => (
-            <Tag key={t}>{t}</Tag>
-          ))}
-        </div>
-      )}
-
-      <h3
-        className={`font-black text-white leading-tight ${
-          role.featured ? "text-2xl md:text-3xl" : "text-xl"
-        }`}
-      >
-        {role.title}
-      </h3>
-      <p className="text-white/40 text-xs leading-relaxed">{role.desc}</p>
-
-      {role.stack && (
-        <div className="flex flex-wrap gap-2">
-          {role.stack.map((s) => (
-            <Tag key={s}>{s}</Tag>
-          ))}
-        </div>
-      )}
-
-      <div className="flex items-center justify-between mt-auto flex-wrap gap-3">
-        {role.salary && (
-          <p className="text-[10px] tracking-widest text-white/40 uppercase">
-            Salary: {role.salary}
-          </p>
-        )}
-        <button
-          className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
-          style={{ backgroundColor: role.color || "#6c5ce7" }}
-        >
-          Apply Now →
-        </button>
-      </div>
-    </motion.div>
-  );
-}
-
-function Vacancies() {
-  return (
-    <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
-      <SectionLabel>Operational Series</SectionLabel>
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-        <h2 className="text-5xl md:text-6xl font-black text-white leading-none">
-          AVAILABLE
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#00cec9]">VACANCIES</span>
-        </h2>
-        <div className="flex gap-8">
-          {[
-            { dept: "Engineering", count: "12 Roles", color: "#6c5ce7" },
-            { dept: "Design", count: "04 Roles", color: "#00cec9" },
-          ].map((d) => (
-            <div key={d.dept}>
-              <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">
-                {d.dept}
-              </p>
-              <p className="text-white font-black text-lg" style={{ color: d.color }}>
-                {d.count}
-              </p>
+    <>
+      <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
+        <SectionLabel>Operational Series</SectionLabel>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+          <h2 className="text-5xl md:text-6xl font-black text-white leading-none">
+            AVAILABLE
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#00cec9]">VACANCIES</span>
+          </h2>
+          <div className="flex gap-8">
+            <div>
+              <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">Engineering</p>
+              <p className="text-white font-black text-lg" style={{ color: "#6c5ce7" }}>{engineeringCount} Roles</p>
             </div>
-          ))}
+            <div>
+              <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mb-1">Design</p>
+              <p className="text-white font-black text-lg" style={{ color: "#00cec9" }}>{designCount} Roles</p>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {roles.map((r) => (
-          <VacancyCard key={r.id} role={r} />
-        ))}
-      </div>
-    </section>
+        {isAdmin && (
+          <div className="mb-6">
+            <button
+              onClick={() => openModal()}
+              className="px-6 py-3 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-lg text-sm font-bold uppercase hover:shadow-lg transition-all"
+            >
+              + Add New Vacancy
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {vacancies.map((vacancy) => (<VacancyCard key={vacancy.id} role={vacancy} />))}
+        </div>
+      </section>
+
+      {/* Modal */}
+      {modalOpen && (
+        <div 
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setModalOpen(false); }}
+        >
+          <div className="bg-[#11111e] border border-white/20 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-[#1a1a2e] p-6 border-b border-white/10 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">{editingVacancy ? 'Edit Vacancy' : 'Create New Vacancy'}</h2>
+              <button onClick={() => setModalOpen(false)} className="text-white/60 hover:text-white">✕</button>
+            </div>
+            
+            <div className="p-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-1">Title *</label>
+                  <input type="text" className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-1">Description *</label>
+                  <textarea rows={3} className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.desc} onChange={(e) => setFormData({ ...formData, desc: e.target.value })} required />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-1">Tags (comma separated)</label>
+                    <input type="text" className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.tags} onChange={(e) => setFormData({ ...formData, tags: e.target.value })} placeholder="System Architecture, Full-Time" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-1">Tech Stack (comma separated)</label>
+                    <input type="text" className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.stack} onChange={(e) => setFormData({ ...formData, stack: e.target.value })} placeholder="Go, Rust, Kubernetes" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-1">Salary Range</label>
+                    <input type="text" className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.salary} onChange={(e) => setFormData({ ...formData, salary: e.target.value })} placeholder="$160k – $220k" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-1">Department</label>
+                    <select className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })}>
+                      <option value="Engineering">Engineering</option>
+                      <option value="Design">Design</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-white/80 mb-1">Color</label>
+                    <input type="color" className="w-full h-10 bg-black/50 border border-white/20 rounded-lg cursor-pointer" value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })} />
+                  </div>
+                  <div className="flex items-center">
+                    <label className="flex items-center gap-2">
+                      <input type="checkbox" className="w-4 h-4" checked={formData.featured} onChange={(e) => setFormData({ ...formData, featured: e.target.checked })} />
+                      <span className="text-sm text-white/80">Featured Position</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button type="button" onClick={() => setModalOpen(false)} className="flex-1 px-6 py-2 border border-white/20 rounded-lg text-white/80 hover:bg-white/10 transition">Cancel</button>
+                  <button type="submit" className="flex-1 px-6 py-2 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-lg text-white font-bold hover:shadow-lg transition">{editingVacancy ? 'Update' : 'Create'}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
