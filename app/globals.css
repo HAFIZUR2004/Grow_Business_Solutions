@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* Swiper CSS - শুধুমাত্র যদি swiper ইন্সটল করা থাকে */
 @import "swiper/css";
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";

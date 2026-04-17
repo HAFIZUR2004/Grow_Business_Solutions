@@ -1,146 +1,85 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import { useLanguage } from "@/constants/LanguageContext";
-import { translations } from "@/constants/translations";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { FiArrowRight, FiGithub, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi";
 
-// React Icons
-import { MdEmail } from "react-icons/md";
-import { FaLinkedin, FaGithub, FaTwitter, FaFacebook } from "react-icons/fa";
-import { FiUser } from "react-icons/fi";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-// Type definitions
-interface SocialLinks {
-  email?: string;
-  linkedin?: string;
-  github?: string;
-  twitter?: string;
-  website?: string;
-  facebook?: string;
-}
-
-interface TeamMember {
-  name: string;
-  role: string;
-  description: string;
-  image?: string;
-  social?: SocialLinks;
-}
-
-// wireColors - বিভিন্ন কার্ডের জন্য বিভিন্ন রং
-const wireColors = [
-  "#6d28d9", // purple
-  "#22d3ee", // cyan
-  "#b5a7ff", // light purple
-  "#f59e0b", // amber
-  "#10b981", // emerald
-  "#ef4444", // red
-  "#3b82f6", // blue
-  "#ec4899", // pink
-  "#8b5cf6", // violet
-  "#14b8a6", // teal
-];
+const SocialLink = ({ href, icon, bgColor }: { href: string; icon: React.ReactNode; bgColor: string }) => (
+  <a 
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={`flex-1 flex items-center justify-center text-white/60 text-xl transition-all duration-300 ${bgColor} hover:text-white`}
+  >
+    {icon}
+  </a>
+);
 
 const TeamSection = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const badgeRef = useRef<HTMLDivElement>(null);
 
-  const { lang } = useLanguage();
-  const t = translations[lang];
-  const teamMembers = t.teamMembers as TeamMember[];
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+  
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.3, 1, 1, 0.3]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.95, 1, 1, 0.95]);
 
-  const [flippedStates, setFlippedStates] = useState<boolean[]>(() =>
-    new Array(teamMembers.length).fill(false),
-  );
-  const [isFlipping, setIsFlipping] = useState<number | null>(null);
-
-  // ফ্লিপ এনিমেশন - GSAP সহ
-  const handleFlip = (index: number) => {
-    if (isFlipping === index) return;
-
-    setIsFlipping(index);
-
-    const cardElement = document.querySelector(`[data-card-index="${index}"]`);
-
-    if (cardElement) {
-      gsap.to(cardElement, {
-        duration: 0.6,
-        rotationY: flippedStates[index] ? 0 : 180,
-        ease: "back.out(1.2)",
-        transformStyle: "preserve-3d",
-        onComplete: () => {
-          setFlippedStates((prev) => {
-            const newState = [...prev];
-            newState[index] = !newState[index];
-            return newState;
-          });
-          setIsFlipping(null);
-        },
-      });
-    } else {
-      setFlippedStates((prev) => {
-        const newState = [...prev];
-        newState[index] = !newState[index];
-        return newState;
-      });
-      setTimeout(() => setIsFlipping(null), 600);
+  const scrollNext = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 350, behavior: "smooth" });
     }
   };
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 100, scale: 0.8, rotationX: -45 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotationX: 0,
-            duration: 1.5,
-            ease: "back.out(1.2)",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 60%",
-            },
-          },
-        );
-      }
+  const scrollPrev = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -350, behavior: "smooth" });
+    }
+  };
 
-      if (badgeRef.current) {
-        gsap.fromTo(
-          badgeRef.current,
-          { opacity: 0, scale: 0 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            ease: "elastic.out(1, 0.5)",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top 60%",
-            },
-          },
-        );
-      }
-    }, containerRef);
+  const members = [
+    { 
+      name: "Hafizur Rahman", 
+      role: "Lead Systems Architect", 
+      company: "Tech Nova", 
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=500&fit=crop",
+      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
+    },
+    { 
+      name: "Shukkur Ali", 
+      role: "Quantum Security Lead", 
+      company: "Cyberdyne Systems", 
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop",
+      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
+    },
+    { 
+      name: "Sarah Chen", 
+      role: "Product Owner", 
+      company: "Zilla Themes", 
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&h=500&fit=crop",
+      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
+    },
+    { 
+      name: "Julian Kross", 
+      role: "Lead Architect", 
+      company: "Moon Studios", 
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop",
+      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
+    },
+    { 
+      name: "Elena Vance", 
+      role: "AI Engineer", 
+      company: "Neural Dynamics", 
+      image: "https://images.unsplash.com/photo-1573497019236-17f8177b81e8?q=80&w=400&h=500&fit=crop",
+      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
+    },
+  ];
 
-    return () => ctx.revert();
-  }, [lang]);
-
-  // Particle network animation
+  // Particle Network Canvas Effect
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -155,23 +94,42 @@ const TeamSection = () => {
       vy: number;
       r: number;
       color: string;
+      pulse: number;
     }> = [];
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      nodes = Array.from({ length: 50 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        r: Math.random() * 2 + 1,
-        color:
-          Math.random() > 0.6
-            ? "rgba(139, 92, 246, 0.4)"
-            : "rgba(34, 211, 238, 0.3)",
-      }));
+      const rect = canvas.parentElement?.getBoundingClientRect();
+      if (rect) {
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      } else {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      const nodeCount = Math.min(60, Math.floor((canvas.width * canvas.height) / 20000));
+      nodes = [];
+      
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 2.5 + 1,
+          color: Math.random() > 0.5 
+            ? `rgba(196, 181, 253, ${Math.random() * 0.5 + 0.3})`
+            : `rgba(165, 243, 252, ${Math.random() * 0.5 + 0.2})`,
+          pulse: Math.random() * Math.PI * 2,
+        });
+      }
     };
+
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
 
     resize();
     window.addEventListener("resize", resize);
@@ -179,331 +137,271 @@ const TeamSection = () => {
     const draw = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      if (nodes.length === 0) return;
 
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(
-            nodes[i].x - nodes[j].x,
-            nodes[i].y - nodes[j].y,
-          );
-          if (d < 120) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 170) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.1 * (1 - d / 120);
-            ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
-            ctx.lineWidth = 0.5;
+            
+            const op = 0.1 * (1 - distance / 170);
+            const gradient = ctx.createLinearGradient(
+              nodes[i].x, nodes[i].y,
+              nodes[j].x, nodes[j].y
+            );
+            gradient.addColorStop(0, `rgba(196, 181, 253, ${op})`);
+            gradient.addColorStop(1, `rgba(165, 243, 252, ${op})`);
+            
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
       }
 
-      nodes.forEach((n) => {
+      nodes.forEach((node) => {
+        const pulseRadius = node.r + Math.sin(node.pulse) * 0.4;
+        node.pulse += 0.02;
+        
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
+        ctx.arc(node.x, node.y, pulseRadius, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
         ctx.fill();
-
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
-        n.x = Math.min(Math.max(n.x, 0), canvas.width);
-        n.y = Math.min(Math.max(n.y, 0), canvas.height);
+        
+        if (node.r > 1.5) {
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, pulseRadius + 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(196, 181, 253, 0.06)`;
+          ctx.fill();
+        }
+        
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        if (node.x < -50) node.x = canvas.width + 50;
+        if (node.x > canvas.width + 50) node.x = -50;
+        if (node.y < -50) node.y = canvas.height + 50;
+        if (node.y > canvas.height + 50) node.y = -50;
       });
-
+      
       animId = requestAnimationFrame(draw);
     };
-
-    draw();
-
+    
+    setTimeout(() => {
+      resize();
+      draw();
+    }, 100);
+    
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
   }, []);
 
-  const renderCard = (member: TeamMember, idx: number) => (
-    <div
-      key={idx}
-      className="relative group cursor-pointer"
-      onClick={() => handleFlip(idx)}
+  return (
+    <section 
+      ref={containerRef}
+      className="relative bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] py-24 px-6 md:px-10 overflow-hidden"
     >
-      {/* Connecting Line from Node to Card */}
-      <div
-        className="absolute -top-5 left-1/2 -translate-x-1/2 w-[2px] h-5 z-10 transition-all duration-300 group-hover:h-8"
-        style={{
-          background: `linear-gradient(to bottom, ${wireColors[idx % wireColors.length]}, ${wireColors[idx % wireColors.length]}40)`,
-        }}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        style={{ opacity: 0.5 }}
       />
 
-      {/* Node Light - বড় এবং উজ্জ্বল */}
-      <div
-        className="node-light absolute -top-10 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full z-20 transition-all duration-300 flex items-center justify-center cursor-pointer"
-        style={{
-          backgroundColor: wireColors[idx % wireColors.length],
-          boxShadow: `0 0 25px ${wireColors[idx % wireColors.length]}, 0 0 50px ${wireColors[idx % wireColors.length]}`,
-          border: "2px solid rgba(255,255,255,0.5)",
-        }}
-      >
-        {/* Inner pulsing dot */}
-        <div
-          className="w-2 h-2 rounded-full bg-white animate-pulse"
-          style={{
-            boxShadow: `0 0 15px ${wireColors[idx % wireColors.length]}`,
-          }}
-        />
-      </div>
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 animate-pulse" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0 animate-pulse" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/5 to-cyan-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      {/* Card Number Badge */}
-      <div
-        className="absolute -top-9 left-1/2 -translate-x-1/2 translate-x-8 z-20 text-[10px] font-mono whitespace-nowrap"
-        style={{
-          color: wireColors[idx % wireColors.length],
-          textShadow: `0 0 10px ${wireColors[idx % wireColors.length]}`,
-        }}
-      >
-        #{idx + 1}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
       </div>
-
-      {/* Flip Card Container */}
-      <div
-        className="relative w-full aspect-[3/4]"
-        style={{ perspective: "1200px" }}
+      
+      <motion.div 
+        style={{ opacity, scale }}
+        className="max-w-7xl mx-auto relative z-10"
       >
-        <div
-          data-card-index={idx}
-          className="relative w-full h-full transition-all duration-700"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: flippedStates[idx] ? "rotateY(180deg)" : "rotateY(0deg)",
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-3 mb-6"
+          >
+            <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500" />
+            <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em] font-semibold">
+              MEET THE COLLECTIVE
+            </p>
+            <div className="h-px w-8 bg-gradient-to-l from-transparent to-cyan-500" />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <h2 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter leading-tight">
+              <span className="bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
+                Our Creative
+              </span>
+              <br />
+              <span className="relative inline-block mt-2">
+                <span className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400">
+                  Collective
+                </span>
+              </span>
+            </h2>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-white/40 text-base md:text-lg max-w-2xl mx-auto mt-6 leading-relaxed"
+          >
+            System sovereign operators tasked with the orchestration of
+            planetary-scale technical infrastructure and quantum computational frameworks.
+          </motion.p>
+        </div>
+
+        <div className="flex justify-center gap-3 mb-8">
+          <button 
+            onClick={scrollPrev}
+            className="group flex items-center justify-center w-12 h-12 bg-white/[0.05] border border-white/10 rounded-full shadow-sm hover:bg-cyan-500/20 hover:text-white hover:border-cyan-500/50 transition-all duration-300"
+          >
+            <FiArrowRight size={20} className="rotate-180 text-white/60 group-hover:text-cyan-400 group-hover:-translate-x-1 transition-transform" />
+          </button>
+          
+          <button 
+            onClick={scrollNext}
+            className="group flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 border border-purple-500/30 rounded-full shadow-sm hover:bg-gradient-to-r hover:from-purple-600/40 hover:to-cyan-500/40 transition-all duration-300"
+          >
+            <FiArrowRight size={20} className="text-white/80 group-hover:text-cyan-400 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
+        <div 
+          ref={scrollRef}
+          className="flex gap-8 overflow-x-auto pb-10 hide-scrollbar"
+          style={{ 
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none"
           }}
         >
-          {/* Front Side */}
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden bg-[#0f1120] border border-white/10 group-hover:border-purple-500/50 transition-all duration-300"
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            <div className="relative w-full h-full">
-              {member.image ? (
+          {members.map((member, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.1, duration: 0.5 }}
+              viewport={{ once: true, margin: "-50px" }}
+              className="min-w-[320px] md:min-w-[360px] bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl group relative overflow-hidden hover:border-purple-500/30 transition-all duration-500"
+              style={{ scrollSnapAlign: "start" }}
+            >
+              <div className="relative h-[380px] w-full overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
                 <Image
                   src={member.image}
                   alt={member.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-cyan-900/40 flex items-center justify-center">
-                  <FiUser className="w-20 h-20 text-white/30" />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-[#0b0c18]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-[#0b0c18]/40 to-transparent opacity-60" />
+              </div>
 
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
-                <h3 className="text-2xl font-bold text-white mb-1">
-                  {member.name.split(" ")[0]}
+              <div className="p-6 bg-transparent">
+                <h3 className="text-2xl font-semibold text-white leading-tight">
+                  {member.name.split(' ')[0]} <span className="font-light text-white/50">{member.name.split(' ').slice(1).join(' ')}</span>
                 </h3>
-                <p className="text-white/40 text-xs font-medium uppercase tracking-wider">
-                  {member.role.split(" ").slice(0, 2).join(" ")}
+                <p className="text-cyan-400 mt-2 text-sm font-medium">
+                  {member.role}
                 </p>
-                <div className="mt-4 text-white/30 text-xs font-mono flex items-center justify-center gap-1">
-                  <span className="inline-block animate-bounce">↺</span>
-                  <span>Click to flip</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Back Side */}
-          <div
-            className="absolute inset-0 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/60 to-cyan-900/60 backdrop-blur-md border border-white/20 p-6 flex flex-col"
-            style={{
-              backfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-            }}
-          >
-            <div className="text-center flex-1 flex flex-col justify-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-2 border-purple-500 shadow-lg bg-[#0f1120]">
-                {member.image ? (
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-purple-500/30 to-cyan-500/30 flex items-center justify-center">
-                    <FiUser className="w-10 h-10 text-white/50" />
-                  </div>
-                )}
+                <p className="text-white/30 text-xs mt-1">
+                  {member.company}
+                </p>
               </div>
 
-              <h3 className="text-xl font-bold text-white mb-1">
-                {member.name}
-              </h3>
-              <p className="text-cyan-300 text-[10px] font-mono uppercase mb-4 tracking-wider">
-                {member.role}
-              </p>
-
-              <div className="w-12 h-[1px] bg-gradient-to-r from-purple-400 to-cyan-400 mx-auto mb-4" />
-
-              <p className="text-white/60 text-xs leading-relaxed mb-6 line-clamp-3">
-                {member.description}
-              </p>
-
-              {/* Social Icons */}
-              <div className="flex justify-center gap-3 flex-wrap">
-                {member.social?.email && (
-                  <a
-                    href={`mailto:${member.social.email}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MdEmail className="w-4 h-4 text-white/80" />
-                  </a>
-                )}
-                {member.social?.linkedin && (
-                  <a
-                    href={member.social.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaLinkedin className="w-4 h-4 text-white/80" />
-                  </a>
-                )}
-                {member.social?.facebook && (
-                  <a
-                    href={member.social.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaFacebook className="w-4 h-4 text-white/80" />
-                  </a>
-                )}
-                {member.social?.github && (
-                  <a
-                    href={member.social.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaGithub className="w-4 h-4 text-white/80" />
-                  </a>
-                )}
-                {member.social?.twitter && (
-                  <a
-                    href={member.social.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaTwitter className="w-4 h-4 text-white/80" />
-                  </a>
-                )}
+              <div className="absolute top-0 left-0 w-full h-14 bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm -translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out flex z-20">
+                <SocialLink href={member.social.twitter} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
+                <SocialLink href={member.social.github} icon={<FiGithub />} bgColor="hover:bg-[#333]" />
+                <SocialLink href={member.social.linkedin} icon={<FiLinkedin />} bgColor="hover:bg-[#0077B5]" />
+                <SocialLink href={member.social.instagram} icon={<FiInstagram />} bgColor="hover:bg-gradient-to-r from-[#833AB4] via-[#E4405F] to-[#F56040]" />
               </div>
 
-              <div className="mt-6 text-white/30 text-[10px] font-mono">
-                ↻ Click to flip back
+              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center z-10">
+                <span className="text-cyan-400 text-xs font-mono">0{idx + 1}</span>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
-  return (
-    <section
-      ref={containerRef}
-      className="relative bg-gradient-to-b from-[#0b0c18] to-[#0a0a14] py-20 md:py-28 px-4 overflow-hidden"
-    >
-      {/* Canvas Background */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
-      />
-
-      {/* Gradient Effects */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/20 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/20 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.05),transparent_70%)] pointer-events-none z-0" />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header Section */}
-        <div className="flex flex-col items-center mb-16 text-center">
-          <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent mb-6" />
-
-          <h2
-            ref={titleRef}
-            className="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase"
-          >
-            {t.teamTitle}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400">
-              {t.teamTitleGradient}
-            </span>
-          </h2>
-
-          <div ref={badgeRef} className="mt-6 flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-lg shadow-cyan-500/50" />
-            <span className="text-cyan-400 font-mono text-[11px] tracking-[0.3em] uppercase">
-              {t.teamBadge} • {teamMembers.length} MEMBERS
-            </span>
-          </div>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-cyan-500/10 rounded-2xl" />
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Swiper Carousel with Navigation */}
-        <div className="relative">
-          <Swiper
-            modules={[Autoplay, Navigation, Pagination]}
-            spaceBetween={30}
-            slidesPerView={1}
-            navigation={{
-              prevEl: ".swiper-button-prev-custom",
-              nextEl: ".swiper-button-next-custom",
-            }}
-            pagination={{ clickable: true, dynamicBullets: true }}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            breakpoints={{
-              640: { slidesPerView: 2, spaceBetween: 20 },
-              1024: { slidesPerView: 3, spaceBetween: 30 },
-            }}
-            className="team-carousel"
-            style={{ padding: "20px 0 60px 0" }}
-          >
-            {teamMembers.map((member, idx) => (
-              <SwiperSlide key={idx}>{renderCard(member, idx)}</SwiperSlide>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="flex justify-center mt-8 gap-2"
+        >
+          <div className="flex gap-2">
+            {members.map((_, idx) => (
+              <div 
+                key={idx}
+                className="w-1.5 h-1.5 rounded-full bg-white/20 transition-all duration-300 hover:bg-cyan-400 hover:w-3 cursor-pointer"
+                onClick={() => {
+                  if (scrollRef.current) {
+                    scrollRef.current.scrollTo({ left: idx * 368, behavior: "smooth" });
+                  }
+                }}
+              />
             ))}
-          </Swiper>
+          </div>
+        </motion.div>
 
-          {/* Custom Navigation Buttons */}
-          <button
-            className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-cyan-400 hover:bg-cyan-500/30 hover:scale-110 transition-all duration-300"
-            style={{ left: "-20px" }}
-          >
-            ❮
-          </button>
-          <button
-            className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-cyan-400 hover:bg-cyan-500/30 hover:scale-110 transition-all duration-300"
-            style={{ right: "-20px" }}
-          >
-            ❯
-          </button>
-        </div>
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap justify-center gap-6 md:gap-10 mt-16 pt-8 border-t border-white/5"
+        >
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.02] border border-white/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            <span className="text-white/40 text-[10px] font-mono uppercase tracking-wider">
+              SYSTEM STATUS: OPERATIONAL
+            </span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.02] border border-white/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+            <span className="text-white/40 text-[10px] font-mono uppercase tracking-wider">
+              ALL NODES ACTIVE
+            </span>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 };
