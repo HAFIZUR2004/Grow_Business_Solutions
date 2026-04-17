@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@import "swiper/css";
+@import "swiper/css/navigation";
+@import "swiper/css/pagination";
+@import "swiper/css/effect-coverflow";
 
 :root {
   /* আপনার লোগোর ব্র্যান্ড কালারগুলো (Navy & Green) */
@@ -6,21 +10,17 @@
   --color-secondary: #34a853;
   --color-secondary-hover: #2d9147;
 
-  /* ডার্ক মোড ব্যাকগ্রাউন্ড (আপনার হিরো সেকশনের সাথে মানানসই) */
+  /* ডার্ক মোড ব্যাকগ্রাউন্ড */
   --background: #0b0c18;
   --foreground: #ededed;
 }
 
 @theme inline {
-  /* ব্র্যান্ড কালারগুলোকে টেলউইন্ড ক্লাসে রূপান্তর */
   --color-primary: var(--color-primary);
   --color-secondary: var(--color-secondary);
   --color-secondary-hover: var(--color-secondary-hover);
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  /* Next.js Font Variables (Layout থেকে আসবে) */
   --font-inter: var(--font-inter);
   --font-hind: var(--font-hind);
 }
@@ -29,12 +29,10 @@
 @layer base {
   body {
     @apply bg-background text-foreground antialiased;
-    /* ডিফল্ট ফন্ট ইন্টার, তবে লেআউটে কন্ডিশনাল ক্লাস কাজ করবে */
     font-family: var(--font-inter), ui-sans-serif, system-ui;
     overflow-x: hidden;
   }
 
-  /* রিচ কন্টেন্টের জন্য টেক্সট ব্যালেন্স */
   h1,
   h2,
   h3 {
@@ -42,7 +40,7 @@
   }
 }
 
-/* কাস্টম ইউটিলিটি ক্লাস (প্রয়োজন হলে ব্যবহারের জন্য) */
+/* কাস্টম ইউটিলিটি ক্লাস */
 @utility flex-center {
   display: flex;
   align-items: center;
@@ -55,7 +53,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* স্ক্রলবার কাস্টমাইজেশন (প্রিমিয়াম লুকের জন্য) */
+/* স্ক্রলবার কাস্টমাইজেশন */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -71,4 +69,182 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-secondary);
+}
+
+/* ========== TEAM CAROUSEL STYLES ========== */
+.team-carousel {
+  padding: 20px 0 40px 0;
+}
+
+.team-carousel .swiper-button-next,
+.team-carousel .swiper-button-prev {
+  color: #22d3ee;
+  background: rgba(0, 0, 0, 0.5);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.team-carousel .swiper-button-next:hover,
+.team-carousel .swiper-button-prev:hover {
+  background: rgba(34, 211, 238, 0.3);
+  transform: scale(1.1);
+}
+
+.team-carousel .swiper-button-next:after,
+.team-carousel .swiper-button-prev:after {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.team-carousel .swiper-pagination-bullet {
+  background: #22d3ee;
+  opacity: 0.4;
+  width: 6px;
+  height: 6px;
+  transition: all 0.3s ease;
+}
+
+.team-carousel .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #22d3ee;
+  width: 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px #22d3ee;
+}
+
+/* ========== CUSTOM NAVIGATION BUTTONS ========== */
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+  transform: scale(1.1);
+}
+
+/* ========== NODE LIGHT ANIMATIONS ========== */
+
+/* Node Light Main Animation */
+@keyframes nodePulse {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -5px) scale(1.2);
+    opacity: 0.9;
+  }
+}
+
+.node-light {
+  animation: nodePulse 2s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+/* Hover Effect for Node Light */
+.group:hover .node-light {
+  animation: nodePulse 0.5s ease-in-out infinite;
+  transform: translate(-50%, -5px) scale(1.3);
+}
+
+/* Inner Dot Pulse */
+@keyframes innerDotPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+.node-light .inner-dot {
+  animation: innerDotPulse 1.5s ease-in-out infinite;
+}
+
+/* ========== CONNECTING LINE ANIMATION ========== */
+.connecting-line {
+  transition: all 0.3s ease;
+}
+
+.group:hover .connecting-line {
+  height: 2rem;
+  background: linear-gradient(to bottom, currentColor, transparent);
+}
+
+/* ========== CARD NUMBER BADGE ========== */
+@keyframes badgeGlow {
+  0%,
+  100% {
+    opacity: 0.6;
+    text-shadow: none;
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 15px currentColor;
+  }
+}
+
+.card-badge {
+  transition: all 0.3s ease;
+}
+
+.group:hover .card-badge {
+  animation: badgeGlow 0.8s ease-in-out infinite;
+}
+
+/* ========== FLIP TEXT BOUNCE ========== */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* ========== FLOATING ANIMATION (পুরনো) ========== */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ========== LINE CLAMP UTILITIES ========== */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

@@ -1,49 +1,147 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
+
+// React Icons
+import { MdEmail } from "react-icons/md";
+import { FaLinkedin, FaGithub, FaTwitter, FaFacebook } from "react-icons/fa";
+import { FiUser } from "react-icons/fi";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const teamMembers = [
-  {
-    id: 1,
-    name: "Hafizur Rahman",
-    role: "Founder & Lead Developer",
-    description:
-      "Architecting high-performance digital ecosystems with MERN stack expertise.",
-    imageUrl: "/team/profile.jpg",
-    wireColor: "#6d28d9",
-  },
-  {
-    id: 2,
-    name: "Elena Vance",
-    role: "Head of Strategy",
-    description: "Transforming complex market data into elegant roadmaps.",
-    imageUrl: "/team/profile.jpg",
-    wireColor: "#22d3ee",
-  },
-  {
-    id: 3,
-    name: "Julian Kross",
-    role: "Lead Systems Architect",
-    description: "Building invisible foundations with zero-latency precision.",
-    imageUrl: "/team/profile.jpg",
-    wireColor: "#b5a7ff",
-  },
+// Type definitions
+interface SocialLinks {
+  email?: string;
+  linkedin?: string;
+  github?: string;
+  twitter?: string;
+  website?: string;
+  facebook?: string;
+}
+
+interface TeamMember {
+  name: string;
+  role: string;
+  description: string;
+  image?: string;
+  social?: SocialLinks;
+}
+
+// wireColors - বিভিন্ন কার্ডের জন্য বিভিন্ন রং
+const wireColors = [
+  "#6d28d9", // purple
+  "#22d3ee", // cyan
+  "#b5a7ff", // light purple
+  "#f59e0b", // amber
+  "#10b981", // emerald
+  "#ef4444", // red
+  "#3b82f6", // blue
+  "#ec4899", // pink
+  "#8b5cf6", // violet
+  "#14b8a6", // teal
 ];
 
 const TeamSection = () => {
   const containerRef = useRef<HTMLElement>(null);
-  const cardRefs = useRef<HTMLDivElement[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+
+  const { lang } = useLanguage();
+  const t = translations[lang];
+  const teamMembers = t.teamMembers as TeamMember[];
+
+  const [flippedStates, setFlippedStates] = useState<boolean[]>(() =>
+    new Array(teamMembers.length).fill(false),
+  );
+  const [isFlipping, setIsFlipping] = useState<number | null>(null);
+
+  // ফ্লিপ এনিমেশন - GSAP সহ
+  const handleFlip = (index: number) => {
+    if (isFlipping === index) return;
+
+    setIsFlipping(index);
+
+    const cardElement = document.querySelector(`[data-card-index="${index}"]`);
+
+    if (cardElement) {
+      gsap.to(cardElement, {
+        duration: 0.6,
+        rotationY: flippedStates[index] ? 0 : 180,
+        ease: "back.out(1.2)",
+        transformStyle: "preserve-3d",
+        onComplete: () => {
+          setFlippedStates((prev) => {
+            const newState = [...prev];
+            newState[index] = !newState[index];
+            return newState;
+          });
+          setIsFlipping(null);
+        },
+      });
+    } else {
+      setFlippedStates((prev) => {
+        const newState = [...prev];
+        newState[index] = !newState[index];
+        return newState;
+      });
+      setTimeout(() => setIsFlipping(null), 600);
+    }
+  };
 
   useEffect(() => {
-    // --- Particle Network Canvas ---
+    const ctx = gsap.context(() => {
+      if (titleRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 100, scale: 0.8, rotationX: -45 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            duration: 1.5,
+            ease: "back.out(1.2)",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 60%",
+            },
+          },
+        );
+      }
+
+      if (badgeRef.current) {
+        gsap.fromTo(
+          badgeRef.current,
+          { opacity: 0, scale: 0 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: "elastic.out(1, 0.5)",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top 60%",
+            },
+          },
+        );
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [lang]);
+
+  // Particle network animation
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -62,17 +160,16 @@ const TeamSection = () => {
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-
-      nodes = Array.from({ length: 60 }, () => ({
+      nodes = Array.from({ length: 50 }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 2.5 + 0.8,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        r: Math.random() * 2 + 1,
         color:
           Math.random() > 0.6
-            ? "rgba(109, 40, 217, 0.6)"
-            : "rgba(34, 211, 238, 0.5)",
+            ? "rgba(139, 92, 246, 0.4)"
+            : "rgba(34, 211, 238, 0.3)",
       }));
     };
 
@@ -83,66 +180,36 @@ const TeamSection = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 170) {
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
+          if (d < 120) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.12 * (1 - d / 170);
-
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x,
-              nodes[i].y,
-              nodes[j].x,
-              nodes[j].y
-            );
-            gradient.addColorStop(0, "rgba(109, 40, 217, " + opacity + ")");
-            gradient.addColorStop(1, "rgba(34, 211, 238, " + opacity + ")");
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.7;
+            const opacity = 0.1 * (1 - d / 120);
+            ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
+            ctx.lineWidth = 0.5;
             ctx.stroke();
           }
         }
       }
 
-      // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
 
-        // গ্লো ইফেক্ট বড় ডটের জন্য
-        if (n.r > 1.8) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(109, 40, 217, 0.08)`;
-          ctx.fill();
-        }
-
         n.x += n.vx;
         n.y += n.vy;
-
-        if (n.x < 0) {
-          n.x = 0;
-          n.vx *= -1;
-        }
-        if (n.x > canvas.width) {
-          n.x = canvas.width;
-          n.vx *= -1;
-        }
-        if (n.y < 0) {
-          n.y = 0;
-          n.vy *= -1;
-        }
-        if (n.y > canvas.height) {
-          n.y = canvas.height;
-          n.vy *= -1;
-        }
+        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+        n.x = Math.min(Math.max(n.x, 0), canvas.width);
+        n.y = Math.min(Math.max(n.y, 0), canvas.height);
       });
 
       animId = requestAnimationFrame(draw);
@@ -150,210 +217,291 @@ const TeamSection = () => {
 
     draw();
 
-    // --- SVG Wire Animation ---
-    gsap.utils.toArray<SVGPathElement>(".circuit-path").forEach((path) => {
-      const length = path.getTotalLength();
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-
-      gsap.to(path, {
-        strokeDashoffset: 0,
-        duration: 2.5,
-        ease: "power2.inOut",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 40%",
-        },
-      });
-    });
-
-    // Cards Reveal Animation
-    gsap.fromTo(
-      cardRefs.current,
-      { opacity: 0, y: 100, scale: 0.9 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        stagger: 0.3,
-        duration: 1.2,
-        ease: "expo.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 50%",
-        },
-      }
-    );
-
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+
+  const renderCard = (member: TeamMember, idx: number) => (
+    <div
+      key={idx}
+      className="relative group cursor-pointer"
+      onClick={() => handleFlip(idx)}
+    >
+      {/* Connecting Line from Node to Card */}
+      <div
+        className="absolute -top-5 left-1/2 -translate-x-1/2 w-[2px] h-5 z-10 transition-all duration-300 group-hover:h-8"
+        style={{
+          background: `linear-gradient(to bottom, ${wireColors[idx % wireColors.length]}, ${wireColors[idx % wireColors.length]}40)`,
+        }}
+      />
+
+      {/* Node Light - বড় এবং উজ্জ্বল */}
+      <div
+        className="node-light absolute -top-10 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full z-20 transition-all duration-300 flex items-center justify-center cursor-pointer"
+        style={{
+          backgroundColor: wireColors[idx % wireColors.length],
+          boxShadow: `0 0 25px ${wireColors[idx % wireColors.length]}, 0 0 50px ${wireColors[idx % wireColors.length]}`,
+          border: "2px solid rgba(255,255,255,0.5)",
+        }}
+      >
+        {/* Inner pulsing dot */}
+        <div
+          className="w-2 h-2 rounded-full bg-white animate-pulse"
+          style={{
+            boxShadow: `0 0 15px ${wireColors[idx % wireColors.length]}`,
+          }}
+        />
+      </div>
+
+      {/* Card Number Badge */}
+      <div
+        className="absolute -top-9 left-1/2 -translate-x-1/2 translate-x-8 z-20 text-[10px] font-mono whitespace-nowrap"
+        style={{
+          color: wireColors[idx % wireColors.length],
+          textShadow: `0 0 10px ${wireColors[idx % wireColors.length]}`,
+        }}
+      >
+        #{idx + 1}
+      </div>
+
+      {/* Flip Card Container */}
+      <div
+        className="relative w-full aspect-[3/4]"
+        style={{ perspective: "1200px" }}
+      >
+        <div
+          data-card-index={idx}
+          className="relative w-full h-full transition-all duration-700"
+          style={{
+            transformStyle: "preserve-3d",
+            transform: flippedStates[idx] ? "rotateY(180deg)" : "rotateY(0deg)",
+          }}
+        >
+          {/* Front Side */}
+          <div
+            className="absolute inset-0 rounded-2xl overflow-hidden bg-[#0f1120] border border-white/10 group-hover:border-purple-500/50 transition-all duration-300"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <div className="relative w-full h-full">
+              {member.image ? (
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 400px"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-cyan-900/40 flex items-center justify-center">
+                  <FiUser className="w-20 h-20 text-white/30" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-[#0b0c18]/40 to-transparent" />
+
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+                <h3 className="text-2xl font-bold text-white mb-1">
+                  {member.name.split(" ")[0]}
+                </h3>
+                <p className="text-white/40 text-xs font-medium uppercase tracking-wider">
+                  {member.role.split(" ").slice(0, 2).join(" ")}
+                </p>
+                <div className="mt-4 text-white/30 text-xs font-mono flex items-center justify-center gap-1">
+                  <span className="inline-block animate-bounce">↺</span>
+                  <span>Click to flip</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Back Side */}
+          <div
+            className="absolute inset-0 rounded-2xl overflow-hidden bg-gradient-to-br from-purple-900/60 to-cyan-900/60 backdrop-blur-md border border-white/20 p-6 flex flex-col"
+            style={{
+              backfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+            }}
+          >
+            <div className="text-center flex-1 flex flex-col justify-center">
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-2 border-purple-500 shadow-lg bg-[#0f1120]">
+                {member.image ? (
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-purple-500/30 to-cyan-500/30 flex items-center justify-center">
+                    <FiUser className="w-10 h-10 text-white/50" />
+                  </div>
+                )}
+              </div>
+
+              <h3 className="text-xl font-bold text-white mb-1">
+                {member.name}
+              </h3>
+              <p className="text-cyan-300 text-[10px] font-mono uppercase mb-4 tracking-wider">
+                {member.role}
+              </p>
+
+              <div className="w-12 h-[1px] bg-gradient-to-r from-purple-400 to-cyan-400 mx-auto mb-4" />
+
+              <p className="text-white/60 text-xs leading-relaxed mb-6 line-clamp-3">
+                {member.description}
+              </p>
+
+              {/* Social Icons */}
+              <div className="flex justify-center gap-3 flex-wrap">
+                {member.social?.email && (
+                  <a
+                    href={`mailto:${member.social.email}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MdEmail className="w-4 h-4 text-white/80" />
+                  </a>
+                )}
+                {member.social?.linkedin && (
+                  <a
+                    href={member.social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaLinkedin className="w-4 h-4 text-white/80" />
+                  </a>
+                )}
+                {member.social?.facebook && (
+                  <a
+                    href={member.social.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaFacebook className="w-4 h-4 text-white/80" />
+                  </a>
+                )}
+                {member.social?.github && (
+                  <a
+                    href={member.social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaGithub className="w-4 h-4 text-white/80" />
+                  </a>
+                )}
+                {member.social?.twitter && (
+                  <a
+                    href={member.social.twitter}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-purple-500/50 hover:scale-110 transition-all duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaTwitter className="w-4 h-4 text-white/80" />
+                  </a>
+                )}
+              </div>
+
+              <div className="mt-6 text-white/30 text-[10px] font-mono">
+                ↻ Click to flip back
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <section
       ref={containerRef}
-      className="relative bg-[#0b0c18] py-20 px-6 overflow-hidden"
+      className="relative bg-gradient-to-b from-[#0b0c18] to-[#0a0a14] py-20 md:py-28 px-4 overflow-hidden"
     >
-      {/* Particle Network Canvas - Full Background */}
+      {/* Canvas Background */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-45 z-0"
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
       />
 
-      {/* Gradient Glow Effects */}
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_20%,rgba(109,40,217,0.06),transparent_60%)] pointer-events-none z-0" />
+      {/* Gradient Effects */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/20 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/20 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.05),transparent_70%)] pointer-events-none z-0" />
 
-      {/* Dynamic SVG Wires */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        viewBox="0 0 1000 1000"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#6d28d9" stopOpacity="0" />
-            <stop offset="50%" stopColor="#6d28d9" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#6d28d9" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0" />
-            <stop offset="50%" stopColor="#22d3ee" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id="grad3" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#b5a7ff" stopOpacity="0" />
-            <stop offset="50%" stopColor="#b5a7ff" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#b5a7ff" stopOpacity="0" />
-          </linearGradient>
-        </defs>
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="flex flex-col items-center mb-16 text-center">
+          <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent mb-6" />
 
-        {/* Left Wire - to first card */}
-        <path
-          className="circuit-path"
-          d="M 500 120 C 500 220, 180 250, 180 520"
-          fill="none"
-          stroke="url(#grad1)"
-          strokeWidth="1.8"
-        />
-        {/* Center Wire - to second card */}
-        <path
-          className="circuit-path"
-          d="M 500 120 C 500 280, 500 380, 500 600"
-          fill="none"
-          stroke="url(#grad2)"
-          strokeWidth="1.8"
-        />
-        {/* Right Wire - to third card */}
-        <path
-          className="circuit-path"
-          d="M 500 120 C 500 220, 820 250, 820 520"
-          fill="none"
-          stroke="url(#grad3)"
-          strokeWidth="1.8"
-        />
-        
-        {/* Horizontal connection wires */}
-        <path
-          className="circuit-path"
-          d="M 180 350 L 820 350"
-          fill="none"
-          stroke="url(#grad2)"
-          strokeWidth="0.8"
-          strokeDasharray="4 6"
-          opacity="0.3"
-        />
-        <path
-          className="circuit-path"
-          d="M 180 450 L 820 450"
-          fill="none"
-          stroke="url(#grad1)"
-          strokeWidth="0.8"
-          strokeDasharray="4 6"
-          opacity="0.3"
-        />
-      </svg>
-
-      <div className="max-w-screen-2xl mx-auto relative z-10">
-        {/* Switchboard Header */}
-        <div className="flex flex-col items-center mb-48 text-center">
-          <div className="w-1 h-20 bg-gradient-to-b from-transparent via-cyan-500/50 to-cyan-500 mb-6" />
-          <h2 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none">
-            The{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10">
-              Team
+          <h2
+            ref={titleRef}
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase"
+          >
+            {t.teamTitle}{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400">
+              {t.teamTitleGradient}
             </span>
           </h2>
-          <div className="mt-8 flex items-center gap-4">
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-ping shadow-[0_0_15px_#22d3ee]" />
-            <span className="text-cyan-400 font-mono text-[10px] tracking-[0.4em] uppercase">
-              System Link Established
+
+          <div ref={badgeRef} className="mt-6 flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-lg shadow-cyan-500/50" />
+            <span className="text-cyan-400 font-mono text-[11px] tracking-[0.3em] uppercase">
+              {t.teamBadge} • {teamMembers.length} MEMBERS
             </span>
           </div>
         </div>
 
-        {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12 relative">
-          {teamMembers.map((member, idx) => (
-            <div
-              key={member.id}
-              ref={(el) => {
-                if (el) cardRefs.current[idx] = el;
-              }}
-              className={`relative group ${idx === 1 ? "md:mt-32" : ""}`}
-            >
-              {/* Point Node Light */}
-              <div
-                className="absolute -top-10 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full z-20"
-                style={{
-                  backgroundColor: member.wireColor,
-                  boxShadow: `0 0 20px ${member.wireColor}`,
-                  filter: "brightness(1.5)",
-                }}
-              />
+        {/* Swiper Carousel with Navigation */}
+        <div className="relative">
+          <Swiper
+            modules={[Autoplay, Navigation, Pagination]}
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={{
+              prevEl: ".swiper-button-prev-custom",
+              nextEl: ".swiper-button-next-custom",
+            }}
+            pagination={{ clickable: true, dynamicBullets: true }}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            breakpoints={{
+              640: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 30 },
+            }}
+            className="team-carousel"
+            style={{ padding: "20px 0 60px 0" }}
+          >
+            {teamMembers.map((member, idx) => (
+              <SwiperSlide key={idx}>{renderCard(member, idx)}</SwiperSlide>
+            ))}
+          </Swiper>
 
-              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-[#0f1120] border border-white/5 transition-all duration-700 group-hover:border-white/20 backdrop-blur-sm">
-                <div className="relative w-full h-full scale-110 group-hover:scale-100 transition-transform duration-1000">
-                  <Image
-                    src={member.imageUrl}
-                    alt={member.name}
-                    fill
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-transparent to-transparent opacity-80" />
-                </div>
-
-                {/* Info Text */}
-                <div className="absolute inset-0 flex flex-col justify-end p-8 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                  <p className="text-cyan-400 font-mono text-[9px] uppercase tracking-[0.3em] mb-2">
-                    Protocol_{member.id}
-                  </p>
-                  <h3 className="text-3xl font-bold text-white mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-white/40 text-xs font-medium uppercase tracking-widest mb-4">
-                    {member.role}
-                  </p>
-                  <p className="text-white/60 text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
-                    {member.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Outside Label */}
-              <div className="mt-8 text-center group-hover:opacity-0 transition-opacity duration-300">
-                <span className="text-white/20 font-mono text-[10px] block mb-2">
-                  — POSITION_{idx + 1}
-                </span>
-                <h4 className="text-white font-bold text-lg tracking-tight uppercase">
-                  {member.name}
-                </h4>
-              </div>
-            </div>
-          ))}
+          {/* Custom Navigation Buttons */}
+          <button
+            className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-cyan-400 hover:bg-cyan-500/30 hover:scale-110 transition-all duration-300"
+            style={{ left: "-20px" }}
+          >
+            ❮
+          </button>
+          <button
+            className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-cyan-400 hover:bg-cyan-500/30 hover:scale-110 transition-all duration-300"
+            style={{ right: "-20px" }}
+          >
+            ❯
+          </button>
         </div>
       </div>
     </section>

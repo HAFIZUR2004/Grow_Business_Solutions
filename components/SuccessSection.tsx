@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 import React, { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -10,7 +12,7 @@ const stats = [
     icon: "✦",
     isCounter: true,
     targetValue: 8,
-    suffix: "+"
+    suffix: "+",
   },
   {
     title: "20+ Projects",
@@ -18,7 +20,7 @@ const stats = [
     icon: "🚀",
     isCounter: true,
     targetValue: 20,
-    suffix: "+"
+    suffix: "+",
   },
   {
     title: "100% Client",
@@ -26,7 +28,7 @@ const stats = [
     icon: "✔",
     isCounter: true,
     targetValue: 100,
-    suffix: "%"
+    suffix: "%",
   },
 ];
 
@@ -38,6 +40,9 @@ const SuccessSection = () => {
     threshold: 0.3,
   });
 
+  const { lang } = useLanguage();
+  const t = translations[lang];
+
   // কাউন্টার অ্যানিমেশন
   useEffect(() => {
     if (inView) {
@@ -47,25 +52,25 @@ const SuccessSection = () => {
           const end = stat.targetValue;
           const duration = 2000; // 2 সেকেন্ড
           const increment = end / (duration / 16); // 60fps এর জন্য
-          
+
           const timer = setInterval(() => {
             start += increment;
             if (start >= end) {
-              setCounters(prev => {
+              setCounters((prev) => {
                 const newCounters = [...prev];
                 newCounters[idx] = end;
                 return newCounters;
               });
               clearInterval(timer);
             } else {
-              setCounters(prev => {
+              setCounters((prev) => {
                 const newCounters = [...prev];
                 newCounters[idx] = Math.floor(start);
                 return newCounters;
               });
             }
           }, 16);
-          
+
           return () => clearInterval(timer);
         }
       });
@@ -91,7 +96,7 @@ const SuccessSection = () => {
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-      
+
       nodes = Array.from({ length: 55 }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -104,68 +109,83 @@ const SuccessSection = () => {
             : "rgba(165, 243, 252, 0.6)",
       }));
     };
-    
+
     resize();
     window.addEventListener("resize", resize);
 
     const draw = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // লাইন কানেক্ট করা
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          const d = Math.hypot(
+            nodes[i].x - nodes[j].x,
+            nodes[i].y - nodes[j].y,
+          );
           if (d < 160) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
             const opacity = 0.12 * (1 - d / 160);
-            
+
             const gradient = ctx.createLinearGradient(
               nodes[i].x,
               nodes[i].y,
               nodes[j].x,
-              nodes[j].y
+              nodes[j].y,
             );
             gradient.addColorStop(0, "rgba(196, 181, 253, " + opacity + ")");
             gradient.addColorStop(1, "rgba(165, 243, 252, " + opacity + ")");
-            
+
             ctx.strokeStyle = gradient;
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
       }
-      
+
       // ডট আঁকা এবং মুভ করা
       nodes.forEach((n) => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
-        
+
         if (n.r > 1.5) {
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(196, 181, 253, 0.1)`;
           ctx.fill();
         }
-        
+
         n.x += n.vx;
         n.y += n.vy;
-        
-        if (n.x < 0) { n.x = 0; n.vx *= -1; }
-        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; }
-        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
+
+        if (n.x < 0) {
+          n.x = 0;
+          n.vx *= -1;
+        }
+        if (n.x > canvas.width) {
+          n.x = canvas.width;
+          n.vx *= -1;
+        }
+        if (n.y < 0) {
+          n.y = 0;
+          n.vy *= -1;
+        }
+        if (n.y > canvas.height) {
+          n.y = canvas.height;
+          n.vy *= -1;
+        }
       });
-      
+
       animId = requestAnimationFrame(draw);
     };
-    
+
     draw();
-    
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
@@ -189,14 +209,14 @@ const SuccessSection = () => {
 
       <div className="max-w-screen-2xl mx-auto relative z-10 text-center">
         <p className="text-cyan-400 tracking-[0.4em] text-xs mb-6 uppercase">
-          MILESTONES
+          {t.successBadge}
         </p>
 
         <div className="relative inline-block mb-24">
           <h2 className="text-6xl md:text-8xl font-extrabold tracking-tight">
-            <span className="text-white">Success in </span>
+            <span className="text-white">{t.successTitle} </span>
             <span className="bg-gradient-to-r from-[#c4b5fd] to-[#a5f3fc] text-transparent bg-clip-text">
-              Motion.
+              {t.successTitleGradient}
             </span>
           </h2>
 
@@ -243,37 +263,33 @@ const SuccessSection = () => {
 
         {/* Cards with Animated Counters */}
         <div className="grid md:grid-cols-3 gap-10">
-          {stats.map((item, i) => (
-            <div
-              key={i}
-              className="group relative p-12 rounded-[30px] bg-white/[0.03] border border-white/10 transition-all duration-500 hover:border-white/20 hover:scale-[1.02]"
-            >
-              <div className="absolute inset-0 rounded-[30px] bg-gradient-to-b from-white/[0.06] to-transparent opacity-40 pointer-events-none" />
-              
-              <div className="w-14 h-14 mx-auto mb-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10">
-                <span className="text-lg text-white/80">{item.icon}</span>
+          {t.stats.map((item, i) => {
+            const config = stats[i];
+            return (
+              <div
+                key={i}
+                className="group relative p-12 rounded-[30px] bg-white/[0.03] border border-white/10 transition-all duration-500 hover:border-white/20 hover:scale-[1.02]"
+              >
+                <div className="absolute inset-0 rounded-[30px] bg-gradient-to-b from-white/[0.06] to-transparent opacity-40 pointer-events-none" />
+
+                <div className="w-14 h-14 mx-auto mb-8 flex items-center justify-center rounded-xl bg-white/[0.06] border border-white/10">
+                  <span className="text-lg text-white/80">{config.icon}</span>
+                </div>
+
+                <h3 className="text-4xl font-bold mb-4 tracking-tight">
+                  {item.title}
+                </h3>
+
+                <p className="text-white/50 text-sm leading-relaxed max-w-[220px] mx-auto">
+                  {item.desc}
+                </p>
+
+                <div className="mt-8 flex justify-center">
+                  <div className="w-10 h-[2px] bg-white/20 rounded-full group-hover:w-20 transition-all duration-500" />
+                </div>
               </div>
-              
-              <h3 className="text-4xl font-bold mb-4 tracking-tight">
-                {item.isCounter ? (
-                  <span>
-                    {counters[i]}
-                    {item.suffix}
-                  </span>
-                ) : (
-                  item.title
-                )}
-              </h3>
-              
-              <p className="text-white/50 text-sm leading-relaxed max-w-[220px] mx-auto">
-                {item.desc}
-              </p>
-              
-              <div className="mt-8 flex justify-center">
-                <div className="w-10 h-[2px] bg-white/20 rounded-full group-hover:w-20 transition-all duration-500" />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
