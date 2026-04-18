@@ -15,6 +15,7 @@ export default function ContactSection() {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,7 +24,15 @@ export default function ContactSection() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Particle Network Canvas Effect (Service Page Style)
+  // আপনার কন্ট্যাক্ট ইনফো (ডায়নামিক)
+  const contactInfo = [
+    { icon: Phone, label: "DIRECT LINE", value: "+8801884369340", color: "#6c5ce7" },
+    { icon: Mail, label: "QUANTUM MAIL", value: "growbusinesssolutionsbd@gmail.com", color: "#a29bfe" },
+    { icon: MapPin, label: "GLOBAL NODE", value: "Barishal, Bangladesh • Remote First", color: "#00cec9" },
+    { icon: Clock, label: "RESPONSE SLA", value: "< 24 Hours", color: "#fdcb6e" },
+  ];
+
+  // Particle Network Canvas Effect
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -122,11 +131,32 @@ export default function ContactSection() {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 5000);
-    setFormData({ name: "", email: "", message: "" });
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 5000);
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      alert('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (
@@ -136,31 +166,20 @@ export default function ContactSection() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Contact Info Items
-  const contactInfo = [
-    { icon: Phone, label: "DIRECT LINE", value: "+1 (555) 123-4567", color: "#6c5ce7" },
-    { icon: Mail, label: "QUANTUM MAIL", value: "hello@nexus-agency.io", color: "#a29bfe" },
-    { icon: MapPin, label: "GLOBAL NODE", value: "Dhaka, Bangladesh • Remote First", color: "#00cec9" },
-    { icon: Clock, label: "RESPONSE SLA", value: "< 24 Hours", color: "#fdcb6e" },
-  ];
-
   return (
     <section className="relative min-h-screen bg-[#05070a] text-white flex items-center px-4 md:px-10 py-32 overflow-hidden font-sans">
       
-      {/* Particle Network Canvas - Service Page Style */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 w-full h-full pointer-events-none opacity-40 z-0"
       />
 
-      {/* Gradient Glow Effects - Service Page Style */}
       <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(108,92,231,0.03),transparent_70%)] pointer-events-none z-0" />
 
       <div className="max-w-4xl w-full mx-auto relative z-10 px-6">
         
-        {/* Heading & Form - Centered */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -168,7 +187,6 @@ export default function ContactSection() {
           viewport={{ once: true }}
           className="flex flex-col gap-10 max-w-3xl mx-auto"
         >
-          {/* Header Badge */}
           <div className="space-y-5 text-center">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#a29bfe]/30 bg-[#6c5ce7]/10 backdrop-blur-xl mx-auto">
               <span className="relative flex h-2 w-2">
@@ -193,10 +211,8 @@ export default function ContactSection() {
             </p>
           </div>
 
-          {/* Contact Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Name Field */}
               <div className="relative group">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-[#00cec9]/50 to-[#6c5ce7]/50 rounded-xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                 <div className="relative bg-[#0a0c0f]/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group-hover:border-white/20 transition-colors">
@@ -216,7 +232,6 @@ export default function ContactSection() {
                 </div>
               </div>
 
-              {/* Email Field */}
               <div className="relative group">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-[#6c5ce7]/50 to-[#00cec9]/50 rounded-xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
                 <div className="relative bg-[#0a0c0f]/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group-hover:border-white/20 transition-colors">
@@ -237,7 +252,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Message Field */}
             <div className="relative group">
               <div className="absolute -inset-[1px] bg-gradient-to-r from-[#6c5ce7]/50 via-[#a29bfe]/30 to-[#00cec9]/50 rounded-xl blur-sm opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
               <div className="relative bg-[#0a0c0f]/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden group-hover:border-white/20 transition-colors">
@@ -257,25 +271,24 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onHoverStart={() => setIsHovered(true)}
               onHoverEnd={() => setIsHovered(false)}
-              className="relative group w-full py-5 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all overflow-hidden shadow-2xl"
+              disabled={isLoading}
+              className="relative group w-full py-5 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] transition-all overflow-hidden shadow-2xl disabled:opacity-50"
             >
               <span className="relative z-10 flex items-center justify-center gap-2 text-white">
-                {t.executeProtocol || "SEND SECURE MESSAGE"}
-                <Send size={14} className={isHovered ? "translate-x-1 transition-transform" : ""} />
+                {isLoading ? "SENDING..." : (t.executeProtocol || "SEND SECURE MESSAGE")}
+                {!isLoading && <Send size={14} className={isHovered ? "translate-x-1 transition-transform" : ""} />}
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9]" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#00cec9] via-[#a29bfe] to-[#6c5ce7] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500" />
             </motion.button>
           </form>
 
-          {/* Contact Info Footer */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/5">
             {contactInfo.map((item, i) => (
               <motion.div
@@ -301,7 +314,6 @@ export default function ContactSection() {
         </motion.div>
       </div>
 
-      {/* Success Toast Notification */}
       <AnimatePresence>
         {isSubmitted && (
           <motion.div

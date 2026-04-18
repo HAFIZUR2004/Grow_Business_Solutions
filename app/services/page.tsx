@@ -443,7 +443,7 @@ export default function ServicesPage() {
               <div className="space-y-8">
                 <div className="flex items-center gap-6 group">
                   <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#6c5ce7]/20 transition-colors border border-white/5"><Terminal size={24} /></div>
-                  <span className="text-xl text-white/70 font-bold">hello@nexus-agency.io</span>
+                  <span className="text-xl text-white/70 font-bold">growbusinesssolutionsbd@gmail.com</span>
                 </div>
                 <div className="flex items-center gap-6 group">
                   <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#00cec9]/20 transition-colors border border-white/5"><Globe size={24} /></div>

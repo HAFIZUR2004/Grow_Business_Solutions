@@ -3,56 +3,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Smile, Rocket, MessageCircle } from "lucide-react";
+import Image from "next/image";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Alex Rivera",
-    role: "CEO",
-    comment: "The level of professionalism and technical depth provided was exceptional. Our conversion rate increased by 200% after the redesign.",
-    icon: "👨‍💼",
-    rating: 5,
-    company: "TechVibe"
-  },
-  {
-    id: 2,
-    name: "Sophia Chen",
-    role: "Founder",
-    comment: "Working with this team was a game-changer. Their understanding of MERN stack and eye for premium animations is unmatched in the industry.",
-    icon: "👩‍💼",
-    rating: 5,
-    company: "GreenLeaf"
-  },
-  {
-    id: 3,
-    name: "Marcus Thorne",
-    role: "Product Manager",
-    comment: "Fast, reliable, and incredibly creative. The custom dashboard they built for us is now our core competitive advantage.",
-    icon: "👨‍💻",
-    rating: 5,
-    company: "CloudScale"
-  },
-  {
-    id: 4,
-    name: "Isabella Martinez",
-    role: "CTO",
-    comment: "Absolutely outstanding! The attention to detail and commitment to excellence is rare to find. They delivered ahead of schedule.",
-    icon: "👩‍🔬",
-    rating: 5,
-    company: "InnovateHub"
-  },
-  {
-    id: 5,
-    name: "David Kim",
-    role: "Technical Director",
-    comment: "The best investment we've made this year. The team's expertise in modern web technologies transformed our digital presence completely.",
-    icon: "👨‍🎨",
-    rating: 5,
-    company: "DevOps Pro"
-  }
-];
+interface Testimonial {
+  _id: string;
+  name: string;
+  role: string;
+  comment: string;
+  rating: number;
+  company: string;
+  icon: string;
+  image?: string;
+}
 
 const PremiumReviews = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [touchStart, setTouchStart] = useState(0);
@@ -60,7 +26,27 @@ const PremiumReviews = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Particle Network Canvas Effect - Enhanced
+  // Fetch testimonials from API
+  useEffect(() => {
+const fetchTestimonials = async () => {
+  try {
+    // অ্যাডমিন প্যারামিটার যোগ করুন - সব টেস্টিমোনিয়াল দেখার জন্য
+    const res = await fetch('/api/testimonials?admin=true');
+    const data = await res.json();
+    console.log('Fetched data:', data); // ডিবাগ
+    if (data.success) {
+      setTestimonials(data.data);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+    fetchTestimonials();
+  }, []);
+
+  // Particle Network Canvas Effect (আগের মতোই থাকবে)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -123,7 +109,6 @@ const PremiumReviews = () => {
       
       if (nodes.length === 0) return;
 
-      // Draw connecting lines
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
@@ -150,7 +135,6 @@ const PremiumReviews = () => {
         }
       }
 
-      // Draw nodes with pulse animation
       nodes.forEach((node) => {
         const pulseRadius = node.r + Math.sin(node.pulse) * 0.8;
         node.pulse += node.pulseDir;
@@ -192,6 +176,8 @@ const PremiumReviews = () => {
 
   // Auto-slide logic
   useEffect(() => {
+    if (testimonials.length === 0) return;
+    
     if (isAutoPlaying) {
       autoPlayRef.current = setInterval(() => {
         setIndex((prev) => (prev + 1) % testimonials.length);
@@ -206,12 +192,14 @@ const PremiumReviews = () => {
   }, [isAutoPlaying, testimonials.length]);
 
   const handlePrev = () => {
+    if (testimonials.length === 0) return;
     setIsAutoPlaying(false);
     setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   const handleNext = () => {
+    if (testimonials.length === 0) return;
     setIsAutoPlaying(false);
     setIndex((prev) => (prev + 1) % testimonials.length);
     setTimeout(() => setIsAutoPlaying(true), 10000);
@@ -234,10 +222,30 @@ const PremiumReviews = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return (
+      <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
+        <div className="text-center">
+          <p className="text-white/40">No testimonials yet. Add some from admin panel.</p>
+        </div>
+      </section>
+    );
+  }
+
   const currentReview = testimonials[index];
 
   return (
-    <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
+    <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
       {/* Particle Network Canvas Background */}
       <canvas
         ref={canvasRef}
@@ -245,12 +253,12 @@ const PremiumReviews = () => {
         style={{ opacity: 0.45 }}
       />
 
-      {/* Background Glows - Enhanced */}
+      {/* Background Glows */}
       <div className="absolute top-0 left-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-purple-900/15 blur-[100px] md:blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-900/15 blur-[100px] md:blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-purple-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      {/* Bottom Wave Lines - Enhanced */}
+      {/* Bottom Wave Lines */}
       <svg
         className="absolute bottom-0 left-0 w-full h-24 md:h-32 pointer-events-none z-1 opacity-40 md:opacity-50"
         viewBox="0 0 1440 120"
@@ -277,7 +285,7 @@ const PremiumReviews = () => {
       </svg>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Section Header - Enhanced */}
+        {/* Section Header */}
         <div className="text-center mb-12 md:mb-16 lg:mb-20">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -317,7 +325,7 @@ const PremiumReviews = () => {
           </motion.p>
         </div>
 
-        {/* Main Testimonial Card - Enhanced Responsive */}
+        {/* Main Testimonial Card */}
         <div 
           className="relative min-h-[450px] md:min-h-[500px] flex items-center justify-center"
           onTouchStart={handleTouchStart}
@@ -326,7 +334,7 @@ const PremiumReviews = () => {
         >
           <AnimatePresence mode="wait">
             <motion.div
-              key={currentReview.id}
+              key={currentReview._id}
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 1.05, y: -30 }}
@@ -338,12 +346,12 @@ const PremiumReviews = () => {
                 {/* Premium Gradient Border Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-transparent to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 
-                {/* Quote Icon Background - Responsive */}
+                {/* Quote Icon Background */}
                 <div className="absolute top-4 md:top-8 right-4 md:right-8 text-6xl md:text-8xl opacity-5 text-white font-serif">
                   "
                 </div>
 
-                {/* Content - Responsive Padding */}
+                {/* Content */}
                 <div className="p-6 md:p-10 lg:p-12">
                   {/* Rating Stars */}
                   <motion.div 
@@ -364,7 +372,7 @@ const PremiumReviews = () => {
                     ))}
                   </motion.div>
 
-                  {/* Review Text - Responsive Typography */}
+                  {/* Review Text */}
                   <motion.blockquote 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -374,19 +382,41 @@ const PremiumReviews = () => {
                     "{currentReview.comment}"
                   </motion.blockquote>
 
-                  {/* User Info - Responsive */}
+                  {/* User Info - শুধু ইমেজ দেখাবে, আইকন দেখাবে না */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     className="flex flex-col items-center"
                   >
-                    {/* Icon Circle with Gradient Background */}
+                    {/* Profile Image - শুধু ইমেজ, কোনো আইকন নয় */}
                     <div className="relative group">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
-                        <span className="text-3xl md:text-4xl">{currentReview.icon}</span>
-                      </div>
+                      
+                      {currentReview.image ? (
+                        <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl">
+                          <Image
+                            src={currentReview.image}
+                            alt={currentReview.name}
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                              console.error('Image failed to load:', currentReview.image);
+                              e.currentTarget.style.display = 'none';
+                              const parent = e.currentTarget.parentElement;
+                              if (parent) {
+                                parent.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500/20 to-cyan-500/20">
+                                  <span class="text-3xl md:text-4xl">${currentReview.icon}</span>
+                                </div>`;
+                              }
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+                          <span className="text-red-400 text-xs">No Image</span>
+                        </div>
+                      )}
                     </div>
                     
                     <h4 className="text-white font-bold text-lg md:text-xl mt-3 md:mt-4">
@@ -405,7 +435,7 @@ const PremiumReviews = () => {
                   </motion.div>
                 </div>
 
-                {/* Navigation Arrows - Responsive */}
+                {/* Navigation Arrows */}
                 <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2">
                   <button
                     onClick={handlePrev}
@@ -444,7 +474,7 @@ const PremiumReviews = () => {
           </AnimatePresence>
         </div>
 
-        {/* Progress Indicators - Enhanced Responsive */}
+        {/* Progress Indicators */}
         <div className="flex justify-center gap-2 md:gap-3 mt-8 md:mt-12">
           {testimonials.map((_, i) => (
             <button
@@ -476,7 +506,7 @@ const PremiumReviews = () => {
           ))}
         </div>
 
-        {/* Trust Badges - Enhanced Responsive with Lucide Icons */}
+        {/* Trust Badges */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -502,7 +532,7 @@ const PremiumReviews = () => {
           >
             <Smile className="w-4 h-4 md:w-5 md:h-5 text-cyan-500" />
             <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-              200+ Happy Clients
+              {testimonials.length}+ Happy Clients
             </span>
           </motion.div>
 
