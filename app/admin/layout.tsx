@@ -21,16 +21,16 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
- const navItems = [
-  { path: '/admin/dashboard', name: 'ড্যাশবোর্ড', icon: LayoutDashboard },
-  { path: '/admin/portfolio', name: 'পোর্টফোলিও', icon: FolderOpen },
-  { path: '/admin/vacancies', name: 'ভ্যাকেন্সি', icon: Briefcase },
-  { path: '/admin/testimonials', name: 'টেস্টিমোনিয়াল', icon: MessageSquare }, // যোগ করুন
-  { path: '/admin/messages', name: 'মেসেজ', icon: Mail }, // যোগ করুন
-];
+  const navItems = [
+    { path: '/admin/dashboard', name: 'ড্যাশবোর্ড', icon: LayoutDashboard },
+    { path: '/admin/portfolio', name: 'পোর্টফোলিও', icon: FolderOpen },
+    { path: '/admin/vacancies', name: 'ভ্যাকেন্সি', icon: Briefcase },
+    { path: '/admin/testimonials', name: 'টেস্টিমোনিয়াল', icon: MessageSquare },
+    { path: '/admin/messages', name: 'মেসেজ', icon: Mail },
+  ];
 
   return (
-    <div className="min-h-screen mt-19 bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Mobile Menu Button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}

@@ -81,50 +81,8 @@ interface PortfolioItem {
 
 // Dummy Data for fallback
 const dummyProjects: PortfolioItem[] = [
-    {
-      _id: "1",
-      id: "01",
-      title: "AI Content Generator",
-      category: "Web App",
-      description: "An intelligent platform that generates SEO-optimized content using GPT-4 with real-time analytics.",
-      tech: ["React", "Node.js", "OpenAI", "Tailwind"],
-      icon: "faMicrochip",
-      colorKey: "purple",
-      stats: "Production Ready",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=AI+Project",
-      imageAlt: "AI Content Generator",
-      github: "https://github.com",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "2",
-      id: "02",
-      title: "DeFi Dashboard",
-      category: "Blockchain",
-      description: "Real-time DeFi analytics with wallet integration, portfolio tracking, and cross-chain support.",
-      tech: ["Next.js", "Web3.js", "Solidity", "Ethers"],
-      icon: "faDatabase",
-      colorKey: "cyan",
-      stats: "Audited",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=DeFi+Dashboard",
-      imageAlt: "DeFi Dashboard",
-      github: "https://github.com",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "3",
-      id: "03",
-      title: "Cyber Security Suite",
-      category: "Security",
-      description: "Advanced vulnerability scanner with real-time threat detection and automated reporting system.",
-      tech: ["Python", "Django", "PostgreSQL", "Docker"],
-      icon: "faShieldAlt",
-      colorKey: "emerald",
-      stats: "ISO Certified",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Security+Suite",
-      imageAlt: "Cyber Security Suite",
-      github: "https://github.com"
-    }
+   
+ 
 ];
 
 export default function DynamicPortfolioPage() {
