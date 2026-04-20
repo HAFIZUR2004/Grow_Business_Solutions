@@ -533,12 +533,17 @@ function Vacancies() {
                 </button>
               </>
             )}
-            <button
-              className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
-              style={{ backgroundColor: role.color || "#6c5ce7" }}
-            >
-              Apply Now →
-            </button>
+           
+<button
+  onClick={() => {
+    const vacancyId = role._id || role.id;
+    window.location.href = `/careers/apply?vacancy=${vacancyId}`;
+  }}
+  className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
+  style={{ backgroundColor: role.color || "#6c5ce7" }}
+>
+  Apply Now →
+</button>
           </div>
         </div>
       </motion.div>

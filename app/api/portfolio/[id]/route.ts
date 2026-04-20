@@ -1,143 +1,96 @@
-import { dbConnect } from '@/lib/dbConnect';
-import Portfolio from '@/app/models/Portfolio';
-import { NextRequest, NextResponse } from 'next/server';
+// app/api/vacancies/[id]/route.ts
+import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
+import clientPromise from '@/lib/mongodb';
 
-// ✅ PUT: আপডেট (Next.js 15 compatible)
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+// GET all vacancies
+export async function GET() {
   try {
-    await dbConnect();
-    const { id } = await params;  // 👈 await করতে হবে
+    const client = await clientPromise;
+    const db = client.db('portfolio');
+    const vacancies = await db.collection('vacancies').find({}).toArray();
+    
+    return NextResponse.json(vacancies);
+  } catch (error) {
+    console.error('GET Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch vacancies' }, { status: 500 });
+  }
+}
+
+// POST new vacancy
+export async function POST(request: Request) {
+  try {
     const body = await request.json();
+    const client = await clientPromise;
+    const db = client.db('portfolio');
     
-    console.log('🔍 Updating ID:', id);
-    console.log('📦 Update Data:', body);
-    
-    // ইমেজ URL ট্রিম করুন
-    const trimmedImage = body.image?.trim() || '';
-    
-    const portfolioData = {
-      title: body.title,
-      category: body.category,
-      description: body.description,
-      tech: body.tech || [],
-      colorKey: body.colorKey,
-      stats: body.stats,
-      image: trimmedImage,
-      imageAlt: body.imageAlt,
-      github: body.github || '',
-      liveUrl: body.liveUrl || '',
+    const newVacancy = {
+      ...body,
+      id: Date.now().toString(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     
-    // প্রথমে id দিয়ে খুঁজুন, না পেলে _id দিয়ে খুঁজুন
-    let portfolio = await Portfolio.findOne({ id: id });
+    const result = await db.collection('vacancies').insertOne(newVacancy);
     
-    // যদি id না পাওয়া যায়, তাহলে _id দিয়ে চেক করুন
-    if (!portfolio) {
-      portfolio = await Portfolio.findById(id);
-    }
-    
-    if (!portfolio) {
-      console.log('❌ Portfolio not found with id:', id);
-      return NextResponse.json(
-        { error: `Portfolio with id "${id}" not found` },
-        { status: 404 }
-      );
-    }
-    
-    // আপডেট করুন
-    const updatedPortfolio = await Portfolio.findOneAndUpdate(
-      { _id: portfolio._id },
-      portfolioData,
-      { new: true, runValidators: true }
-    );
-    
-    console.log('✅ Update successful:', updatedPortfolio?.id);
-    return NextResponse.json(updatedPortfolio, { status: 200 });
-    
-  } catch (error: any) {
-    console.error('❌ PUT Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to update portfolio', details: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ ...newVacancy, _id: result.insertedId }, { status: 201 });
+  } catch (error) {
+    console.error('POST Error:', error);
+    return NextResponse.json({ error: 'Failed to create vacancy' }, { status: 500 });
   }
 }
 
-// ✅ DELETE: ডিলিট (Next.js 15 compatible)
+// PUT - Update vacancy
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const body = await request.json();
+    const client = await clientPromise;
+    const db = client.db('portfolio');
+    
+    const { id, ...updateData } = body;
+    
+    const result = await db.collection('vacancies').updateOne(
+      { id: params.id }, // Make sure this matches the field name in your database
+      { 
+        $set: {
+          ...updateData,
+          updatedAt: new Date(),
+        }
+      }
+    );
+    
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ error: 'Vacancy not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('PUT Error:', error);
+    return NextResponse.json({ error: 'Failed to update vacancy' }, { status: 500 });
+  }
+}
+
+// DELETE - Remove vacancy
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
-    await dbConnect();
-    const { id } = await params;  // 👈 await করতে হবে
+    const client = await clientPromise;
+    const db = client.db('portfolio');
     
-    console.log('🔍 Deleting ID:', id);
+    const result = await db.collection('vacancies').deleteOne({ id: params.id });
     
-    // প্রথমে id দিয়ে খুঁজুন, না পেলে _id দিয়ে খুঁজুন
-    let portfolio = await Portfolio.findOne({ id: id });
-    
-    if (!portfolio) {
-      portfolio = await Portfolio.findById(id);
+    if (result.deletedCount === 0) {
+      return NextResponse.json({ error: 'Vacancy not found' }, { status: 404 });
     }
     
-    if (!portfolio) {
-      console.log('❌ Portfolio not found with id:', id);
-      return NextResponse.json(
-        { error: `Portfolio with id "${id}" not found` },
-        { status: 404 }
-      );
-    }
-    
-    await Portfolio.deleteOne({ _id: portfolio._id });
-    
-    console.log('✅ Delete successful:', id);
-    return NextResponse.json(
-      { message: 'Portfolio deleted successfully', id: id },
-      { status: 200 }
-    );
-    
-  } catch (error: any) {
-    console.error('❌ DELETE Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete portfolio', details: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// ✅ GET: একক পোর্টফোলিও পাওয়া (optional)
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    await dbConnect();
-    const { id } = await params;
-    
-    let portfolio = await Portfolio.findOne({ id: id });
-    if (!portfolio) {
-      portfolio = await Portfolio.findById(id);
-    }
-    
-    if (!portfolio) {
-      return NextResponse.json(
-        { error: 'Portfolio not found' },
-        { status: 404 }
-      );
-    }
-    
-    return NextResponse.json(portfolio, { status: 200 });
-    
-  } catch (error: any) {
-    console.error('GET Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch portfolio' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('DELETE Error:', error);
+    return NextResponse.json({ error: 'Failed to delete vacancy' }, { status: 500 });
   }
 }

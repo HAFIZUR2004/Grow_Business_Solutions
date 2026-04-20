@@ -10,7 +10,8 @@ import {
   MessageSquare,
   Menu,
   Mail,
-  X
+  X,
+  Users
 } from 'lucide-react';
 
 export default function AdminLayout({
@@ -26,11 +27,13 @@ export default function AdminLayout({
     { path: '/admin/portfolio', name: 'পোর্টফোলিও', icon: FolderOpen },
     { path: '/admin/vacancies', name: 'ভ্যাকেন্সি', icon: Briefcase },
     { path: '/admin/testimonials', name: 'টেস্টিমোনিয়াল', icon: MessageSquare },
+    { path: '/admin/applications', name: 'আবেদনপত্র', icon: Users },
     { path: '/admin/messages', name: 'মেসেজ', icon: Mail },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
+      
       {/* Mobile Menu Button */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -46,13 +49,23 @@ export default function AdminLayout({
         lg:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
+        
+        {/* Header */}
         <div className="p-6 border-b border-gray-200">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            অ্যাডমিন প্যানেল
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">Grow Business Solutions</p>
+          
+          {/* CLICKABLE TITLE */}
+          <Link href="/" onClick={() => setSidebarOpen(false)}>
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer">
+              অ্যাডমিন প্যানেল
+            </h1>
+          </Link>
+
+          <p className="text-xs text-gray-500 mt-1">
+            Grow Business Solutions
+          </p>
         </div>
         
+        {/* Navigation */}
         <nav className="p-4 space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
