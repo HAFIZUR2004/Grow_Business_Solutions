@@ -3,6 +3,8 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import Link from 'next/link';
+
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Code2, Atom, Terminal, Database, Server, FileJson, Globe, ShieldCheck,
@@ -290,12 +292,17 @@ export default function AboutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <button className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
-              Explore Our Vision
-            </button>
-            <button className="w-full sm:w-auto border border-white/10 hover:bg-white/5 transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
-              Contact Us
-            </button>
+           <Link href="/vision">
+  <button className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
+    Explore Our Vision
+  </button>
+</Link>
+
+            <Link href="/ContactUs">
+        <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
+          Start Your Journey →
+        </button>
+      </Link>
           </div>
         </div>
       </section>
@@ -482,9 +489,11 @@ export default function AboutPage() {
             <p className="text-white/40 text-lg mb-10 max-w-2xl mx-auto">
               Let's build something extraordinary together. Join the ranks of our global clients.
             </p>
-            <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all">
-              Start Your Journey →
-            </button>
+       <Link href="/ContactUs">
+        <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
+          Start Your Journey →
+        </button>
+      </Link>
           </div>
         </motion.div>
       </section>

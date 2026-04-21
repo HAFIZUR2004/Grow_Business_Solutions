@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-
+import { useRouter } from "next/navigation";
 /* ─── tiny helpers ─── */
 const Tag = ({ children }: { children: React.ReactNode }) => (
   <span className="text-[9px] tracking-[0.18em] uppercase border border-white/20 text-white/50 px-2 py-0.5 rounded-sm">
@@ -672,30 +672,64 @@ function Vacancies() {
 }
 
 /* ─── WHY BUILD WITH US (Enhanced) ─── */
+/* ─── WHY BUILD WITH US (Enhanced with SVG Icons) ─── */
 const perks = [
   {
-    icon: "🚀",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z" 
+          fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 6V12L15 15" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
     title: "Equity & Ownership",
     desc: "Generous stock options. You are not an employee; you are a primary stakeholder in the ecosystem's growth.",
-    color: "#6c5ce7"
+    color: "#6c5ce7",
+    gradient: "from-[#6c5ce7]/20 to-[#6c5ce7]/5"
   },
   {
-    icon: "🌐",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M3 9L12 3L21 9L12 15L3 9Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M5 12V17L12 21L19 17V12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+        <path d="M12 15V21" stroke="currentColor" strokeWidth="1.5"/>
+      </svg>
+    ),
     title: "Remote Autonomous",
     desc: "Work from any node in the world. We focus on output quality, not clock-in timestamps.",
-    color: "#00cec9"
+    color: "#00cec9",
+    gradient: "from-[#00cec9]/20 to-[#00cec9]/5"
   },
   {
-    icon: "🛡",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12" 
+          stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="17" cy="17" r="3" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M19 19L22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
     title: "Health Protocol",
     desc: "Premium global health coverage and a mandatory 4-week 'Deep Sabbath' sabbatical every year.",
-    color: "#a29bfe"
+    color: "#a29bfe",
+    gradient: "from-[#a29bfe]/20 to-[#a29bfe]/5"
   },
   {
-    icon: "⚡",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2V4M12 20V22M4 12H2M6.5 6.5L5 5M17.5 6.5L19 5M22 12H20M18 18L19 19" 
+          stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M12 8V12L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M18 12C18 15.3137 15.3137 18 12 18" stroke="currentColor" strokeWidth="1.5"/>
+      </svg>
+    ),
     title: "Learning Budget",
     desc: "$5,000 annual budget for conferences, courses, and cutting-edge certifications.",
-    color: "#fdcb6e"
+    color: "#fdcb6e",
+    gradient: "from-[#fdcb6e]/20 to-[#fdcb6e]/5"
   },
 ];
 
@@ -704,35 +738,113 @@ function WhyBuild() {
     <section className="relative bg-transparent py-24 px-6 md:px-16 max-w-7xl mx-auto z-10">
       <div className="text-center mb-14">
         <SectionLabel>Protocol · Rewards</SectionLabel>
-        <h2 className="text-4xl md:text-5xl font-black text-white">
-          WHY BUILD <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] to-[#00cec9]">WITH US</span>
-        </h2>
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-4xl md:text-5xl font-black text-white"
+        >
+          WHY BUILD <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6c5ce7] via-[#a29bfe] to-[#00cec9]">WITH US</span>
+        </motion.h2>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="mt-4 text-sm text-white/40 max-w-md mx-auto"
+        >
+          Join a collective that values your growth as much as your contribution
+        </motion.p>
       </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {perks.map((p, idx) => (
           <motion.div
             key={p.title}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
+            transition={{ delay: idx * 0.1, duration: 0.5 }}
             viewport={{ once: true }}
-            whileHover={{ y: -8, borderColor: p.color }}
-            className="border border-white/10 bg-[#11111e]/80 backdrop-blur-sm rounded-xl p-7 flex flex-col gap-4 transition-all duration-300 cursor-pointer"
+            whileHover={{ y: -8, borderColor: p.color, scale: 1.02 }}
+            className={`group relative border border-white/10 bg-gradient-to-br ${p.gradient} bg-[#11111e]/80 backdrop-blur-sm rounded-2xl p-7 flex flex-col gap-4 transition-all duration-500 cursor-pointer overflow-hidden`}
           >
-            <span className="text-3xl">{p.icon}</span>
-            <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase">
-              {p.title}
-            </h3>
-            <p className="text-white/35 text-xs leading-relaxed">{p.desc}</p>
+            {/* Animated glow effect on hover */}
+            <motion.div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle at 50% 0%, ${p.color}20, transparent 70%)`
+              }}
+            />
+            
+            {/* Icon container with pulse animation */}
+            <motion.div 
+              className="relative w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+              style={{
+                background: `linear-gradient(135deg, ${p.color}20, ${p.color}05)`,
+                color: p.color,
+                border: `1px solid ${p.color}30`
+              }}
+              whileHover={{ rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 0.3 }}
+            >
+              {p.icon}
+            </motion.div>
+
+            {/* Title with decorative line */}
+            <div className="relative">
+              <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase mb-2">
+                {p.title}
+              </h3>
+              <motion.div 
+                className="h-px w-8 group-hover:w-12 transition-all duration-300"
+                style={{ background: p.color }}
+              />
+            </div>
+
+            {/* Description */}
+            <p className="text-white/35 text-xs leading-relaxed group-hover:text-white/50 transition-colors duration-300">
+              {p.desc}
+            </p>
+
+            {/* Decorative corner accent */}
+            <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="1.5">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Optional: Stats row */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        viewport={{ once: true }}
+        className="mt-16 pt-8 border-t border-white/10 flex flex-wrap justify-center gap-8 md:gap-16"
+      >
+        {[
+          { value: "98%", label: "Retention Rate", color: "#6c5ce7" },
+          { value: "🌍", label: "Global Team", color: "#00cec9" },
+          { value: "4.9★", label: "Glassdoor Rating", color: "#fdcb6e" },
+        ].map((stat, i) => (
+          <div key={i} className="text-center group cursor-pointer">
+            <p className="text-2xl md:text-3xl font-black transition-all duration-300 group-hover:scale-110" style={{ color: stat.color }}>
+              {stat.value}
+            </p>
+            <p className="text-[9px] tracking-[0.2em] text-white/40 uppercase mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </motion.div>
     </section>
   );
 }
 
 /* ─── CTA BANNER (Enhanced) ─── */
+/* ─── CTA BANNER (Enhanced with Navigation) ─── */
 function CtaBanner() {
+  const router = useRouter();
+  
   return (
     <section className="relative bg-transparent py-32 px-6 text-center overflow-hidden z-10">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -766,7 +878,8 @@ function CtaBanner() {
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            className="mt-10 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase"
+            onClick={() => router.push('/careers/apply')}
+            className="mt-10 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-9 py-4 rounded-full text-xs font-bold tracking-[0.2em] uppercase cursor-pointer"
           >
             Initiate Application
           </motion.button>

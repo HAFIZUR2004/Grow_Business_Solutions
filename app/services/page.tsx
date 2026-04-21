@@ -580,86 +580,93 @@ export default function ServicesPage() {
         <div className="relative p-12 md:p-24 rounded-[3rem] bg-gradient-to-br from-[#111319] to-transparent border border-white/10 overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#6c5ce7]/10 blur-[100px] rounded-full" />
           
-          <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
-            <div>
-              <h2 className="text-5xl md:text-7xl font-black leading-[0.9] mb-10 tracking-tighter">
-                READY TO <br /> <span className="text-white/30 italic">DOMINATE?</span>
-              </h2>
-              <div className="space-y-8">
-                <div className="flex items-center gap-6 group">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#6c5ce7]/20 transition-colors border border-white/5">
-                    <Mail size={24} />
-                  </div>
-                  <span className="text-xl text-white/70 font-bold">growbusinesssolutionsbd@gmail.com</span>
-                </div>
-                <div className="flex items-center gap-6 group">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#00cec9]/20 transition-colors border border-white/5">
-                    <Globe size={24} />
-                  </div>
-                  <span className="text-xl text-white/70 font-bold">Global Delivery Center</span>
-                </div>
-                <div className="flex items-center gap-6 group">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#f9ab00]/20 transition-colors border border-white/5">
-                    <Phone size={24} />
-                  </div>
-                  <span className="text-xl text-white/70 font-bold">+1 (555) 123-4567</span>
-                </div>
-              </div>
-            </div>
+         <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
+  <div>
+    <h2 className="text-5xl md:text-7xl font-black leading-[0.9] mb-10 tracking-tighter">
+      READY TO <br /> <span className="text-white/30 italic">DOMINATE?</span>
+    </h2>
+    <div className="space-y-8">
+      {/* Email - Fixed alignment */}
+      <div className="flex items-start gap-6 group">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#6c5ce7]/20 transition-colors border border-white/5 flex-shrink-0">
+          <Mail size={24} />
+        </div>
+        <span className="text-xl text-white/70 font-bold break-all md:break-normal">
+          growbusinesssolutionsbd@gmail.com
+        </span>
+      </div>
+      
+      {/* Globe */}
+      <div className="flex items-center gap-6 group">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#00cec9]/20 transition-colors border border-white/5 flex-shrink-0">
+          <Globe size={24} />
+        </div>
+        <span className="text-xl text-white/70 font-bold">Global Delivery Center</span>
+      </div>
+      
+      {/* Phone */}
+      <div className="flex items-center gap-6 group">
+        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#f9ab00]/20 transition-colors border border-white/5 flex-shrink-0">
+          <Phone size={24} />
+        </div>
+        <span className="text-xl text-white/70 font-bold">+880 1884 369340</span>
+      </div>
+    </div>
+  </div>
 
-            <div className="space-y-6 bg-white/[0.02] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
-                            <form onSubmit={handleFormSubmit} className="space-y-6">
-                <input 
-                  type="text"
-                  placeholder="Full Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  required
-                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
-                />
-                <input 
-                  type="email"
-                  placeholder="Work Email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  required
-                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
-                />
-                <textarea 
-                  placeholder="Project Requirements..."
-                  value={formData.requirements}
-                  onChange={(e) => setFormData({...formData, requirements: e.target.value})}
-                  required
-                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm h-32 resize-none"
-                />
-                
-                {submitStatus && (
-                  <div className={`p-4 rounded-xl text-sm font-medium ${
-                    submitStatus.type === 'success' 
-                      ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
-                  }`}>
-                    {submitStatus.message}
-                  </div>
-                )}
-                
-                <button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-6 bg-[#6c5ce7] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl hover:bg-[#5a4ad1] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      SENDING...
-                    </>
-                  ) : (
-                    'Schedule Discovery Call'
-                  )}
-                </button>
-              </form>
-            </div>
-          </div>
+  <div className="space-y-6 bg-white/[0.02] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
+    <form onSubmit={handleFormSubmit} className="space-y-6">
+      <input 
+        type="text"
+        placeholder="Full Name"
+        value={formData.name}
+        onChange={(e) => setFormData({...formData, name: e.target.value})}
+        required
+        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
+      />
+      <input 
+        type="email"
+        placeholder="Work Email"
+        value={formData.email}
+        onChange={(e) => setFormData({...formData, email: e.target.value})}
+        required
+        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
+      />
+      <textarea 
+        placeholder="Project Requirements..."
+        value={formData.requirements}
+        onChange={(e) => setFormData({...formData, requirements: e.target.value})}
+        required
+        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm h-32 resize-none"
+      />
+      
+      {submitStatus && (
+        <div className={`p-4 rounded-xl text-sm font-medium ${
+          submitStatus.type === 'success' 
+            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+        }`}>
+          {submitStatus.message}
+        </div>
+      )}
+      
+      <button 
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full py-6 bg-[#6c5ce7] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl hover:bg-[#5a4ad1] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 size={16} className="animate-spin" />
+            SENDING...
+          </>
+        ) : (
+          'Schedule Discovery Call'
+        )}
+      </button>
+    </form>
+  </div>
+</div>
         </div>
       </section>
 
