@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -80,10 +80,174 @@ interface PortfolioItem {
 }
 
 // Dummy Data for fallback
-const dummyProjects: PortfolioItem[] = [
-   
- 
-];
+const dummyProjects: PortfolioItem[] = [];
+
+// ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
+const PremiumSpinner = () => {
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingText, setLoadingText] = useState("Loading Projects");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 40);
+
+    const texts = ["Fetching Data", "Processing Assets", "Preparing Portfolio", "Almost Ready"];
+    let textIndex = 0;
+    const textInterval = setInterval(() => {
+      if (textIndex < texts.length) {
+        setLoadingText(texts[textIndex]);
+        textIndex++;
+      }
+    }, 800);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(textInterval);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] flex flex-col items-center justify-center z-[200]">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute w-[600px] h-[600px] bg-purple-600/20 rounded-full"
+          animate={{ x: [-300, 300], y: [-300, 300] }}
+          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute w-[500px] h-[500px] bg-cyan-500/20 rounded-full bottom-0 right-0"
+          animate={{ x: [300, -300], y: [300, -300] }}
+          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
+      {/* Grid Overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      {/* Main Spinner - Quantum Ring */}
+      <motion.div
+        className="relative w-32 h-32 mb-8"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", damping: 15 }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-500 border-r-purple-500"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-2 rounded-full border-4 border-transparent border-b-cyan-400 border-l-purple-400"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-4 rounded-full border-4 border-transparent border-t-pink-500 border-r-blue-500"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-md" />
+        </motion.div>
+      </motion.div>
+
+      {/* Logo Placeholder */}
+      <motion.div
+        className="relative w-20 h-20 mb-6"
+        animate={{
+          rotate: 360,
+          scale: [1, 1.05, 1],
+        }}
+        transition={{
+          rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+          scale: { duration: 1.5, repeat: Infinity },
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl font-bold">🚀</span>
+        </div>
+      </motion.div>
+
+      {/* Loading Text */}
+      <motion.div
+        className="text-center space-y-3"
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      >
+        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          {loadingText}
+        </p>
+        <p className="text-cyan-400/50 font-mono text-[10px] tracking-[0.3em] uppercase">
+          Please wait
+        </p>
+      </motion.div>
+
+      {/* Progress Bar */}
+      <div className="w-64 md:w-80 mt-8">
+        <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${loadingProgress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+        <motion.p
+          className="text-[10px] text-white/30 text-center mt-2 font-mono"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          {loadingProgress}% Complete
+        </motion.p>
+      </div>
+
+      {/* Particle Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full"
+            initial={{
+              x: "50%",
+              y: "50%",
+              scale: 0,
+            }}
+            animate={{
+              x: `${50 + (Math.random() - 0.5) * 100}%`,
+              y: `${50 + (Math.random() - 0.5) * 100}%`,
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              delay: i * 0.15,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+// ==================================================
 
 export default function DynamicPortfolioPage() {
   const [projects, setProjects] = useState<PortfolioItem[]>([]);
@@ -120,6 +284,9 @@ export default function DynamicPortfolioPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        // সিমুলেটেড লোডিং ডেলে (প্রিমিয়াম স্পিনার দেখানোর জন্য)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const res = await fetch('/api/portfolio');
         const data = await res.json();
         
@@ -224,19 +391,15 @@ export default function DynamicPortfolioPage() {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
-  }, [loading]);
+  }, []);
 
   const headerY = 1 - scrollProgress * 200;
   const headerOpacity = 1 - scrollProgress * 2;
 
-  if (loading) return (
-    <div className="min-h-screen bg-[#0b0c18] flex items-center justify-center">
-      <div className="relative">
-        <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-        <div className="absolute inset-0 w-16 h-16 border-4 border-cyan-500/30 border-b-cyan-500 rounded-full animate-spin" style={{ animationDirection: 'reverse' }} />
-      </div>
-    </div>
-  );
+  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে (পুরনো স্পিনার বাদ)
+  if (loading) {
+    return <PremiumSpinner />;
+  }
 
   return (
     <div className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden min-h-screen font-sans">
@@ -342,96 +505,104 @@ export default function DynamicPortfolioPage() {
         </motion.div>
 
         {/* Projects Grid - Shows only 3 projects */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.map((project, idx) => {
-            const colors = colorMap[project.colorKey as keyof typeof colorMap] || colorMap.purple;
-            const IconComponent = iconMap[project.icon] || faLayerGroup;
-            
-            return (
-              <motion.div
-                key={project._id}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: idx * 0.1, duration: 0.6, type: "spring", stiffness: 100 }}
-                whileHover={{ y: -8 }}
-                className="group relative rounded-2xl bg-white/[0.02] backdrop-blur-md border border-white/5 overflow-hidden hover:border-white/15 transition-all duration-500 hover:shadow-2xl"
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-transparent to-transparent z-10`} />
-                  <Image
-                    src={project.image || 'https://placehold.co/800x600/1a1a2e/ffffff?text=Project+Image'}
-                    alt={project.imageAlt}
-                    fill
-                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://placehold.co/800x600/1a1a2e/ffffff?text=Project+Image';
-                    }}
-                  />
-                  <div className="absolute top-4 left-4 z-20">
-                    <span className={`px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold tracking-widest uppercase border ${colors.border} ${colors.text}`}>
-                      {project.category}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-                </div>
-
-                <div className="p-6 relative">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center ${colors.text} border border-white/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                      <FontAwesomeIcon icon={IconComponent} className="text-xl" />
-                    </div>
-                    <div className="flex gap-2">
-                      {project.github && (
-                        <motion.a 
-                          href={project.github} 
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1 }}
-                          className="text-white/20 hover:text-white transition-colors"
-                        >
-                          <FontAwesomeIcon icon={faGithub} className="text-lg" />
-                        </motion.a>
-                      )}
-                      {project.liveUrl && (
-                        <motion.a 
-                          href={project.liveUrl} 
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1 }}
-                          className="text-white/20 hover:text-white transition-colors"
-                        >
-                          <FontAwesomeIcon icon={faExternalLinkAlt} className="text-base" />
-                        </motion.a>
-                      )}
-                    </div>
-                  </div>
-
-                  <h3 className={`text-xl font-bold mb-2 transition-colors duration-300 ${colors.text}`}>
-                    {project.title}
-                  </h3>
-                  <p className="text-white/40 text-xs leading-relaxed mb-4 font-light line-clamp-2">
-                    {project.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tech.slice(0, 3).map((tag, tIdx) => (
-                      <span key={tIdx} className="px-2 py-0.5 rounded-lg bg-white/5 text-[8px] font-mono text-white/40 uppercase tracking-wider">
-                        {tag}
+        {projects.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">📁</div>
+            <p className="text-white/60 text-xl mb-2">No projects found.</p>
+            <p className="text-white/40">Add some projects from the admin dashboard to see them here.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {projects.map((project, idx) => {
+              const colors = colorMap[project.colorKey as keyof typeof colorMap] || colorMap.purple;
+              const IconComponent = iconMap[project.icon] || faLayerGroup;
+              
+              return (
+                <motion.div
+                  key={project._id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ delay: idx * 0.1, duration: 0.6, type: "spring", stiffness: 100 }}
+                  whileHover={{ y: -8 }}
+                  className="group relative rounded-2xl bg-white/[0.02] backdrop-blur-md border border-white/5 overflow-hidden hover:border-white/15 transition-all duration-500 hover:shadow-2xl"
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-t from-[#0b0c18] via-transparent to-transparent z-10`} />
+                    <Image
+                      src={project.image || 'https://placehold.co/800x600/1a1a2e/ffffff?text=Project+Image'}
+                      alt={project.imageAlt}
+                      fill
+                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'https://placehold.co/800x600/1a1a2e/ffffff?text=Project+Image';
+                      }}
+                    />
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className={`px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-bold tracking-widest uppercase border ${colors.border} ${colors.text}`}>
+                        {project.category}
                       </span>
-                    ))}
-                    {project.tech.length > 3 && (
-                      <span className="px-2 py-0.5 rounded-lg bg-white/5 text-[8px] font-mono text-white/40 uppercase tracking-wider">
-                        +{project.tech.length - 3}
-                      </span>
-                    )}
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+
+                  <div className="p-6 relative">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center ${colors.text} border border-white/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                        <FontAwesomeIcon icon={IconComponent} className="text-xl" />
+                      </div>
+                      <div className="flex gap-2">
+                        {project.github && (
+                          <motion.a 
+                            href={project.github} 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.1 }}
+                            className="text-white/20 hover:text-white transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faGithub} className="text-lg" />
+                          </motion.a>
+                        )}
+                        {project.liveUrl && (
+                          <motion.a 
+                            href={project.liveUrl} 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.1 }}
+                            className="text-white/20 hover:text-white transition-colors"
+                          >
+                            <FontAwesomeIcon icon={faExternalLinkAlt} className="text-base" />
+                          </motion.a>
+                        )}
+                      </div>
+                    </div>
+
+                    <h3 className={`text-xl font-bold mb-2 transition-colors duration-300 ${colors.text}`}>
+                      {project.title}
+                    </h3>
+                    <p className="text-white/40 text-xs leading-relaxed mb-4 font-light line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.tech.slice(0, 3).map((tag, tIdx) => (
+                        <span key={tIdx} className="px-2 py-0.5 rounded-lg bg-white/5 text-[8px] font-mono text-white/40 uppercase tracking-wider">
+                          {tag}
+                        </span>
+                      ))}
+                      {project.tech.length > 3 && (
+                        <span className="px-2 py-0.5 rounded-lg bg-white/5 text-[8px] font-mono text-white/40 uppercase tracking-wider">
+                          +{project.tech.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
 
         {/* View All Projects Button - Navigates to full projects page */}
         <motion.div

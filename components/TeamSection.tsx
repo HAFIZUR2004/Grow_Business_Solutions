@@ -41,43 +41,44 @@ const TeamSection = () => {
     }
   };
 
-  const members = [
+
+const members = [
     { 
       name: "Hafizur Rahman", 
-      role: "Lead Systems Architect", 
-      company: "Tech Nova", 
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&h=500&fit=crop",
+      role: "Founder & Lead Full-Stack Architect", 
+     
+      image: "https://i.ibb.co.com/bg6WXZ1N/IMG-20260103-122717.jpg", // 👈 Unsplash ব্যবহার করুন
       social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
     },
     { 
       name: "Shukkur Ali", 
-      role: "Quantum Security Lead", 
-      company: "Cyberdyne Systems", 
+      role: "Co-founder & Lead Generation Expert", 
+      company: "Tech Nova", 
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop",
       social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
     },
     { 
       name: "Sarah Chen", 
       role: "Product Owner", 
-      company: "Zilla Themes", 
+      company: "Tech Nova", 
       image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&h=500&fit=crop",
       social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
     },
     { 
       name: "Julian Kross", 
       role: "Lead Architect", 
-      company: "Moon Studios", 
+      company: "Tech Nova", 
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop",
       social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
     },
     { 
       name: "Elena Vance", 
       role: "AI Engineer", 
-      company: "Neural Dynamics", 
+      company: "Tech Nova", 
       image: "https://images.unsplash.com/photo-1573497019236-17f8177b81e8?q=80&w=400&h=500&fit=crop",
       social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
     },
-  ];
+];
 
   // Particle Network Canvas Effect
   useEffect(() => {

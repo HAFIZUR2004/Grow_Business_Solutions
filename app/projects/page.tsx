@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,6 +15,7 @@ import {
   faLayerGroup,
   faArrowRight
 } from "@fortawesome/free-solid-svg-icons";
+import PremiumSpinner from "@/components/PremiumSpinner"; // 👈 স্পিনার ইম্পোর্ট করুন
 
 const iconMap: Record<string, any> = {
   faLayerGroup: faLayerGroup,
@@ -81,93 +82,93 @@ interface PortfolioItem {
 
 // Dummy Data for fallback
 const dummyProjects: PortfolioItem[] = [
-    {
-      _id: "1",
-      id: "01",
-      title: "AI Content Generator",
-      category: "Web App",
-      description: "An intelligent platform that generates SEO-optimized content using GPT-4 with real-time analytics.",
-      tech: ["React", "Node.js", "OpenAI", "Tailwind"],
-      icon: "faMicrochip",
-      colorKey: "purple",
-      stats: "Production Ready",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=AI+Project",
-      imageAlt: "AI Content Generator",
-      github: "https://github.com",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "2",
-      id: "02",
-      title: "DeFi Dashboard",
-      category: "Blockchain",
-      description: "Real-time DeFi analytics with wallet integration, portfolio tracking, and cross-chain support.",
-      tech: ["Next.js", "Web3.js", "Solidity", "Ethers"],
-      icon: "faDatabase",
-      colorKey: "cyan",
-      stats: "Audited",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=DeFi+Dashboard",
-      imageAlt: "DeFi Dashboard",
-      github: "https://github.com",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "3",
-      id: "03",
-      title: "Cyber Security Suite",
-      category: "Security",
-      description: "Advanced vulnerability scanner with real-time threat detection and automated reporting system.",
-      tech: ["Python", "Django", "PostgreSQL", "Docker"],
-      icon: "faShieldAlt",
-      colorKey: "emerald",
-      stats: "ISO Certified",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Security+Suite",
-      imageAlt: "Cyber Security Suite",
-      github: "https://github.com"
-    },
-    {
-      _id: "4",
-      id: "04",
-      title: "E-Commerce Platform",
-      category: "E-Commerce",
-      description: "Full-featured e-commerce solution with payment gateway, inventory management, and analytics.",
-      tech: ["Next.js", "Stripe", "MongoDB", "Redis"],
-      icon: "faBolt",
-      colorKey: "blue",
-      stats: "10K+ Users",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=E-Commerce",
-      imageAlt: "E-Commerce Platform",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "5",
-      id: "05",
-      title: "Mobile Banking App",
-      category: "Mobile",
-      description: "Secure and user-friendly mobile banking application with biometric authentication.",
-      tech: ["React Native", "Node.js", "MongoDB", "Express"],
-      icon: "faDatabase",
-      colorKey: "cyan",
-      stats: "50K+ Downloads",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Banking+App",
-      imageAlt: "Mobile Banking App",
-      github: "https://github.com",
-      liveUrl: "https://example.com"
-    },
-    {
-      _id: "6",
-      id: "06",
-      title: "Healthcare Portal",
-      category: "Healthcare",
-      description: "Complete healthcare management system with appointment scheduling and telemedicine.",
-      tech: ["Next.js", "PostgreSQL", "Tailwind", "Prisma"],
-      icon: "faShieldAlt",
-      colorKey: "emerald",
-      stats: "HIPAA Compliant",
-      image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Healthcare+Portal",
-      imageAlt: "Healthcare Portal",
-      liveUrl: "https://example.com"
-    }
+  {
+    _id: "1",
+    id: "01",
+    title: "AI Content Generator",
+    category: "Web App",
+    description: "An intelligent platform that generates SEO-optimized content using GPT-4 with real-time analytics.",
+    tech: ["React", "Node.js", "OpenAI", "Tailwind"],
+    icon: "faMicrochip",
+    colorKey: "purple",
+    stats: "Production Ready",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=AI+Project",
+    imageAlt: "AI Content Generator",
+    github: "https://github.com",
+    liveUrl: "https://example.com"
+  },
+  {
+    _id: "2",
+    id: "02",
+    title: "DeFi Dashboard",
+    category: "Blockchain",
+    description: "Real-time DeFi analytics with wallet integration, portfolio tracking, and cross-chain support.",
+    tech: ["Next.js", "Web3.js", "Solidity", "Ethers"],
+    icon: "faDatabase",
+    colorKey: "cyan",
+    stats: "Audited",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=DeFi+Dashboard",
+    imageAlt: "DeFi Dashboard",
+    github: "https://github.com",
+    liveUrl: "https://example.com"
+  },
+  {
+    _id: "3",
+    id: "03",
+    title: "Cyber Security Suite",
+    category: "Security",
+    description: "Advanced vulnerability scanner with real-time threat detection and automated reporting system.",
+    tech: ["Python", "Django", "PostgreSQL", "Docker"],
+    icon: "faShieldAlt",
+    colorKey: "emerald",
+    stats: "ISO Certified",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Security+Suite",
+    imageAlt: "Cyber Security Suite",
+    github: "https://github.com"
+  },
+  {
+    _id: "4",
+    id: "04",
+    title: "E-Commerce Platform",
+    category: "E-Commerce",
+    description: "Full-featured e-commerce solution with payment gateway, inventory management, and analytics.",
+    tech: ["Next.js", "Stripe", "MongoDB", "Redis"],
+    icon: "faBolt",
+    colorKey: "blue",
+    stats: "10K+ Users",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=E-Commerce",
+    imageAlt: "E-Commerce Platform",
+    liveUrl: "https://example.com"
+  },
+  {
+    _id: "5",
+    id: "05",
+    title: "Mobile Banking App",
+    category: "Mobile",
+    description: "Secure and user-friendly mobile banking application with biometric authentication.",
+    tech: ["React Native", "Node.js", "MongoDB", "Express"],
+    icon: "faDatabase",
+    colorKey: "cyan",
+    stats: "50K+ Downloads",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Banking+App",
+    imageAlt: "Mobile Banking App",
+    github: "https://github.com",
+    liveUrl: "https://example.com"
+  },
+  {
+    _id: "6",
+    id: "06",
+    title: "Healthcare Portal",
+    category: "Healthcare",
+    description: "Complete healthcare management system with appointment scheduling and telemedicine.",
+    tech: ["Next.js", "PostgreSQL", "Tailwind", "Prisma"],
+    icon: "faShieldAlt",
+    colorKey: "emerald",
+    stats: "HIPAA Compliant",
+    image: "https://placehold.co/800x600/1a1a2e/ffffff?text=Healthcare+Portal",
+    imageAlt: "Healthcare Portal",
+    liveUrl: "https://example.com"
+  }
 ];
 
 export default function DynamicPortfolioPage() {
@@ -205,11 +206,13 @@ export default function DynamicPortfolioPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        // সিমুলেটেড লোডিং ডেলে (প্রিমিয়াম স্পিনার দেখানোর জন্য)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const res = await fetch('/api/portfolio');
         const data = await res.json();
         
         if (Array.isArray(data) && data.length > 0) {
-          // সব প্রজেক্ট দেখাবে (লিমিট ছাড়া)
           setProjects(data);
           console.log(`✅ Showing all ${data.length} projects`);
         } else {
@@ -309,19 +312,15 @@ export default function DynamicPortfolioPage() {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
-  }, [loading]);
+  }, []);
 
   const headerY = 1 - scrollProgress * 200;
   const headerOpacity = 1 - scrollProgress * 2;
 
-  if (loading) return (
-    <div className="min-h-screen bg-[#0b0c18] flex items-center justify-center">
-      <div className="relative">
-        <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-        <div className="absolute inset-0 w-16 h-16 border-4 border-cyan-500/30 border-b-cyan-500 rounded-full animate-spin" style={{ animationDirection: 'reverse' }} />
-      </div>
-    </div>
-  );
+  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে (ইম্পোর্ট করা স্পিনার ব্যবহার করে)
+  if (loading) {
+    return <PremiumSpinner text="Loading Portfolio" subText="Please wait" />;
+  }
 
   return (
     <div className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden min-h-screen font-sans">
@@ -426,7 +425,7 @@ export default function DynamicPortfolioPage() {
           </motion.div>
         </motion.div>
 
-        {/* Projects Grid - Shows ALL projects (no limit, no view all button) */}
+        {/* Projects Grid - Shows ALL projects */}
         {projects.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">📁</div>
@@ -526,7 +525,7 @@ export default function DynamicPortfolioPage() {
               })}
             </div>
 
-            {/* Project Count Footer - Shows total projects count */}
+            {/* Project Count Footer */}
             <div className="text-center mt-12 pt-8 border-t border-white/5">
               <p className="text-white/30 text-xs font-mono uppercase tracking-wider">
                 Showing all {projects.length} project{projects.length !== 1 ? 's' : ''}

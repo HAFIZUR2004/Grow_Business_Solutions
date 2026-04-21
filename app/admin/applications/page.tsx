@@ -2,24 +2,37 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Eye, Download, Search, RefreshCw } from 'lucide-react';
+import { Eye, Download, Search, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
   const fetchApplications = async () => {
     try {
       setLoading(true);
+      setError(null);
       const res = await fetch('/api/applications');
+      
+      if (!res.ok) {
+        throw new Error('Failed to fetch applications');
+      }
+      
       const data = await res.json();
       console.log('Fetched applications:', data);
       console.log('Number of applications:', data.length);
+      
       setApplications(Array.isArray(data) ? data : []);
+      
+      if (data.length === 0) {
+        console.log('No applications found');
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching applications:', error);
+      setError('অ্যাপ্লিকেশন লোড করতে ব্যর্থ হয়েছে');
       setApplications([]);
     } finally {
       setLoading(false);
@@ -29,23 +42,6 @@ export default function ApplicationsPage() {
   useEffect(() => {
     fetchApplications();
   }, []);
-
-  const seedData = async () => {
-    if (confirm('ডেমো ডাটা যোগ করতে চান? এটি বিদ্যমান ডাটা মুছে দিবে।')) {
-      setLoading(true);
-      try {
-        const res = await fetch('/api/seed-applications');
-        const data = await res.json();
-        alert(data.message);
-        await fetchApplications();
-      } catch (error) {
-        console.error('Seed error:', error);
-        alert('ডাটা যোগ করতে ব্যর্থ হয়েছে');
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
 
   const filteredApplications = applications.filter((app) => {
     const matchesSearch =
@@ -57,10 +53,40 @@ export default function ApplicationsPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'pending': return { text: 'পেন্ডিং', class: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
+      case 'reviewed': return { text: 'রিভিউ করা', class: 'bg-purple-100 text-purple-700 border-purple-200' };
+      case 'accepted': return { text: 'সিলেক্টেড', class: 'bg-green-100 text-green-700 border-green-200' };
+      case 'rejected': return { text: 'রিজেক্টেড', class: 'bg-red-100 text-red-700 border-red-200' };
+      default: return { text: status, class: 'bg-gray-100 text-gray-700 border-gray-200' };
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-500">লোড হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+          <AlertCircle className="text-red-600 mx-auto mb-3" size={48} />
+          <p className="text-red-600">{error}</p>
+          <button
+            onClick={fetchApplications}
+            className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+          >
+            আবার চেষ্টা করুন
+          </button>
+        </div>
       </div>
     );
   }
@@ -68,23 +94,19 @@ export default function ApplicationsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">সব আবেদনপত্র</h1>
           <p className="text-gray-500 mt-1">
             মোট {applications.length} টি আবেদন
           </p>
         </div>
-        <div className="flex gap-2">
-          {applications.length === 0 && (
-            <button
-              onClick={seedData}
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-            >
-              <RefreshCw size={16} /> ডেমো ডাটা যোগ করুন
-            </button>
-          )}
-        </div>
+        <button
+          onClick={fetchApplications}
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+        >
+          <RefreshCw size={16} /> রিফ্রেশ
+        </button>
       </div>
 
       {/* Filter Section */}
@@ -98,7 +120,7 @@ export default function ApplicationsPage() {
                 placeholder="নাম, ইমেইল বা ভ্যাকেন্সি দিয়ে খুঁজুন..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -118,74 +140,70 @@ export default function ApplicationsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left p-4">নাম</th>
-                <th className="text-left p-4">ভ্যাকেন্সি</th>
-                <th className="text-left p-4">ইমেইল</th>
-                <th className="text-left p-4">ফোন</th>
-                <th className="text-left p-4">স্ট্যাটাস</th>
-                <th className="text-left p-4">তারিখ</th>
-                <th className="text-left p-4">অ্যাকশন</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredApplications.map((app) => (
-                <tr key={app._id} className="border-b hover:bg-gray-50">
-                  <td className="p-4 font-medium">{app.fullName}</td>
-                  <td className="p-4">
-                    <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
-                      {app.vacancyTitle}
-                    </span>
-                  </td>
-                  <td className="p-4 text-gray-600">{app.email}</td>
-                  <td className="p-4 text-gray-600">{app.phone || '-'}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      app.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                      app.status === 'reviewed' ? 'bg-purple-100 text-purple-700' :
-                      app.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    }`}>
-                      {app.status === 'pending' ? '⏳ পেন্ডিং' : 
-                       app.status === 'reviewed' ? '👁️ রিভিউ করা' :
-                       app.status === 'accepted' ? '✅ সিলেক্টেড' : '❌ রিজেক্টেড'}
-                    </span>
-                   </td>
-                  <td className="p-4 text-gray-500">
-                    {app.appliedAt ? new Date(app.appliedAt).toLocaleDateString('bn-BD') : '-'}
-                   </td>
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/admin/applications/${app._id}`}
-                        className="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
-                        title="বিস্তারিত দেখুন"
-                      >
-                        <Eye size={16} />
-                      </Link>
-                      {app.resumePath && (
-                        <a href={app.resumePath} download className="p-2 bg-gray-100 text-gray-600 rounded hover:bg-gray-200">
-                          <Download size={16} />
-                        </a>
-                      )}
-                    </div>
-                   </td>
-                 </tr>
-              ))}
-              {filteredApplications.length === 0 && (
+        {applications.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-yellow-700">কোনো আবেদন পাওয়া যায়নি</p>
+              <p className="text-sm text-gray-500 mt-2">
+                API এন্ডপয়েন্ট চেক করুন: /api/applications
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
                 <tr>
-                  <td colSpan={7} className="text-center p-8 text-gray-500">
-                    {applications.length === 0 ? 
-                      'কোনো আবেদন নেই। "ডেমো ডাটা যোগ করুন" বাটনে ক্লিক করুন' : 
-                      'কোনো আবেদন পাওয়া যায়নি'}
-                  </td>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">নাম</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">ভ্যাকেন্সি</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600 hidden md:table-cell">ইমেইল</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600 hidden lg:table-cell">ফোন</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">স্ট্যাটাস</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600 hidden lg:table-cell">তারিখ</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">অ্যাকশন</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredApplications.map((app) => {
+                  const status = getStatusBadge(app.status);
+                  return (
+                    <tr key={app._id} className="border-b hover:bg-gray-50 transition">
+                      <td className="p-4">
+                        <div>
+                          <p className="font-medium text-gray-800">{app.fullName || 'নাম নেই'}</p>
+                          <p className="text-xs text-gray-400 md:hidden mt-1">{app.email}</p>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className="inline-flex px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-medium">
+                          {app.vacancyTitle || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="p-4 text-gray-600 hidden md:table-cell">{app.email || '-'}</td>
+                      <td className="p-4 text-gray-600 hidden lg:table-cell">{app.phone || '-'}</td>
+                      <td className="p-4">
+                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium border ${status.class}`}>
+                          {status.text}
+                        </span>
+                      </td>
+                      <td className="p-4 text-gray-500 text-sm hidden lg:table-cell">
+                        {app.appliedAt ? new Date(app.appliedAt).toLocaleDateString('bn-BD') : '-'}
+                      </td>
+                      <td className="p-4">
+                        <Link
+                          href={`/admin/applications/${app._id}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition"
+                        >
+                          <Eye size={14} /> দেখুন
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

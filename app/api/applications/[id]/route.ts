@@ -11,26 +11,23 @@ export async function GET(
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
+    const { id } = params;
 
-    const id = params.id;
+    console.log('Fetching application with ID:', id);
 
-    console.log('Fetching ID:', id);
+    let application = null;
 
-    let application;
-
-    try {
-      // FIRST চেষ্টা → ObjectId
+    // প্রথমে ObjectId দিয়ে চেষ্টা
+    if (ObjectId.isValid(id)) {
       application = await db.collection('applications').findOne({
-        _id: new ObjectId(id),
+        _id: new ObjectId(id)
       });
-    } catch {
-      console.log('Invalid ObjectId, skipping...');
     }
 
-    // যদি না পায় → fallback
+    // না পেলে string id দিয়ে চেষ্টা
     if (!application) {
       application = await db.collection('applications').findOne({
-        id: id,
+        id: id
       });
     }
 
@@ -43,9 +40,50 @@ export async function GET(
 
     return NextResponse.json(application);
   } catch (error) {
-    console.error('GET Error:', error);
+    console.error('GET Application Error:', error);
     return NextResponse.json(
-      { error: 'লোড করতে ব্যর্থ হয়েছে' },
+      { error: 'অ্যাপ্লিকেশন লোড করতে ব্যর্থ হয়েছে' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const { id } = params;
+    const { status } = await request.json();
+
+    let result = null;
+
+    if (ObjectId.isValid(id)) {
+      result = await db.collection('applications').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status, updatedAt: new Date() } }
+      );
+    } else {
+      result = await db.collection('applications').updateOne(
+        { id: id },
+        { $set: { status, updatedAt: new Date() } }
+      );
+    }
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { error: 'অ্যাপ্লিকেশন পাওয়া যায়নি' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, status });
+  } catch (error) {
+    console.error('PUT Application Error:', error);
+    return NextResponse.json(
+      { error: 'স্ট্যাটাস আপডেট করতে ব্যর্থ হয়েছে' },
       { status: 500 }
     );
   }

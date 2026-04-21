@@ -8,11 +8,180 @@ import {
   Send, Mail, Phone, MapPin, Clock, Shield, Lock, 
   CheckCircle, MessageSquare, User, AtSign
 } from "lucide-react";
+import Image from "next/image";
+
+// ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
+const PremiumSpinner = () => {
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingText, setLoadingText] = useState("Loading Contact");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 40);
+
+    const texts = ["Initializing Secure Channel", "Loading Interface", "Preparing Form", "Almost Ready"];
+    let textIndex = 0;
+    const textInterval = setInterval(() => {
+      if (textIndex < texts.length) {
+        setLoadingText(texts[textIndex]);
+        textIndex++;
+      }
+    }, 800);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(textInterval);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-[#05070a] via-[#0a0c0f] to-[#05070a] flex flex-col items-center justify-center z-[200]">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute w-[600px] h-[600px] bg-[#6c5ce7]/20 rounded-full"
+          animate={{ x: [-300, 300], y: [-300, 300] }}
+          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute w-[500px] h-[500px] bg-[#00cec9]/20 rounded-full bottom-0 right-0"
+          animate={{ x: [300, -300], y: [300, -300] }}
+          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
+      {/* Grid Overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      {/* Main Spinner - Quantum Ring */}
+      <motion.div
+        className="relative w-32 h-32 mb-8"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", damping: 15 }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#6c5ce7] border-r-[#00cec9]"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-2 rounded-full border-4 border-transparent border-b-[#6c5ce7] border-l-[#00cec9]"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-4 rounded-full border-4 border-transparent border-t-[#a29bfe] border-r-[#00cec9]"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <div className="w-10 h-10 bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] rounded-full blur-md" />
+        </motion.div>
+      </motion.div>
+
+      {/* Logo Placeholder */}
+      <motion.div
+        className="relative w-20 h-20 mb-6"
+        animate={{
+          rotate: 360,
+          scale: [1, 1.05, 1],
+        }}
+        transition={{
+          rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+          scale: { duration: 1.5, repeat: Infinity },
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl font-bold">✉️</span>
+        </div>
+      </motion.div>
+
+      {/* Loading Text */}
+      <motion.div
+        className="text-center space-y-3"
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      >
+        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] bg-clip-text text-transparent">
+          {loadingText}
+        </p>
+        <p className="text-[#6c5ce7]/50 font-mono text-[10px] tracking-[0.3em] uppercase">
+          Please wait
+        </p>
+      </motion.div>
+
+      {/* Progress Bar */}
+      <div className="w-64 md:w-80 mt-8">
+        <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${loadingProgress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+        <motion.p
+          className="text-[10px] text-white/30 text-center mt-2 font-mono"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          {loadingProgress}% Complete
+        </motion.p>
+      </div>
+
+      {/* Particle Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-[#6c5ce7] rounded-full"
+            initial={{
+              x: "50%",
+              y: "50%",
+              scale: 0,
+            }}
+            animate={{
+              x: `${50 + (Math.random() - 0.5) * 100}%`,
+              y: `${50 + (Math.random() - 0.5) * 100}%`,
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              delay: i * 0.15,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+// ==================================================
 
 export default function ContactSection() {
   const { lang } = useLanguage();
   const t = translations[lang];
-
+  
+  const [loading, setLoading] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +192,14 @@ export default function ContactSection() {
   });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // সিমুলেটেড লোডিং - প্রিমিয়াম স্পিনার দেখানোর জন্য
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // আপনার কন্ট্যাক্ট ইনফো (ডায়নামিক)
   const contactInfo = [
@@ -165,6 +342,11 @@ export default function ContactSection() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে
+  if (loading) {
+    return <PremiumSpinner />;
+  }
 
   return (
     <section className="relative min-h-screen bg-[#05070a] text-white flex items-center px-4 md:px-10 py-32 overflow-hidden font-sans">

@@ -16,6 +16,173 @@ interface Testimonial {
   image?: string;
 }
 
+// ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
+const PremiumSpinner = () => {
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingText, setLoadingText] = useState("Loading Reviews");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 40);
+
+    const texts = ["Fetching Testimonials", "Processing Data", "Preparing Reviews", "Almost Ready"];
+    let textIndex = 0;
+    const textInterval = setInterval(() => {
+      if (textIndex < texts.length) {
+        setLoadingText(texts[textIndex]);
+        textIndex++;
+      }
+    }, 800);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(textInterval);
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] flex flex-col items-center justify-center z-[200]">
+      {/* Background Animation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute w-[600px] h-[600px] bg-purple-600/20 rounded-full"
+          animate={{ x: [-300, 300], y: [-300, 300] }}
+          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute w-[500px] h-[500px] bg-cyan-500/20 rounded-full bottom-0 right-0"
+          animate={{ x: [300, -300], y: [300, -300] }}
+          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
+      {/* Grid Overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.05]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      {/* Main Spinner - Quantum Ring */}
+      <motion.div
+        className="relative w-32 h-32 mb-8"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", damping: 15 }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-500 border-r-purple-500"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-2 rounded-full border-4 border-transparent border-b-cyan-400 border-l-purple-400"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-4 rounded-full border-4 border-transparent border-t-pink-500 border-r-blue-500"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full blur-md" />
+        </motion.div>
+      </motion.div>
+
+      {/* Logo Placeholder */}
+      <motion.div
+        className="relative w-20 h-20 mb-6"
+        animate={{
+          rotate: 360,
+          scale: [1, 1.05, 1],
+        }}
+        transition={{
+          rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+          scale: { duration: 1.5, repeat: Infinity },
+        }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
+          <span className="text-white text-2xl font-bold">⭐</span>
+        </div>
+      </motion.div>
+
+      {/* Loading Text */}
+      <motion.div
+        className="text-center space-y-3"
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      >
+        <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+          {loadingText}
+        </p>
+        <p className="text-cyan-400/50 font-mono text-[10px] tracking-[0.3em] uppercase">
+          Please wait
+        </p>
+      </motion.div>
+
+      {/* Progress Bar */}
+      <div className="w-64 md:w-80 mt-8">
+        <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${loadingProgress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+        <motion.p
+          className="text-[10px] text-white/30 text-center mt-2 font-mono"
+          animate={{ opacity: [0.3, 1, 0.3] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          {loadingProgress}% Complete
+        </motion.p>
+      </div>
+
+      {/* Particle Effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full"
+            initial={{
+              x: "50%",
+              y: "50%",
+              scale: 0,
+            }}
+            animate={{
+              x: `${50 + (Math.random() - 0.5) * 100}%`,
+              y: `${50 + (Math.random() - 0.5) * 100}%`,
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              delay: i * 0.15,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+// ==================================================
+
 const PremiumReviews = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,25 +195,28 @@ const PremiumReviews = () => {
 
   // Fetch testimonials from API
   useEffect(() => {
-const fetchTestimonials = async () => {
-  try {
-    // অ্যাডমিন প্যারামিটার যোগ করুন - সব টেস্টিমোনিয়াল দেখার জন্য
-    const res = await fetch('/api/testimonials?admin=true');
-    const data = await res.json();
-    console.log('Fetched data:', data); // ডিবাগ
-    if (data.success) {
-      setTestimonials(data.data);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+    const fetchTestimonials = async () => {
+      try {
+        // সিমুলেটেড লোডিং ডেলে (প্রিমিয়াম স্পিনার দেখানোর জন্য)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // অ্যাডমিন প্যারামিটার যোগ করুন - সব টেস্টিমোনিয়াল দেখার জন্য
+        const res = await fetch('/api/testimonials?admin=true');
+        const data = await res.json();
+        console.log('Fetched data:', data);
+        if (data.success) {
+          setTestimonials(data.data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchTestimonials();
   }, []);
 
-  // Particle Network Canvas Effect (আগের মতোই থাকবে)
+  // Particle Network Canvas Effect
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -222,14 +392,9 @@ const fetchTestimonials = async () => {
     }
   };
 
+  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে
   if (loading) {
-    return (
-      <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
-        <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-        </div>
-      </section>
-    );
+    return <PremiumSpinner />;
   }
 
   if (testimonials.length === 0) {
@@ -382,14 +547,14 @@ const fetchTestimonials = async () => {
                     "{currentReview.comment}"
                   </motion.blockquote>
 
-                  {/* User Info - শুধু ইমেজ দেখাবে, আইকন দেখাবে না */}
+                  {/* User Info */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     className="flex flex-col items-center"
                   >
-                    {/* Profile Image - শুধু ইমেজ, কোনো আইকন নয় */}
+                    {/* Profile Image */}
                     <div className="relative group">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                       
@@ -414,7 +579,7 @@ const fetchTestimonials = async () => {
                         </div>
                       ) : (
                         <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-white/20 shadow-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
-                          <span className="text-red-400 text-xs">No Image</span>
+                          <span className="text-3xl md:text-4xl">{currentReview.icon}</span>
                         </div>
                       )}
                     </div>

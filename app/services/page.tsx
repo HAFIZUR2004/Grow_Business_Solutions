@@ -11,6 +11,7 @@ import {
   Send, Loader2
 } from "lucide-react";
 import Link from "next/link";
+import PremiumSpinner from "@/components/PremiumSpinner"; // 👈 স্পিনার ইম্পোর্ট করুন
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -82,11 +83,12 @@ const aiResponses = {
   "time": "Project timelines vary based on complexity. A typical website takes 4-8 weeks, while complex ecommerce or AI projects can take 12-16 weeks. Let's discuss your timeline!",
   "support": "We offer 24/7 global support with dedicated teams across time zones. Our SLA guarantees 99.9% uptime and rapid response times.",
   "portfolio": "We've delivered 150+ projects for 50+ global brands. From startups to Fortune 500 companies, check out our case studies to see our work!",
-  "contact": "You can reach us at growbusinesssolutionsbd@gmail.com or call +1 (555) 123-4567. Fill out the contact form below and we'll get back to you within 24 hours!",
+  "contact": "You can reach us at growbusinesssolutionsbd@gmail.com or call +880 1884 369340. Fill out the contact form below and we'll get back to you within 24 hours!",
   "default": "Thanks for your message! Our AI assistant is learning. For immediate assistance, please fill out the contact form below or email us directly. How else can I help you today?"
 };
 
 export default function ServicesPage() {
+  const [loading, setLoading] = useState(true); // 👈 লোডিং স্টেট যোগ করুন
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const timelineLineRef = useRef<HTMLDivElement>(null);
   const timelineScrollRef = useRef<HTMLDivElement>(null);
@@ -109,6 +111,14 @@ export default function ServicesPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{type: 'success' | 'error', message: string} | null>(null);
+
+  // সিমুলেটেড লোডিং - প্রিমিয়াম স্পিনার দেখানোর জন্য
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Particle Effect
   useEffect(() => {
@@ -188,46 +198,48 @@ export default function ServicesPage() {
 
   // GSAP Timeline Animation
   useEffect(() => {
-    if (timelineLineRef.current && timelineScrollRef.current) {
-      gsap.fromTo(
-        timelineLineRef.current,
-        { height: 0 },
-        {
-          height: "100%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: timelineScrollRef.current,
-            start: "top 20%",
-            end: "bottom 80%",
-            scrub: 1,
-          },
-        }
-      );
-    }
+    if (!loading) { // 👈 লোডিং false হলে অ্যানিমেশন চালু হবে
+      if (timelineLineRef.current && timelineScrollRef.current) {
+        gsap.fromTo(
+          timelineLineRef.current,
+          { height: 0 },
+          {
+            height: "100%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: timelineScrollRef.current,
+              start: "top 20%",
+              end: "bottom 80%",
+              scrub: 1,
+            },
+          }
+        );
+      }
 
-    timeline.forEach((_, i) => {
-      gsap.fromTo(
-        `.timeline-step-${i}`,
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1,
-          scrollTrigger: {
-            trigger: `.timeline-step-${i}`,
-            start: "top 85%",
-            end: "top 50%",
-            scrub: 0.5,
-          },
-        }
-      );
-    });
+      timeline.forEach((_, i) => {
+        gsap.fromTo(
+          `.timeline-step-${i}`,
+          { opacity: 0, y: 50, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1,
+            scrollTrigger: {
+              trigger: `.timeline-step-${i}`,
+              start: "top 85%",
+              end: "top 50%",
+              scrub: 0.5,
+            },
+          }
+        );
+      });
+    }
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [loading]);
 
   // Auto-scroll chat to bottom
   useEffect(() => {
@@ -308,6 +320,11 @@ export default function ServicesPage() {
     }
   };
 
+  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে
+  if (loading) {
+    return <PremiumSpinner text="Loading Services" subText="Please wait" />;
+  }
+
   return (
     <main className="relative min-h-screen bg-[#05070a] text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
       
@@ -356,11 +373,11 @@ export default function ServicesPage() {
               >
                 Book a Strategy Call →
               </button>
-              <Link href="/projects" passHref legacyBehavior>
-                <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-2xl font-black text-xs tracking-widest uppercase transition-all">
-                  View Case Studies
-                </button>
-              </Link>
+              <Link href="/projects">
+  <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-full transition-all duration-300">
+    View Case Studies
+  </button>
+</Link>
             </div>
           </motion.div>
 

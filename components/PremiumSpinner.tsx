@@ -3,9 +3,19 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-export default function Loading() {
+interface PremiumSpinnerProps {
+  text?: string;
+  subText?: string;
+  showProgress?: boolean;
+}
+
+const PremiumSpinner: React.FC<PremiumSpinnerProps> = ({ 
+  text = "Loading", 
+  subText = "Please wait",
+  showProgress = true 
+}) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingText, setLoadingText] = useState("Loading");
+  const [loadingText, setLoadingText] = useState(text);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,7 +41,7 @@ export default function Loading() {
       clearInterval(interval);
       clearInterval(textInterval);
     };
-  }, []);
+  }, [text]);
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] flex flex-col items-center justify-center z-[200]">
@@ -58,7 +68,7 @@ export default function Loading() {
         }}
       />
 
-      {/* Main Spinner - Quantum Ring (PremiumSpinner এর মতো) */}
+      {/* Main Spinner - Quantum Ring */}
       <motion.div
         className="relative w-32 h-32 mb-8"
         initial={{ scale: 0.8, opacity: 0 }}
@@ -116,28 +126,30 @@ export default function Loading() {
           {loadingText}
         </p>
         <p className="text-cyan-400/50 font-mono text-[10px] tracking-[0.3em] uppercase">
-          Please wait
+          {subText}
         </p>
       </motion.div>
 
       {/* Progress Bar */}
-      <div className="w-64 md:w-80 mt-8">
-        <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
-            initial={{ width: "0%" }}
-            animate={{ width: `${loadingProgress}%` }}
-            transition={{ duration: 0.1 }}
-          />
+      {showProgress && (
+        <div className="w-64 md:w-80 mt-8">
+          <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+              initial={{ width: "0%" }}
+              animate={{ width: `${loadingProgress}%` }}
+              transition={{ duration: 0.1 }}
+            />
+          </div>
+          <motion.p
+            className="text-[10px] text-white/30 text-center mt-2 font-mono"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            {loadingProgress}% Complete
+          </motion.p>
         </div>
-        <motion.p
-          className="text-[10px] text-white/30 text-center mt-2 font-mono"
-          animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 1, repeat: Infinity }}
-        >
-          {loadingProgress}% Complete
-        </motion.p>
-      </div>
+      )}
 
       {/* Particle Effects */}
       <div className="absolute inset-0 pointer-events-none">
@@ -166,4 +178,6 @@ export default function Loading() {
       </div>
     </div>
   );
-}
+};
+
+export default PremiumSpinner;
