@@ -240,7 +240,7 @@ const TechStack = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative py-20 px-8 overflow-hidden bg-[#0b0c18] text-[#E5E2E1]"
+      className={`relative py-20 px-8 overflow-hidden bg-[#0b0c18] text-[#E5E2E1] ${lang === 'BN' ? 'font-hind' : ''}`}
     >
       {/* Particle Network Canvas */}
       <canvas
@@ -268,14 +268,14 @@ const TechStack = () => {
         {/* Left Side: Content & Vertical Slider */}
         <div className="tech-content space-y-12">
           <div className="space-y-1 tech-content-title">
-            <h2 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] text-white">
-              {t.techStack.title}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light">
-                {t.techStack.titleGradient}
-              </span>{" "}
-              <br />
-              {t.techStack.titleEnd}
-            </h2>
+           <h2 className={`text-6xl md:text-8xl font-black tracking-tight uppercase leading-[1.3] md:leading-[1.2] text-white overflow-visible py-4 ${lang === 'BN' ? 'font-hind' : ''}`}>
+  {t.techStack.title}{" "}
+  <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light pr-6 md:pr-10">
+    {t.techStack.titleGradient}
+  </span>{" "}
+  <br />
+  {t.techStack.titleEnd}
+</h2>
           </div>
 
           {/* Sliding Grid Area */}
@@ -296,10 +296,10 @@ const TechStack = () => {
                       className="w-6 h-6 mb-5 opacity-60 group-hover:opacity-100 transition-opacity"
                       style={{ color: colorMap[colorKey] }}
                     />
-                    <h4 className="font-extrabold text-white text-lg mb-2 group-hover:text-cyan-400 transition-colors">
+                    <h4 className={`font-extrabold text-white text-lg mb-2 group-hover:text-cyan-400 transition-colors ${lang === 'BN' ? 'font-hind' : ''}`}>
                       {feature.title}
                     </h4>
-                    <p className="text-sm text-white/35 font-light leading-relaxed">
+                    <p className={`text-sm text-white/35 font-light leading-relaxed ${lang === 'BN' ? 'font-hind' : ''}`}>
                       {feature.desc}
                     </p>
                   </div>
@@ -349,7 +349,7 @@ const TechStack = () => {
           </div>
 
           <div className="relative z-30 w-40 h-40 rounded-full bg-[#06070a] border border-white/10 flex items-center justify-center shadow-[0_0_80px_rgba(62,232,246,0.07)]">
-            <div className="text-3xl font-black tracking-tighter text-white">
+            <div className={`text-3xl font-black tracking-tighter text-white ${lang === 'BN' ? 'font-hind' : ''}`}>
               {t.techStack.centerText}
             </div>
           </div>
@@ -370,7 +370,7 @@ const TechStack = () => {
                     style={{ color: tech.color }}
                     className="mb-1.5 opacity-80 group-hover:opacity-100"
                   />
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-white/40 group-hover:text-white">
+                  <span className={`text-[9px] font-mono uppercase tracking-widest text-white/40 group-hover:text-white ${lang === 'BN' ? 'font-hind' : ''}`}>
                     {tech.name}
                   </span>
                 </div>

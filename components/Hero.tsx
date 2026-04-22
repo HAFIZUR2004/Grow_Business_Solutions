@@ -586,6 +586,7 @@ function hexPts(cx: number, cy: number, s: number): string {
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
   .hero {
     position: relative;
@@ -598,8 +599,14 @@ const css = `
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', 'Hind Siliguri', sans-serif;
   }
+  
+  /* বাংলা টেক্সটের জন্য স্পেসিফিক ক্লাস */
+  .bangla-text {
+    font-family: 'Hind Siliguri', 'Inter', sans-serif;
+  }
+  
   .hero-canvas {
     position: absolute;
     inset: 0;
@@ -749,6 +756,11 @@ const css = `
     letter-spacing: -0.025em;
     animation: fadeUp 0.8s 0.12s ease both;
   }
+  /* বাংলা হেডিংয়ের জন্য */
+  .heading.bangla {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-weight: 700;
+  }
   .desc {
     font-size: clamp(0.85rem, 1vw, 1rem);
     line-height: 1.7;
@@ -756,6 +768,11 @@ const css = `
     margin: 0 0 36px;
     max-width: 90%;
     animation: fadeUp 0.8s 0.22s ease both;
+  }
+  /* বাংলা ডেসক্রিপশনের জন্য */
+  .desc.bangla {
+    font-family: 'Hind Siliguri', sans-serif;
+    font-weight: 400;
   }
   .btns {
     display: flex;
@@ -770,7 +787,7 @@ const css = `
     font-weight: 600;
     cursor: pointer;
     border: none;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', 'Hind Siliguri', sans-serif;
     transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     letter-spacing: 0.01em;
   }
@@ -1024,8 +1041,8 @@ const css = `
     }
     .badge {
       font-size: 10px;
-      padding: 5px 12px 5px 8px;
-    }
+      padding: 5px 12px 5px 8;
+         }
   }
 
   /* Extra small height fix for zoom out */

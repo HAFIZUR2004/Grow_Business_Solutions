@@ -15,6 +15,8 @@ import {
   faLayerGroup,
   faArrowRight
 } from "@fortawesome/free-solid-svg-icons";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 
 const iconMap: Record<string, any> = {
   faLayerGroup: faLayerGroup,
@@ -83,9 +85,9 @@ interface PortfolioItem {
 const dummyProjects: PortfolioItem[] = [];
 
 // ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
-const PremiumSpinner = () => {
+const PremiumSpinner = ({ loadingTexts, pleaseWait, complete }: { loadingTexts: string[], pleaseWait: string, complete: string }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingText, setLoadingText] = useState("Loading Projects");
+  const [loadingText, setLoadingText] = useState(loadingTexts[0]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -98,11 +100,10 @@ const PremiumSpinner = () => {
       });
     }, 40);
 
-    const texts = ["Fetching Data", "Processing Assets", "Preparing Portfolio", "Almost Ready"];
     let textIndex = 0;
     const textInterval = setInterval(() => {
-      if (textIndex < texts.length) {
-        setLoadingText(texts[textIndex]);
+      if (textIndex < loadingTexts.length) {
+        setLoadingText(loadingTexts[textIndex]);
         textIndex++;
       }
     }, 800);
@@ -111,11 +112,10 @@ const PremiumSpinner = () => {
       clearInterval(interval);
       clearInterval(textInterval);
     };
-  }, []);
+  }, [loadingTexts]);
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] flex flex-col items-center justify-center z-[200]">
-      {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] bg-purple-600/20 rounded-full"
@@ -129,7 +129,6 @@ const PremiumSpinner = () => {
         />
       </div>
 
-      {/* Grid Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.05]"
         style={{
@@ -138,7 +137,6 @@ const PremiumSpinner = () => {
         }}
       />
 
-      {/* Main Spinner - Quantum Ring */}
       <motion.div
         className="relative w-32 h-32 mb-8"
         initial={{ scale: 0.8, opacity: 0 }}
@@ -169,7 +167,6 @@ const PremiumSpinner = () => {
         </motion.div>
       </motion.div>
 
-      {/* Logo Placeholder */}
       <motion.div
         className="relative w-20 h-20 mb-6"
         animate={{
@@ -186,7 +183,6 @@ const PremiumSpinner = () => {
         </div>
       </motion.div>
 
-      {/* Loading Text */}
       <motion.div
         className="text-center space-y-3"
         animate={{ opacity: [0.4, 1, 0.4] }}
@@ -196,11 +192,10 @@ const PremiumSpinner = () => {
           {loadingText}
         </p>
         <p className="text-cyan-400/50 font-mono text-[10px] tracking-[0.3em] uppercase">
-          Please wait
+          {pleaseWait}
         </p>
       </motion.div>
 
-      {/* Progress Bar */}
       <div className="w-64 md:w-80 mt-8">
         <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
           <motion.div
@@ -215,11 +210,10 @@ const PremiumSpinner = () => {
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 1, repeat: Infinity }}
         >
-          {loadingProgress}% Complete
+          {loadingProgress}% {complete}
         </motion.p>
       </div>
 
-      {/* Particle Effects */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(15)].map((_, i) => (
           <motion.div
@@ -255,6 +249,10 @@ export default function DynamicPortfolioPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   
+  const { lang } = useLanguage();
+  const t = translations[lang];
+  const portfolio = t.portfolio;
+  
   const [scrollProgress, setScrollProgress] = useState(0);
   
   useEffect(() => {
@@ -284,14 +282,12 @@ export default function DynamicPortfolioPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        // সিমুলেটেড লোডিং ডেলে (প্রিমিয়াম স্পিনার দেখানোর জন্য)
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         const res = await fetch('/api/portfolio');
         const data = await res.json();
         
         if (Array.isArray(data) && data.length > 0) {
-          // শুধুমাত্র প্রথম 3টি প্রজেক্ট দেখাবে (ল্যান্ডিং পেজের জন্য)
           const firstThreeProjects = data.slice(0, 3);
           setProjects(firstThreeProjects);
           console.log(`✅ Showing ${firstThreeProjects.length} projects on landing page`);
@@ -396,13 +392,16 @@ export default function DynamicPortfolioPage() {
   const headerY = 1 - scrollProgress * 200;
   const headerOpacity = 1 - scrollProgress * 2;
 
-  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে (পুরনো স্পিনার বাদ)
   if (loading) {
-    return <PremiumSpinner />;
+    return <PremiumSpinner 
+      loadingTexts={portfolio.loadingTexts} 
+      pleaseWait={portfolio.pleaseWait}
+      complete={portfolio.complete}
+    />;
   }
 
   return (
-    <div className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden min-h-screen font-sans">
+    <div className={`relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden min-h-screen ${lang === 'BN' ? 'font-hind' : 'font-sans'}`}>
       
       {/* Enhanced Particle Network Background */}
       <canvas
@@ -447,7 +446,7 @@ export default function DynamicPortfolioPage() {
           >
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500" />
             <span className="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em] font-semibold">
-              Featured Work
+              {portfolio.badge}
             </span>
             <div className="h-px w-8 bg-gradient-to-l from-transparent to-cyan-500" />
           </motion.div>
@@ -458,18 +457,22 @@ export default function DynamicPortfolioPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-[0.85]">
-              <span className="block bg-gradient-to-r from-white via-white to-white/50 bg-clip-text text-transparent">
-                Creative
-              </span>
-              <span className="relative inline-block mt-2 md:mt-4">
-                <span className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
-                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400">
-                  Artifacts
-                </span>
-                <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-50" />
-              </span>
-            </h1>
+<h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-[1.1] md:leading-[1.05] py-4 overflow-visible">
+  <span className="block bg-gradient-to-r from-white via-white to-white/50 bg-clip-text text-transparent pb-1">
+    {portfolio.title}
+  </span>
+  <span className="relative inline-block mt-1 md:mt-2 px-2">
+    {/* Background Glow */}
+    <span className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
+    
+    <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400 py-1 block">
+      {portfolio.titleGradient}
+    </span>
+
+    {/* Bottom Decorative Line */}
+    <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+  </span>
+</h1>
           </motion.div>
 
           <motion.p
@@ -478,7 +481,7 @@ export default function DynamicPortfolioPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-white/40 text-sm md:text-base max-w-2xl mx-auto md:mx-0 mt-6 leading-relaxed"
           >
-            Explore our collection of digital masterpieces — each project represents a unique challenge solved with creativity and technical excellence.
+            {portfolio.desc}
           </motion.p>
 
           <motion.div
@@ -487,14 +490,10 @@ export default function DynamicPortfolioPage() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="flex flex-wrap justify-center md:justify-start gap-6 md:gap-10 mt-8"
           >
-            {[
-              { value: projects.length, label: "Featured Projects", suffix: "+" },
-              { value: "100%", label: "Client Satisfaction" },
-              { value: "24/7", label: "Support" }
-            ].map((stat, idx) => (
+            {portfolio.stats.map((stat: any, idx: number) => (
               <div key={idx} className="text-center md:text-left">
                 <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                  {stat.value}{stat.suffix || ''}
+                  {idx === 0 ? projects.length : idx === 1 ? "100%" : "24/7"}{stat.suffix || ''}
                 </div>
                 <div className="text-[10px] md:text-xs text-white/30 font-mono uppercase tracking-wider">
                   {stat.label}
@@ -508,8 +507,8 @@ export default function DynamicPortfolioPage() {
         {projects.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">📁</div>
-            <p className="text-white/60 text-xl mb-2">No projects found.</p>
-            <p className="text-white/40">Add some projects from the admin dashboard to see them here.</p>
+            <p className="text-white/60 text-xl mb-2">{portfolio.noProjects}</p>
+            <p className="text-white/40">{portfolio.noProjectsDesc}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -604,7 +603,7 @@ export default function DynamicPortfolioPage() {
           </div>
         )}
 
-        {/* View All Projects Button - Navigates to full projects page */}
+        {/* View All Projects Button */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -619,7 +618,7 @@ export default function DynamicPortfolioPage() {
               className="group relative px-8 py-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 backdrop-blur-sm border border-white/10 rounded-full overflow-hidden transition-all duration-300 hover:border-purple-500/50 hover:shadow-lg cursor-pointer"
             >
               <span className="relative z-10 text-white/80 font-mono text-xs uppercase tracking-widest group-hover:text-cyan-400 transition-colors flex items-center gap-2">
-                View All Projects
+                {portfolio.viewAll}
                 <FontAwesomeIcon icon={faArrowRight} className="text-xs group-hover:translate-x-1 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />

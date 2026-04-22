@@ -1,5 +1,6 @@
+/* সব @import একদম শুরুতে থাকবে */
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
-/* Swiper CSS - শুধুমাত্র যদি swiper ইন্সটল করা থাকে */
 @import "swiper/css";
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
@@ -797,6 +798,16 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* বাংলা সেকশনের জন্য ক্লাস */
+.bangla-section {
+  font-family: 'Hind Siliguri', 'Inter', sans-serif;
+}
+
+/* হিন্দ সিলিগুড়ি ফন্টের জন্য ইউটিলিটি ক্লাস */
+.font-hind {
+  font-family: 'Hind Siliguri', 'Inter', sans-serif;
 }
 
 /* ============================================ */

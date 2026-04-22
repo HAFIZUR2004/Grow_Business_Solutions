@@ -4,6 +4,8 @@ import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FiArrowRight, FiGithub, FiTwitter, FiInstagram, FiLinkedin } from "react-icons/fi";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 
 const SocialLink = ({ href, icon, bgColor }: { href: string; icon: React.ReactNode; bgColor: string }) => (
   <a 
@@ -20,6 +22,9 @@ const TeamSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { lang } = useLanguage();
+  const t = translations[lang];
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -41,44 +46,8 @@ const TeamSection = () => {
     }
   };
 
-
-const members = [
-    { 
-      name: "Hafizur Rahman", 
-      role: "Founder & Lead Full-Stack Architect", 
-     
-      image: "https://i.ibb.co.com/bg6WXZ1N/IMG-20260103-122717.jpg", // 👈 Unsplash ব্যবহার করুন
-      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
-    },
-    { 
-      name: "Shukkur Ali", 
-      role: "Co-founder & Lead Generation Expert", 
-      company: "Tech Nova", 
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop",
-      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
-    },
-    { 
-      name: "Sarah Chen", 
-      role: "Product Owner", 
-      company: "Tech Nova", 
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&h=500&fit=crop",
-      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
-    },
-    { 
-      name: "Julian Kross", 
-      role: "Lead Architect", 
-      company: "Tech Nova", 
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop",
-      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
-    },
-    { 
-      name: "Elena Vance", 
-      role: "AI Engineer", 
-      company: "Tech Nova", 
-      image: "https://images.unsplash.com/photo-1573497019236-17f8177b81e8?q=80&w=400&h=500&fit=crop",
-      social: { twitter: "#", github: "#", linkedin: "#", instagram: "#" }
-    },
-];
+  // translations থেকে teamMembers নেওয়া
+  const members = t.teamMembers;
 
   // Particle Network Canvas Effect
   useEffect(() => {
@@ -209,7 +178,7 @@ const members = [
   return (
     <section 
       ref={containerRef}
-      className="relative bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] py-24 px-6 md:px-10 overflow-hidden"
+      className={`relative bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] py-24 px-6 md:px-10 overflow-hidden ${lang === 'BN' ? 'font-hind' : ''}`}
     >
       <canvas
         ref={canvasRef}
@@ -242,7 +211,7 @@ const members = [
           >
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-cyan-500" />
             <p className="text-cyan-400 font-mono text-xs uppercase tracking-[0.3em] font-semibold">
-              MEET THE COLLECTIVE
+              {t.teamBadge}
             </p>
             <div className="h-px w-8 bg-gradient-to-l from-transparent to-cyan-500" />
           </motion.div>
@@ -256,13 +225,13 @@ const members = [
           >
             <h2 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter leading-tight">
               <span className="bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
-                Our Creative
+                {t.teamTitle}
               </span>
               <br />
               <span className="relative inline-block mt-2">
                 <span className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
                 <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400">
-                  Collective
+                  {t.teamTitleGradient}
                 </span>
               </span>
             </h2>
@@ -275,8 +244,7 @@ const members = [
             viewport={{ once: true }}
             className="text-white/40 text-base md:text-lg max-w-2xl mx-auto mt-6 leading-relaxed"
           >
-            System sovereign operators tasked with the orchestration of
-            planetary-scale technical infrastructure and quantum computational frameworks.
+            {t.teamDesc}
           </motion.p>
         </div>
 
@@ -317,7 +285,7 @@ const members = [
             >
               <div className="relative h-[380px] w-full overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20">
                 <Image
-                  src={member.image}
+                  src={member.image || "/team/placeholder.jpg"}
                   alt={member.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -326,24 +294,24 @@ const members = [
               </div>
 
               <div className="p-6 bg-transparent relative z-10">
-                <h3 className="text-2xl font-semibold text-white leading-tight">
-                  {member.name.split(' ')[0]} <span className="font-light text-white/50">{member.name.split(' ').slice(1).join(' ')}</span>
+                <h3 className={`text-2xl font-semibold text-white leading-tight ${lang === 'BN' ? 'font-hind' : ''}`}>
+                  {member.name}
                 </h3>
-                <p className="text-cyan-400 mt-2 text-sm font-medium">
+                <p className={`text-cyan-400 mt-2 text-sm font-medium ${lang === 'BN' ? 'font-hind' : ''}`}>
                   {member.role}
                 </p>
-                <p className="text-white/30 text-xs mt-1">
-                  {member.company}
+                <p className={`text-white/30 text-xs mt-1 ${lang === 'BN' ? 'font-hind' : ''}`}>
+                  {member.description}
                 </p>
               </div>
 
               {/* Social Bar - Drops UP from bottom */}
               <div className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out z-20">
                 <div className="flex h-14">
-                  <SocialLink href={member.social.twitter} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
-                  <SocialLink href={member.social.github} icon={<FiGithub />} bgColor="hover:bg-[#333]" />
-                  <SocialLink href={member.social.linkedin} icon={<FiLinkedin />} bgColor="hover:bg-[#0077B5]" />
-                  <SocialLink href={member.social.instagram} icon={<FiInstagram />} bgColor="hover:bg-gradient-to-r from-[#833AB4] via-[#E4405F] to-[#F56040]" />
+                  <SocialLink href={member.social?.twitter || "#"} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
+                  <SocialLink href={member.social?.github || "#"} icon={<FiGithub />} bgColor="hover:bg-[#333]" />
+                  <SocialLink href={member.social?.linkedin || "#"} icon={<FiLinkedin />} bgColor="hover:bg-[#0077B5]" />
+                  <SocialLink href={member.social?.facebook || "#"} icon={<FiInstagram />} bgColor="hover:bg-gradient-to-r from-[#833AB4] via-[#E4405F] to-[#F56040]" />
                 </div>
               </div>
 
@@ -389,13 +357,13 @@ const members = [
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.02] border border-white/5">
             <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
             <span className="text-white/40 text-[10px] font-mono uppercase tracking-wider">
-              SYSTEM STATUS: OPERATIONAL
+              {lang === 'BN' ? 'সিস্টেম স্ট্যাটাস: সক্রিয়' : 'SYSTEM STATUS: OPERATIONAL'}
             </span>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.02] border border-white/5">
             <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
             <span className="text-white/40 text-[10px] font-mono uppercase tracking-wider">
-              ALL NODES ACTIVE
+              {lang === 'BN' ? 'সকল নোড সক্রিয়' : 'ALL NODES ACTIVE'}
             </span>
           </div>
         </motion.div>

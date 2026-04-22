@@ -198,6 +198,7 @@ const EngineeringProtocol = () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+  
   type StepType = {
     bgText: string;
     title: string;
@@ -207,7 +208,7 @@ const EngineeringProtocol = () => {
   return (
     <section
       ref={scrollRef}
-      className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden"
+      className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden font-hind"
     >
       {/* Particle Network Canvas - */}
       <canvas
@@ -219,13 +220,13 @@ const EngineeringProtocol = () => {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-900/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
 
-      <div className="max-w-screen-2xl mx-auto relative z-10 ">
-        <h2 className="text-6xl md:text-8xl font-black text-center mb-40 tracking-tighter">
-          {t.protocolTitle}{" "}
-          <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light">
-            {t.protocolTitleItalic}
-          </span>
-        </h2>
+      <div className="max-w-screen-2xl mx-auto relative z-10">
+        <h2 className={`text-6xl md:text-8xl font-black text-center mb-40 tracking-tight px-4 ${lang === 'bn' ? 'font-hind' : ''}`}>
+  {t.protocolTitle}{" "}
+  <span className="text-transparent bg-clip-text bg-linear-to-b from-white to-white/10 italic font-light inline-block pr-4">
+    {t.protocolTitleItalic}
+  </span>
+</h2>
 
         {/* Central Vertical Timeline */}
         <div className="relative">
@@ -260,12 +261,12 @@ const EngineeringProtocol = () => {
                       </span>
 
                       <h4
-                        className="text-2xl font-bold mb-2"
+                        className={`text-2xl font-bold mb-2 ${lang === 'bn' ? 'font-hind' : ''}`}
                         style={{ color: design.color }}
                       >
                         {design.id}. {step.title}
                       </h4>
-                      <p className="text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0">
+                      <p className={`text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0 ${lang === 'bn' ? 'font-hind' : ''}`}>
                         {step.desc}
                       </p>
                     </div>
@@ -296,6 +297,15 @@ const EngineeringProtocol = () => {
           </div>
         </div>
       </div>
+
+      {/* ইনলাইন স্টাইল যোগ করা হচ্ছে */}
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        
+        .font-hind {
+          font-family: 'Hind Siliguri', 'Inter', sans-serif;
+        }
+      `}</style>
     </section>
   );
 };

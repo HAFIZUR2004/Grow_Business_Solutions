@@ -16,13 +16,29 @@ export default function Navbar() {
 
   const t = translations[lang];
 
-  // Nav Item
+  // Nav Item Logic - Ensure we are accessing strings, not objects
+  // If your translation file structure is different, adjust 't.nav.services' accordingly
   const navItems = [
-    { name: t.services, path: "/services" },
-    { name: t.projects, path: "/projects" },
-    { name: t.about, path: "/about" },
-    { name: t.career, path: "/CareerPage" },
-    { name: t.contact, path: "/ContactUs" },
+    { 
+      name: typeof t.services === 'string' ? t.services : (t.services as any)?.title || "Services", 
+      path: "/services" 
+    },
+    { 
+      name: typeof t.projects === 'string' ? t.projects : (t.projects as any)?.title || "Projects", 
+      path: "/projects" 
+    },
+    { 
+      name: typeof t.about === 'string' ? t.about : (t.about as any)?.title || "About", 
+      path: "/about" 
+    },
+    { 
+      name: typeof t.career === 'string' ? t.career : (t.career as any)?.title || "Career", 
+      path: "/CareerPage" 
+    },
+    { 
+      name: typeof t.contact === 'string' ? t.contact : (t.contact as any)?.title || "Contact", 
+      path: "/ContactUs" 
+    },
   ];
 
   const languages = [
@@ -40,12 +56,12 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const currentLang =
-    languages.find((l) => l.code === (lang as string)) || languages[0];
+  const currentLang = languages.find((l) => l.code === (lang as string)) || languages[0];
 
   return (
-    <nav className="fixed top-0 w-full bg-[#0b0c18] lg:bg-[#0b0c18]/90 backdrop-blur-xl z-[999] border-b border-white/5">
+    <nav className={`fixed top-0 w-full bg-[#0b0c18] lg:bg-[#0b0c18]/90 backdrop-blur-xl z-[999] border-b border-white/5 ${lang === 'BN' ? 'font-hind' : ''}`}>
       <div className="flex justify-between items-center py-4 px-4 md:px-10 max-w-screen-2xl mx-auto">
+        
         {/* Logo Section */}
         <Link href="/" className="flex items-center gap-3 relative z-[1001]">
           <div className="relative w-9 h-9 md:w-11 md:h-11 bg-white rounded-xl p-1 shadow-lg shadow-white/5">
@@ -58,10 +74,10 @@ export default function Navbar() {
             />
           </div>
           <div className="hidden md:flex flex-col">
-            <span className="text-xl md:text-2xl font-black italic text-white leading-none">
+            <span className={`text-xl md:text-2xl font-black italic text-white leading-none ${lang === 'BN' ? 'font-hind' : ''}`}>
               GROW
             </span>
-            <span className="text-[7px] md:text-[9px] font-mono text-secondary font-bold uppercase tracking-[0.3em]">
+            <span className={`text-[7px] md:text-[9px] font-mono text-secondary font-bold uppercase tracking-[0.3em] ${lang === 'BN' ? 'font-hind' : ''}`}>
               Business Solutions
             </span>
           </div>
@@ -77,9 +93,9 @@ export default function Navbar() {
                 pathname === item.path
                   ? "text-secondary"
                   : "text-slate-300 hover:text-white"
-              }`}
+              } ${lang === 'BN' ? 'font-hind' : ''}`}
             >
-              {item.name}
+              {String(item.name)}
               <span
                 className={`absolute bottom-0 left-0 h-[2px] bg-secondary transition-all duration-300 ${pathname === item.path ? "w-full" : "w-0"}`}
               />
@@ -88,21 +104,20 @@ export default function Navbar() {
         </div>
 
         {/* Actions Section */}
-        <div
-          className={`flex items-center gap-2 md:gap-4 z-[1001] transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"}`}
-        >
+        <div className={`flex items-center gap-2 md:gap-4 z-[1001] transition-opacity duration-300 ${isOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"}`}>
+          
           {/* Language Selector */}
           <div className="relative">
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
-              className="flex items-center gap-2 bg-white/5 border border-white/10 px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg hover:bg-white/10 transition-all"
+              className={`flex items-center gap-2 bg-white/5 border border-white/10 px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg hover:bg-white/10 transition-all ${lang === 'BN' ? 'font-hind' : ''}`}
             >
               <div className="relative w-5 h-3.5">
                 <Image
                   src={currentLang.flag}
                   alt={currentLang.code}
                   fill
-                  style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                  style={{ objectFit: "cover" }}
                   unoptimized
                   className="object-cover rounded-[1px]"
                 />
@@ -118,10 +133,7 @@ export default function Navbar() {
 
             {isLangOpen && (
               <>
-                <div
-                  className="fixed inset-0 z-[1001]"
-                  onClick={() => setIsLangOpen(false)}
-                />
+                <div className="fixed inset-0 z-[1001]" onClick={() => setIsLangOpen(false)} />
                 <div className="absolute top-full mt-2 right-0 bg-[#16182d] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[130px] z-[1002]">
                   {languages.map((l) => (
                     <button
@@ -130,15 +142,13 @@ export default function Navbar() {
                         setLang(l.code as "EN" | "BN");
                         setIsLangOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-secondary hover:text-primary text-xs text-white transition-all font-bold"
+                      className={`flex items-center gap-3 w-full px-4 py-3 hover:bg-secondary hover:text-primary text-xs text-white transition-all font-bold ${lang === 'BN' ? 'font-hind' : ''}`}
                     >
                       <Image
                         src={l.flag}
                         alt={l.name}
                         width={18}
                         height={12}
-                        style={{ width: "18px", height: "auto" }}
-                        className="w-[18px] h-auto"
                         unoptimized
                       />
                       {l.name}
@@ -149,14 +159,11 @@ export default function Navbar() {
             )}
           </div>
 
-          <button className="p-2 md:px-5 md:py-2.5 rounded-xl bg-secondary text-white font-black transition-all flex items-center gap-2">
+          <button className={`p-2 md:px-5 md:py-2.5 rounded-xl bg-secondary text-white font-black transition-all flex items-center gap-2 ${lang === 'BN' ? 'font-hind' : ''}`}>
             <span className="hidden sm:inline text-xs uppercase">
-              {t.startProject}
+              {typeof t.startProject === 'string' ? t.startProject : (t.startProject as any)?.title || "Start"}
             </span>
-            <Rocket
-              size={18}
-              className="sm:hidden md:block lg:hidden xl:block text-red-500"
-            />
+            <Rocket size={18} className="sm:hidden md:block lg:hidden xl:block text-red-500" />
           </button>
 
           <button
@@ -169,20 +176,16 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Side Drawer */}
-      <div
-        className={`lg:hidden fixed inset-0 z-[1002] transition-all duration-300 ${isOpen ? "visible" : "invisible"}`}
-      >
+      <div className={`lg:hidden fixed inset-0 z-[1002] transition-all duration-300 ${isOpen ? "visible" : "invisible"}`}>
         <div
-          className={`absolute inset-0 bg-[#0b0c18] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-[#0b0c18]/80 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
           onClick={() => setIsOpen(false)}
         />
-        <div
-          className={`absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#0b0c18] shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-        >
+        <div className={`absolute top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#0b0c18] border-l border-white/5 shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
           <div className="flex flex-col h-full py-4 px-4">
-            <div className="flex justify-between items-center mb-8 pb-4">
-              <span className="text-white/40 font-black uppercase tracking-widest text-[10px]">
-                {t.menu} {/* অনুবাদিত টেক্সট */}
+            <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/5">
+              <span className={`text-white/40 font-black uppercase tracking-widest text-[10px] ${lang === 'BN' ? 'font-hind' : ''}`}>
+                {typeof t.menu === 'string' ? t.menu : "MENU"}
               </span>
               <button
                 onClick={() => setIsOpen(false)}
@@ -192,16 +195,16 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="flex flex-col w-full bg-[#0b0c18]">
+            <div className="flex flex-col w-full gap-2">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   href={item.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center justify-between w-full py-4 px-4 rounded-lg transition-all ${pathname === item.path ? "bg-white/5 text-secondary" : "text-white/80 hover:bg-white/5"}`}
+                  className={`flex items-center justify-between w-full py-4 px-4 rounded-lg transition-all ${pathname === item.path ? "bg-white/5 text-secondary" : "text-white/80 hover:bg-white/5"} ${lang === 'BN' ? 'font-hind' : ''}`}
                 >
-                  <span className="text-lg font-bold tracking-tight text-left">
-                    {item.name}
+                  <span className="text-lg font-bold tracking-tight">
+                    {String(item.name)}
                   </span>
                   {pathname === item.path && (
                     <div className="w-1.5 h-1.5 rounded-full bg-secondary" />

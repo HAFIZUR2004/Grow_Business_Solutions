@@ -87,9 +87,9 @@ export const translations = {
       },
     ],
     // Team Section
-    teamBadge: "System Link Established",
-    teamTitle: "The",
-    teamTitleGradient: "Team",
+    teamBadge: "MEET THE COLLECTIVE",
+    teamTitle: "Our Creative",
+    teamTitleGradient: "Collective",
     teamMembers: [
       {
         name: "Hafizur Rahman",
@@ -147,6 +147,21 @@ export const translations = {
         },
       },
     ],
+reviews: {
+  badge: "Social Proof",
+  title: "Trusted by",
+  titleGradient: "Industry Leaders",
+  desc: "Don't just take our word for it — hear from our amazing clients around the world",
+  avgRating: "Average Rating",
+  happyClients: "Happy Clients",
+  projectsDelivered: "Projects Delivered",
+  support: "Support",
+  swipeHint: "Swipe to navigate →",
+  noTestimonials: "No testimonials yet. Add some from admin panel.",
+  loadingTexts: ["Fetching Testimonials", "Processing Data", "Preparing Reviews", "Almost Ready"],
+  pleaseWait: "Please wait",
+  complete: "Complete"
+},
 
     //contact Us
     secureChannel: "DIRECT ADVISORY GATEWAY",
@@ -202,15 +217,28 @@ export const translations = {
       prevButton: "Previous",
       nextButton: "Next",
     },
+    
     // portfolio
-    portfolio: {
-      badge: "Selected Works",
-      title: "Digital",
-      titleGradient: "Artifacts.",
-      exploreBtn: "Explore All Artifacts",
-      loading: "Loading amazing projects...",
-    },
+   portfolio: {
+  badge: "Featured Work",
+  title: "Creative",
+  titleGradient: "Artifacts",
+  desc: "Explore our collection of digital masterpieces — each project represents a unique challenge solved with creativity and technical excellence.",
+  stats: [
+    { label: "Featured Projects", suffix: "+" },
+    { label: "Client Satisfaction" },
+    { label: "Support" }
+  ],
+  viewAll: "View All Projects",
+  noProjects: "No projects found.",
+  noProjectsDesc: "Add some projects from the admin dashboard to see them here.",
+  loadingTexts: ["Fetching Data", "Processing Assets", "Preparing Portfolio", "Almost Ready"],
+  pleaseWait: "Please wait",
+  complete: "Complete"
+},
+
   },
+  
   BN: {
     //Navbar
     menu: "মেনু",
@@ -275,27 +303,34 @@ export const translations = {
     ],
 
     //Success in Motion
-    successBadge: "সাফল্যের মাইলফলক",
-    successTitle: "গতিশীল",
-    successTitleGradient: "সাফল্য",
-    stats: [
-      {
-        title: "৮+ বছর",
-        desc: "ডিজিটাল আর্কিটেকচার বা স্থাপত্যে নিবেদিত শিল্পশৈলী।",
-      },
-      {
-        title: "২০+ প্রজেক্ট",
-        desc: "বিশ্বজুড়ে ডেলিভারি করা হাই-ইমপ্যাক্ট সলিউশন।",
-      },
-      {
-        title: "১০০% ক্লায়েন্ট",
-        desc: "প্রতিটি পার্টনারশিপে পূর্ণ সন্তুষ্টির হার।",
-      },
-    ],
+  successBadge: "আমাদের সাফল্য",
+  successTitle: "সাফল্যের",
+  successNumbers: "পরিসংখ্যান",
+  successDesc: "পরিমাপযোগ্য ফলাফল এবং গ্রাহক সন্তুষ্টির মাধ্যমে শ্রেষ্ঠত্ব প্রদান করছি",
+  stats: [
+    { 
+      title: "২+ বছর", 
+      desc: "ডিজিটাল আর্কিটেকচারে নিবেদিত কাজ।" 
+    },
+    { 
+      title: "২টি প্রজেক্ট", 
+      desc: "বিশ্বজুড়ে উচ্চ-প্রভাবশালী সমাধান প্রদান।" 
+    },
+    { 
+      title: "১০০% ক্লায়েন্ট", 
+      desc: "সকল অংশীদারিত্বে সন্তুষ্টির হার।" 
+    }
+  ],
+  badges: [
+    "২টি প্রজেক্ট সম্পন্ন", 
+    "৫ স্টার রেটিং", 
+    "সময়মতো ডেলিভারি", 
+    "প্রিমিয়াম কোয়ালিটি"
+  ],
     // Team Section
-    teamBadge: "সিস্টেম সংযোগ স্থাপিত",
-    teamTitle: "আমাদের",
-    teamTitleGradient: "দল",
+    teamBadge: "আমাদের সম্মিলিত শক্তির সাথে পরিচিত হোন",
+    teamTitle: "আমাদের সৃজনশীল ",
+    teamTitleGradient: "জোট",
     teamMembers: [
       {
         name: "হাফিজুর রহমান",
@@ -352,6 +387,21 @@ export const translations = {
       },
     ],
 
+    reviews: {
+  badge: "সামাজিক প্রমাণ",
+  title: "সেরাদের",
+  titleGradient: "বিশ্বস্ত সঙ্গী",
+  desc: "বিশ্বস্ত গ্রাহকদের মুখে আমাদের সাফল্যের গল্প",
+  avgRating: "গড় রেটিং",
+  happyClients: "সন্তুষ্ট ক্লায়েন্ট",
+  projectsDelivered: "প্রজেক্ট ডেলিভারি",
+  support: "সাপোর্ট",
+  swipeHint: "সোয়াইপ করুন →",
+  noTestimonials: "কোনো টেস্টিমোনিয়াল নেই। অ্যাডমিন প্যানেল থেকে যোগ করুন।",
+  loadingTexts: ["টেস্টিমোনিয়াল আনছে", "ডাটা প্রসেস করছে", "রিভিউ প্রস্তুত করছে", "প্রায় প্রস্তুত"],
+  pleaseWait: "অনুগ্রহ করে অপেক্ষা করুন",
+  complete: "সম্পূর্ণ"
+},
     // Tech Stack Section
     techStack: {
       title: "দ্যা",
@@ -387,14 +437,24 @@ export const translations = {
       prevButton: "পূর্ববর্তী",
       nextButton: "পরবর্তী",
     },
-    // portfolio
-    portfolio: {
-      badge: "নির্বাচিত কাজ",
-      title: "ডিজিটাল",
-      titleGradient: "আর্টিফ্যাক্টস।",
-      exploreBtn: "সব আর্টিফ্যাক্ট দেখুন",
-      loading: "প্রকল্প লোড হচ্ছে...",
-    },
+  portfolio: {
+  badge: "নির্বাচিত কাজ",
+  title: "ডিজিটাল",
+  titleGradient: "শিল্পকর্ম",
+  desc: "আমাদের ডিজিটাল মাস্টারপিসের সংগ্রহটি অন্বেষণ করুন — প্রতিটি প্রকল্প সৃজনশীলতা এবং প্রযুক্তিগত শ্রেষ্ঠত্বের সাথে সমাধান করা একটি অনন্য চ্যালেঞ্জকে উপস্থাপন করে।",
+  stats: [
+    { label: "প্রদর্শিত প্রকল্প", suffix: "+" },
+    { label: "ক্লায়েন্ট সন্তুষ্টি" },
+    { label: "সাপোর্ট" }
+  ],
+  viewAll: "সব প্রকল্প দেখুন",
+  noProjects: "কোনো প্রকল্প পাওয়া যায়নি।",
+  noProjectsDesc: "এখানে প্রকল্প দেখতে অ্যাডমিন ড্যাশবোর্ড থেকে কিছু প্রকল্প যোগ করুন।",
+  loadingTexts: ["ডাটা আনছে", "অ্যাসেট প্রসেস করছে", "পোর্টফোলিও প্রস্তুত করছে", "প্রায় প্রস্তুত"],
+  pleaseWait: "অনুগ্রহ করে অপেক্ষা করুন",
+  complete: "সম্পূর্ণ"
+},
+
     // contact us
     secureChannel: "সরাসরি পরামর্শ গেটওয়ে",
     initiate: "আপনার ব্র্যান্ডকে",

@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Smile, Rocket, MessageCircle } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/constants/LanguageContext";
+import { translations } from "@/constants/translations";
 
 interface Testimonial {
   _id: string;
@@ -17,9 +19,9 @@ interface Testimonial {
 }
 
 // ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
-const PremiumSpinner = () => {
+const PremiumSpinner = ({ loadingTexts, pleaseWait, complete }: { loadingTexts: string[], pleaseWait: string, complete: string }) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingText, setLoadingText] = useState("Loading Reviews");
+  const [loadingText, setLoadingText] = useState(loadingTexts[0]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,11 +34,10 @@ const PremiumSpinner = () => {
       });
     }, 40);
 
-    const texts = ["Fetching Testimonials", "Processing Data", "Preparing Reviews", "Almost Ready"];
     let textIndex = 0;
     const textInterval = setInterval(() => {
-      if (textIndex < texts.length) {
-        setLoadingText(texts[textIndex]);
+      if (textIndex < loadingTexts.length) {
+        setLoadingText(loadingTexts[textIndex]);
         textIndex++;
       }
     }, 800);
@@ -45,11 +46,10 @@ const PremiumSpinner = () => {
       clearInterval(interval);
       clearInterval(textInterval);
     };
-  }, []);
+  }, [loadingTexts]);
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] flex flex-col items-center justify-center z-[200]">
-      {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] bg-purple-600/20 rounded-full"
@@ -63,7 +63,6 @@ const PremiumSpinner = () => {
         />
       </div>
 
-      {/* Grid Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.05]"
         style={{
@@ -72,7 +71,6 @@ const PremiumSpinner = () => {
         }}
       />
 
-      {/* Main Spinner - Quantum Ring */}
       <motion.div
         className="relative w-32 h-32 mb-8"
         initial={{ scale: 0.8, opacity: 0 }}
@@ -103,7 +101,6 @@ const PremiumSpinner = () => {
         </motion.div>
       </motion.div>
 
-      {/* Logo Placeholder */}
       <motion.div
         className="relative w-20 h-20 mb-6"
         animate={{
@@ -120,7 +117,6 @@ const PremiumSpinner = () => {
         </div>
       </motion.div>
 
-      {/* Loading Text */}
       <motion.div
         className="text-center space-y-3"
         animate={{ opacity: [0.4, 1, 0.4] }}
@@ -130,11 +126,10 @@ const PremiumSpinner = () => {
           {loadingText}
         </p>
         <p className="text-cyan-400/50 font-mono text-[10px] tracking-[0.3em] uppercase">
-          Please wait
+          {pleaseWait}
         </p>
       </motion.div>
 
-      {/* Progress Bar */}
       <div className="w-64 md:w-80 mt-8">
         <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
           <motion.div
@@ -149,11 +144,10 @@ const PremiumSpinner = () => {
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 1, repeat: Infinity }}
         >
-          {loadingProgress}% Complete
+          {loadingProgress}% {complete}
         </motion.p>
       </div>
 
-      {/* Particle Effects */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(15)].map((_, i) => (
           <motion.div
@@ -193,14 +187,14 @@ const PremiumReviews = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
+  const { lang } = useLanguage();
+  const t = translations[lang];
+
   // Fetch testimonials from API
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        // সিমুলেটেড লোডিং ডেলে (প্রিমিয়াম স্পিনার দেখানোর জন্য)
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // অ্যাডমিন প্যারামিটার যোগ করুন - সব টেস্টিমোনিয়াল দেখার জন্য
         const res = await fetch('/api/testimonials?admin=true');
         const data = await res.json();
         console.log('Fetched data:', data);
@@ -392,16 +386,19 @@ const PremiumReviews = () => {
     }
   };
 
-  // প্রিমিয়াম স্পিনার দেখানো হচ্ছে
   if (loading) {
-    return <PremiumSpinner />;
+    return <PremiumSpinner 
+      loadingTexts={t.reviews.loadingTexts} 
+      pleaseWait={t.reviews.pleaseWait}
+      complete={t.reviews.complete}
+    />;
   }
 
   if (testimonials.length === 0) {
     return (
       <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
         <div className="text-center">
-          <p className="text-white/40">No testimonials yet. Add some from admin panel.</p>
+          <p className="text-white/40">{t.reviews.noTestimonials}</p>
         </div>
       </section>
     );
@@ -410,20 +407,17 @@ const PremiumReviews = () => {
   const currentReview = testimonials[index];
 
   return (
-    <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18]">
-      {/* Particle Network Canvas Background */}
+    <section className={`relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] ${lang === 'BN' ? 'font-hind' : ''}`}>
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-0"
         style={{ opacity: 0.45 }}
       />
 
-      {/* Background Glows */}
       <div className="absolute top-0 left-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-purple-900/15 blur-[100px] md:blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute bottom-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-900/15 blur-[100px] md:blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-purple-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      {/* Bottom Wave Lines */}
       <svg
         className="absolute bottom-0 left-0 w-full h-24 md:h-32 pointer-events-none z-1 opacity-40 md:opacity-50"
         viewBox="0 0 1440 120"
@@ -450,7 +444,6 @@ const PremiumReviews = () => {
       </svg>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* Section Header */}
         <div className="text-center mb-12 md:mb-16 lg:mb-20">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -461,7 +454,7 @@ const PremiumReviews = () => {
           >
             <span className="h-[1px] w-8 md:w-12 bg-gradient-to-r from-transparent to-cyan-500" />
             <p className="text-cyan-400 font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-semibold">
-              Social Proof
+              {t.reviews.badge}
             </p>
             <span className="h-[1px] w-8 md:w-12 bg-gradient-to-l from-transparent to-cyan-500" />
           </motion.div>
@@ -473,9 +466,9 @@ const PremiumReviews = () => {
             viewport={{ once: true }}
             className="text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white tracking-tighter leading-tight"
           >
-            Trusted by{" "}
+            {t.reviews.title}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400">
-              Industry Leaders
+              {t.reviews.titleGradient}
             </span>
           </motion.h2>
           
@@ -486,11 +479,10 @@ const PremiumReviews = () => {
             viewport={{ once: true }}
             className="text-white/40 text-sm md:text-base max-w-2xl mx-auto mt-3 md:mt-4 px-4"
           >
-            Don't just take our word for it — hear from our amazing clients around the world
+            {t.reviews.desc}
           </motion.p>
         </div>
 
-        {/* Main Testimonial Card */}
         <div 
           className="relative min-h-[450px] md:min-h-[500px] flex items-center justify-center"
           onTouchStart={handleTouchStart}
@@ -508,17 +500,13 @@ const PremiumReviews = () => {
             >
               <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl hover:border-purple-500/30 transition-all duration-500 mx-2 md:mx-0">
                 
-                {/* Premium Gradient Border Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-transparent to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 
-                {/* Quote Icon Background */}
                 <div className="absolute top-4 md:top-8 right-4 md:right-8 text-6xl md:text-8xl opacity-5 text-white font-serif">
                   "
                 </div>
 
-                {/* Content */}
                 <div className="p-6 md:p-10 lg:p-12">
-                  {/* Rating Stars */}
                   <motion.div 
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -537,7 +525,6 @@ const PremiumReviews = () => {
                     ))}
                   </motion.div>
 
-                  {/* Review Text */}
                   <motion.blockquote 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -547,14 +534,12 @@ const PremiumReviews = () => {
                     "{currentReview.comment}"
                   </motion.blockquote>
 
-                  {/* User Info */}
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
                     className="flex flex-col items-center"
                   >
-                    {/* Profile Image */}
                     <div className="relative group">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 blur-md opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
                       
@@ -600,7 +585,6 @@ const PremiumReviews = () => {
                   </motion.div>
                 </div>
 
-                {/* Navigation Arrows */}
                 <div className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2">
                   <button
                     onClick={handlePrev}
@@ -639,7 +623,6 @@ const PremiumReviews = () => {
           </AnimatePresence>
         </div>
 
-        {/* Progress Indicators */}
         <div className="flex justify-center gap-2 md:gap-3 mt-8 md:mt-12">
           {testimonials.map((_, i) => (
             <button
@@ -671,7 +654,6 @@ const PremiumReviews = () => {
           ))}
         </div>
 
-        {/* Trust Badges */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -686,7 +668,7 @@ const PremiumReviews = () => {
           >
             <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
             <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-              4.9/5 Average Rating
+              4.9/5 {t.reviews.avgRating}
             </span>
           </motion.div>
 
@@ -697,7 +679,7 @@ const PremiumReviews = () => {
           >
             <Smile className="w-4 h-4 md:w-5 md:h-5 text-cyan-500" />
             <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-              {testimonials.length}+ Happy Clients
+              {testimonials.length}+ {t.reviews.happyClients}
             </span>
           </motion.div>
 
@@ -708,7 +690,7 @@ const PremiumReviews = () => {
           >
             <Rocket className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
             <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-              50+ Projects Delivered
+              50+ {t.reviews.projectsDelivered}
             </span>
           </motion.div>
 
@@ -719,15 +701,14 @@ const PremiumReviews = () => {
           >
             <MessageCircle className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
             <span className="text-white/40 text-[10px] md:text-xs font-mono uppercase tracking-wider whitespace-nowrap">
-              24/7 Support
+              24/7 {t.reviews.support}
             </span>
           </motion.div>
         </motion.div>
 
-        {/* Swipe Hint for Mobile */}
         <div className="block md:hidden text-center mt-6">
           <p className="text-white/20 text-[10px] font-mono uppercase tracking-wider">
-            ← Swipe to navigate →
+            {t.reviews.swipeHint}
           </p>
         </div>
       </div>
