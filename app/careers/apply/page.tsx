@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import ParticleNetwork from '@/components/ParticleNetworkBG';
 
 interface Vacancy {
   _id?: string;
@@ -38,7 +39,7 @@ export default function ApplyPage() {
     resume: null as File | null,
   });
 
-  // ভ্যাকেন্সি ডিটেইলস লোড করুন
+  // Load vacancy details
   useEffect(() => {
     const fetchVacancy = async () => {
       try {
@@ -63,20 +64,20 @@ export default function ApplyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // ভ্যালিডেশন
+    // Validation
     if (!formData.fullName || !formData.email) {
-      alert('দয়া করে নাম এবং ইমেইল দিন');
+      alert('Please provide your name and email');
       return;
     }
     
     if (!formData.resume) {
-      alert('দয়া করে আপনার রেসিউম আপলোড করুন');
+      alert('Please upload your resume');
       return;
     }
     
     setSubmitting(true);
 
-    // ফর্ম ডাটা তৈরি করুন
+    // Create form data
     const submitData = new FormData();
     submitData.append('fullName', formData.fullName);
     submitData.append('email', formData.email);
@@ -100,16 +101,16 @@ export default function ApplyPage() {
       });
 
       if (response.ok) {
-        alert('✅ আপনার আবেদন সফলভাবে জমা হয়েছে! আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।');
-        // সফল হলে ক্যারিয়ার পেজে রিডাইরেক্ট করুন
+        alert('✅ Your application has been submitted successfully! We will contact you soon.');
+        // Redirect to careers page on success
         router.push('/CareerPage');
       } else {
         const error = await response.json();
-        alert(error.error || 'আবেদন জমা দিতে ব্যর্থ হয়েছে।');
+        alert(error.error || 'Failed to submit application.');
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert('আবেদন জমা দিতে ব্যর্থ হয়েছে। আবার চেষ্টা করুন।');
+      alert('Failed to submit application. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -118,9 +119,9 @@ export default function ApplyPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      // ফাইল সাইজ চেক (৫MB)
+      // File size check (5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('ফাইল সাইজ ৫MB এর বেশি হতে পারবে না');
+        alert('File size cannot exceed 5MB');
         return;
       }
       setFormData({ ...formData, resume: file });
@@ -139,12 +140,12 @@ export default function ApplyPage() {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl text-white mb-4">ভ্যাকেন্সি পাওয়া যায়নি</h1>
+          <h1 className="text-2xl text-white mb-4">Vacancy Not Found</h1>
           <Link
             href="/CareerPage"
             className="inline-block px-6 py-2 bg-[#6c5ce7] text-white rounded-lg hover:bg-[#5a4bd1] transition"
           >
-            ক্যারিয়ার পেজে ফিরে যান
+            Back to Careers
           </Link>
         </div>
       </div>
@@ -152,17 +153,31 @@ export default function ApplyPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0f] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        {/* ব্যাক বাটন - Link ব্যবহার করে */}
+    <main className="relative min-h-screen bg-[#0a0a0f] py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      
+      {/* Particle Network BG */}
+      <ParticleNetwork 
+        opacity={0.35}
+        particleCount={60}
+        connectionDistance={160}
+        particleSize={{ min: 0.8, max: 2.2 }}
+        particleColor="rgba(108, 92, 231, 0.4)"
+        lineColor="rgba(108, 92, 231"
+        lineOpacity={0.1}
+        speed={0.3}
+        glowEffect={true}
+      />
+
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Back Button - Using Link */}
         <Link
           href="/CareerPage"
           className="inline-flex items-center gap-2 text-white/60 hover:text-white transition mb-6"
         >
-          ← ব্যাক টু ক্যারিয়ার
+          ← Back to Careers
         </Link>
 
-        {/* হেডার */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -179,23 +194,23 @@ export default function ApplyPage() {
           </p>
         </motion.div>
 
-        {/* অ্যাপ্লিকেশন ফর্ম */}
+        {/* Application Form */}
         <motion.form
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           onSubmit={handleSubmit}
-          className="bg-[#11111e] border border-white/10 rounded-2xl p-6 md:p-8 space-y-6"
+          className="bg-[#11111e]/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8 space-y-6"
         >
-          {/* ব্যক্তিগত তথ্য */}
+          {/* Personal Information */}
           <div>
             <h2 className="text-xl font-semibold text-white mb-4 border-b border-white/10 pb-2">
-              ব্যক্তিগত তথ্য
+              Personal Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  পূর্ণ নাম <span className="text-red-500">*</span>
+                  Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -203,13 +218,13 @@ export default function ApplyPage() {
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none"
-                  placeholder="জন Doe"
+                  placeholder="John Doe"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  ইমেইল <span className="text-red-500">*</span>
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -223,7 +238,7 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  ফোন নম্বর
+                  Phone Number
                 </label>
                 <input
                   type="tel"
@@ -236,46 +251,46 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  অভিজ্ঞতা (বছর)
+                  Experience (Years)
                 </label>
                 <select
                   value={formData.experience}
                   onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
                   className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none"
                 >
-                  <option value="">সিলেক্ট করুন</option>
-                  <option value="0-1">০-১ বছর</option>
-                  <option value="1-3">১-৩ বছর</option>
-                  <option value="3-5">৩-৫ বছর</option>
-                  <option value="5-8">৫-৮ বছর</option>
-                  <option value="8+">৮+ বছর</option>
+                  <option value="">Select</option>
+                  <option value="0-1">0-1 Years</option>
+                  <option value="1-3">1-3 Years</option>
+                  <option value="3-5">3-5 Years</option>
+                  <option value="5-8">5-8 Years</option>
+                  <option value="8+">8+ Years</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  বর্তমান কোম্পানি
+                  Current Company
                 </label>
                 <input
                   type="text"
                   value={formData.currentCompany}
                   onChange={(e) => setFormData({ ...formData, currentCompany: e.target.value })}
                   className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none"
-                  placeholder="কোম্পানির নাম"
+                  placeholder="Company Name"
                 />
               </div>
             </div>
           </div>
 
-          {/* লিংকসমূহ */}
+          {/* Links */}
           <div>
             <h2 className="text-xl font-semibold text-white mb-4 border-b border-white/10 pb-2">
-              প্রোফাইল লিংক
+              Profile Links
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  পোর্টফোলিও/ওয়েবসাইট
+                  Portfolio/Website
                 </label>
                 <input
                   type="url"
@@ -288,7 +303,7 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  লিংকডইন
+                  LinkedIn
                 </label>
                 <input
                   type="url"
@@ -301,7 +316,7 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  গিটহাব
+                  GitHub
                 </label>
                 <input
                   type="url"
@@ -314,15 +329,15 @@ export default function ApplyPage() {
             </div>
           </div>
 
-          {/* রেসিউম ও কভার লেটার */}
+          {/* Documents */}
           <div>
             <h2 className="text-xl font-semibold text-white mb-4 border-b border-white/10 pb-2">
-              ডকুমেন্টস
+              Documents
             </h2>
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  রেসিউম/সিভি <span className="text-red-500">*</span>
+                  Resume/CV <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="file"
@@ -331,41 +346,41 @@ export default function ApplyPage() {
                   onChange={handleFileChange}
                   className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-[#6c5ce7] file:text-white hover:file:bg-[#5a4bd1] cursor-pointer"
                 />
-                <p className="text-xs text-white/40 mt-1">PDF, DOC, DOCX (ম্যাক্স ৫MB)</p>
+                <p className="text-xs text-white/40 mt-1">PDF, DOC, DOCX (Max 5MB)</p>
                 {formData.resume && (
-                  <p className="text-xs text-green-400 mt-1">✓ {formData.resume.name} আপলোড হয়েছে</p>
+                  <p className="text-xs text-green-400 mt-1">✓ {formData.resume.name} uploaded</p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-1">
-                  কভার লেটার
+                  Cover Letter
                 </label>
                 <textarea
                   rows={5}
                   value={formData.coverLetter}
                   onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
                   className="w-full px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white focus:border-[#6c5ce7] focus:outline-none"
-                  placeholder="আপনার অভিজ্ঞতা, দক্ষতা এবং কেন আপনি এই পদের জন্য উপযুক্ত তা লিখুন..."
+                  placeholder="Tell us about your experience, skills, and why you're the right fit for this position..."
                 />
               </div>
             </div>
           </div>
 
-          {/* সাবমিট বাটন */}
+          {/* Submit Button */}
           <div className="flex gap-4 pt-4">
             <Link
               href="/CareerPage"
               className="flex-1 px-6 py-3 border border-white/20 rounded-lg text-white/80 hover:bg-white/10 transition text-center"
             >
-              বাতিল করুন
+              Cancel
             </Link>
             <button
               type="submit"
               disabled={submitting}
               className="flex-1 px-6 py-3 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-lg text-white font-bold hover:shadow-lg transition disabled:opacity-50"
             >
-              {submitting ? 'জমা দেওয়া হচ্ছে...' : 'আবেদন জমা দিন →'}
+              {submitting ? 'Submitting...' : 'Submit Application →'}
             </button>
           </div>
         </motion.form>

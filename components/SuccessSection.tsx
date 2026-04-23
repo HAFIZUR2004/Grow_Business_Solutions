@@ -22,7 +22,6 @@ const toBengaliDigits = (num: number): string => {
 };
 
 const SuccessSection = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [counters, setCounters] = useState([0, 0, 0]);
   const sectionRef = useRef<HTMLElement>(null);
   const { ref: inViewRef, inView } = useInView({
@@ -118,132 +117,6 @@ const SuccessSection = () => {
     }
   }, [inView, lang]);
 
-  // Enhanced Particle Network Canvas Effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      color: string;
-      pulse: number;
-    }> = [];
-
-    const resize = () => {
-      const rect = canvas.parentElement?.getBoundingClientRect();
-      if (rect) {
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-      } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-
-      const nodeCount = Math.min(60, Math.floor((canvas.width * canvas.height) / 20000));
-      nodes = [];
-      
-      for (let i = 0; i < nodeCount; i++) {
-        nodes.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          r: Math.random() * 2.5 + 1,
-          color: Math.random() > 0.5 
-            ? `rgba(196, 181, 253, ${Math.random() * 0.5 + 0.3})`
-            : `rgba(165, 243, 252, ${Math.random() * 0.5 + 0.2})`,
-          pulse: Math.random() * Math.PI * 2,
-        });
-      }
-    };
-
-    canvas.style.position = 'absolute';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      if (nodes.length === 0) return;
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 170) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            
-            const opacity = 0.1 * (1 - distance / 170);
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x, nodes[i].y,
-              nodes[j].x, nodes[j].y
-            );
-            gradient.addColorStop(0, `rgba(196, 181, 253, ${opacity})`);
-            gradient.addColorStop(1, `rgba(165, 243, 252, ${opacity})`);
-            
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.7;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((node) => {
-        const pulseRadius = node.r + Math.sin(node.pulse) * 0.4;
-        node.pulse += 0.02;
-        
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, pulseRadius, 0, Math.PI * 2);
-        ctx.fillStyle = node.color;
-        ctx.fill();
-        
-        if (node.r > 1.5) {
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, pulseRadius + 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(196, 181, 253, 0.06)`;
-          ctx.fill();
-        }
-        
-        node.x += node.vx;
-        node.y += node.vy;
-        
-        if (node.x < -50) node.x = canvas.width + 50;
-        if (node.x > canvas.width + 50) node.x = -50;
-        if (node.y < -50) node.y = canvas.height + 50;
-        if (node.y > canvas.height + 50) node.y = -50;
-      });
-      
-      animId = requestAnimationFrame(draw);
-    };
-    
-    setTimeout(() => {
-      resize();
-      draw();
-    }, 100);
-    
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
@@ -274,25 +147,8 @@ const SuccessSection = () => {
           inViewRef(el);
         }
       }}
-      className={`relative bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] text-white py-24 px-6 overflow-hidden ${lang === 'BN' ? 'font-hind' : ''}`}
+      className={`relative bg-[#0b0c18] text-white py-24 px-6 overflow-hidden ${lang === 'BN' ? 'font-hind' : ''}`}
     >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        style={{ opacity: 0.5 }}
-      />
-
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 animate-pulse" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none z-0 animate-pulse" style={{ animationDelay: '2s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/5 to-cyan-500/5 blur-[100px] rounded-full pointer-events-none z-0" />
-
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
-
       <motion.div 
         style={{ opacity, scale }}
         className="max-w-7xl mx-auto relative z-10"

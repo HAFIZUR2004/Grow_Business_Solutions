@@ -9,6 +9,7 @@ import {
   CheckCircle, MessageSquare, User, AtSign
 } from "lucide-react";
 import Image from "next/image";
+import ParticleNetwork from "@/components/ParticleNetworkBG";
 
 // ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
 const PremiumSpinner = () => {
@@ -43,7 +44,6 @@ const PremiumSpinner = () => {
 
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-[#05070a] via-[#0a0c0f] to-[#05070a] flex flex-col items-center justify-center z-[200]">
-      {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] bg-[#6c5ce7]/20 rounded-full"
@@ -57,7 +57,6 @@ const PremiumSpinner = () => {
         />
       </div>
 
-      {/* Grid Overlay */}
       <div 
         className="absolute inset-0 opacity-[0.05]"
         style={{
@@ -66,7 +65,6 @@ const PremiumSpinner = () => {
         }}
       />
 
-      {/* Main Spinner - Quantum Ring */}
       <motion.div
         className="relative w-32 h-32 mb-8"
         initial={{ scale: 0.8, opacity: 0 }}
@@ -97,7 +95,6 @@ const PremiumSpinner = () => {
         </motion.div>
       </motion.div>
 
-      {/* Logo Placeholder */}
       <motion.div
         className="relative w-20 h-20 mb-6"
         animate={{
@@ -114,7 +111,6 @@ const PremiumSpinner = () => {
         </div>
       </motion.div>
 
-      {/* Loading Text */}
       <motion.div
         className="text-center space-y-3"
         animate={{ opacity: [0.4, 1, 0.4] }}
@@ -128,7 +124,6 @@ const PremiumSpinner = () => {
         </p>
       </motion.div>
 
-      {/* Progress Bar */}
       <div className="w-64 md:w-80 mt-8">
         <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
           <motion.div
@@ -147,7 +142,6 @@ const PremiumSpinner = () => {
         </motion.p>
       </div>
 
-      {/* Particle Effects */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(15)].map((_, i) => (
           <motion.div
@@ -191,8 +185,6 @@ export default function ContactSection() {
     message: "",
   });
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
   // সিমুলেটেড লোডিং - প্রিমিয়াম স্পিনার দেখানোর জন্য
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -208,105 +200,6 @@ export default function ContactSection() {
     { icon: MapPin, label: "GLOBAL NODE", value: "Barishal, Bangladesh • Remote First", color: "#00cec9" },
     { icon: Clock, label: "RESPONSE SLA", value: "< 24 Hours", color: "#fdcb6e" },
   ];
-
-  // Particle Network Canvas Effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      color: string;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      nodes = Array.from({ length: 70 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() * 2.5 + 0.8,
-        color:
-          Math.random() > 0.6
-            ? "rgba(108, 92, 231, 0.45)"
-            : "rgba(162, 155, 254, 0.35)",
-      }));
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 160) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.12 * (1 - d / 160);
-
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x,
-              nodes[i].y,
-              nodes[j].x,
-              nodes[j].y
-            );
-            gradient.addColorStop(0, "rgba(108, 92, 231, " + opacity + ")");
-            gradient.addColorStop(1, "rgba(162, 155, 254, " + opacity + ")");
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.fill();
-
-        if (n.r > 1.8) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(108, 92, 231, 0.08)`;
-          ctx.fill();
-        }
-
-        n.x += n.vx;
-        n.y += n.vy;
-
-        if (n.x < 0) { n.x = 0; n.vx *= -1; }
-        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; }
-        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -351,14 +244,18 @@ export default function ContactSection() {
   return (
     <section className="relative min-h-screen bg-[#05070a] text-white flex items-center px-4 md:px-10 py-32 overflow-hidden font-sans">
       
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none opacity-40 z-0"
+      {/* Particle Network BG - পুরনো সব BG এর জায়গায় */}
+      <ParticleNetwork 
+        opacity={0.4}
+        particleCount={70}
+        connectionDistance={160}
+        particleSize={{ min: 0.8, max: 2.5 }}
+        particleColor="rgba(108, 92, 231, 0.45)"
+        lineColor="rgba(108, 92, 231"
+        lineOpacity={0.12}
+        speed={0.35}
+        glowEffect={true}
       />
-
-      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(108,92,231,0.03),transparent_70%)] pointer-events-none z-0" />
 
       <div className="max-w-4xl w-full mx-auto relative z-10 px-6">
         
@@ -511,5 +408,5 @@ export default function ContactSection() {
         )}
       </AnimatePresence>
     </section>
-  );
+  );  
 }

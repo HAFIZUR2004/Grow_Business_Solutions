@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { FaAws, FaFigma, FaDocker } from "react-icons/fa";
 import { SiTailwindcss, SiGraphql, SiExpress } from "react-icons/si";
+import ParticleNetwork from "@/components/ParticleNetworkBG";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -104,99 +105,11 @@ const IconRenderer = ({ icon, isReactIcon, size = 18, color }: { icon: any; isRe
 
 export default function AboutPage() {
   const orbitRefs = useRef<HTMLDivElement[]>([]);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const journeyLineRef = useRef<HTMLDivElement>(null);
   const journeyScrollRef = useRef<HTMLDivElement>(null);
 
-  // Particle Network Canvas
+  // Orbital Animation
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      color: string;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      nodes = Array.from({ length: 80 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() * 2.5 + 0.8,
-        color:
-          Math.random() > 0.6
-            ? "rgba(108, 92, 231, 0.45)"
-            : "rgba(162, 155, 254, 0.35)",
-      }));
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 170) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.12 * (1 - d / 170);
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x,
-              nodes[i].y,
-              nodes[j].x,
-              nodes[j].y
-            );
-            gradient.addColorStop(0, "rgba(108, 92, 231, " + opacity + ")");
-            gradient.addColorStop(1, "rgba(162, 155, 254, " + opacity + ")");
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.fill();
-        if (n.r > 1.8) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(108, 92, 231, 0.08)`;
-          ctx.fill();
-        }
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0) { n.x = 0; n.vx *= -1; }
-        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; }
-        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    // Orbital Animation
     orbitRefs.current.forEach((node, i) => {
       if (!node) return;
       const tech = technologies[i];
@@ -204,11 +117,6 @@ export default function AboutPage() {
       const inner = node.querySelector(".tech-node-inner");
       if (inner) gsap.to(inner, { rotation: -360, duration: tech.speed, repeat: -1, ease: "none" });
     });
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
   }, []);
 
   // GSAP Journey Timeline Animation
@@ -257,16 +165,18 @@ export default function AboutPage() {
   return (
     <main className="relative min-h-screen bg-[#05070a] text-white font-sans overflow-x-hidden">
       
-      {/* Full Page Particle Network Canvas */}
-      <canvas 
-        ref={canvasRef} 
-        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0" 
+      {/* Particle Network BG - পুরনো সব BG এর জায়গায় */}
+      <ParticleNetwork 
+        opacity={0.35}
+        particleCount={80}
+        connectionDistance={170}
+        particleSize={{ min: 0.8, max: 2.5 }}
+        particleColor="rgba(108, 92, 231, 0.45)"
+        lineColor="rgba(108, 92, 231"
+        lineOpacity={0.12}
+        speed={0.35}
+        glowEffect={true}
       />
-
-      {/* Gradient Glow Effects */}
-      <div className="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#6c5ce7]/10 blur-[140px] rounded-full pointer-events-none z-0" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#00cec9]/8 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(108,92,231,0.03),transparent_70%)] pointer-events-none z-0" />
 
       {/* --- HERO SECTION --- */}
       <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden z-10">
@@ -292,17 +202,17 @@ export default function AboutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-           <Link href="/vision">
-  <button className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
-    Explore Our Vision
-  </button>
-</Link>
+            <Link href="/vision">
+              <button className="w-full sm:w-auto bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] hover:shadow-[0_0_30px_rgba(108,92,231,0.5)] transition-all px-8 py-4 rounded-xl text-xs md:text-sm font-black tracking-widest uppercase">
+                Explore Our Vision
+              </button>
+            </Link>
 
             <Link href="/ContactUs">
-        <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
-          Start Your Journey →
-        </button>
-      </Link>
+              <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
+                Start Your Journey →
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -489,11 +399,11 @@ export default function AboutPage() {
             <p className="text-white/40 text-lg mb-10 max-w-2xl mx-auto">
               Let's build something extraordinary together. Join the ranks of our global clients.
             </p>
-       <Link href="/ContactUs">
-        <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
-          Start Your Journey →
-        </button>
-      </Link>
+            <Link href="/ContactUs">
+              <button className="px-10 py-5 bg-gradient-to-r from-[#6c5ce7] to-[#a29bfe] rounded-2xl font-black text-xs tracking-widest uppercase shadow-[0_0_30px_rgba(108,92,231,0.4)] hover:scale-105 transition-all cursor-pointer">
+                Start Your Journey →
+              </button>
+            </Link>
           </div>
         </motion.div>
       </section>

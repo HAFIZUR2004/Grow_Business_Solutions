@@ -1,4 +1,5 @@
-'use client';
+// app/layout.tsx
+"use client";
 
 import type { Metadata } from "next";
 import { Inter, Hind_Siliguri } from "next/font/google";
@@ -7,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/constants/LanguageContext";
 import { usePathname } from "next/navigation";
+import { AIChatbotProvider } from "@/components/AIChatbotProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +30,7 @@ export default function RootLayout({
   const pathname = usePathname();
 
   // 👉 admin path check
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin = pathname?.startsWith("/admin");
 
   return (
     <html
@@ -41,13 +43,16 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <LanguageProvider>
-          {/* Navbar only for public */}
-          {!isAdmin && <Navbar />}
+          {/* Wrap everything with AIChatbotProvider */}
+          <AIChatbotProvider>
+            {/* Navbar only for public */}
+            {!isAdmin && <Navbar />}
 
-          <main className="grow relative z-10">{children}</main>
+            <main className="grow relative z-10">{children}</main>
 
-          {/* Footer only for public */}
-          {!isAdmin && <Footer />}
+            {/* Footer only for public */}
+            {!isAdmin && <Footer />}
+          </AIChatbotProvider>
         </LanguageProvider>
       </body>
     </html>

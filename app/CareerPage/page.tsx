@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
+import ParticleNetwork from "@/components/ParticleNetwork";
+
 /* ─── tiny helpers ─── */
 const Tag = ({ children }: { children: React.ReactNode }) => (
   <span className="text-[9px] tracking-[0.18em] uppercase border border-white/20 text-white/50 px-2 py-0.5 rounded-sm">
@@ -50,131 +52,15 @@ function BlobVisual() {
 
 /* ─── HERO SECTION ─── */
 function CareerHero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      color: string;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      nodes = Array.from({ length: 70 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() * 2.5 + 0.8,
-        color:
-          Math.random() > 0.6
-            ? "rgba(108, 92, 231, 0.45)"
-            : "rgba(162, 155, 254, 0.35)",
-      }));
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 170) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.12 * (1 - d / 170);
-
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x,
-              nodes[i].y,
-              nodes[j].x,
-              nodes[j].y
-            );
-            gradient.addColorStop(0, "rgba(108, 92, 231, " + opacity + ")");
-            gradient.addColorStop(1, "rgba(162, 155, 254, " + opacity + ")");
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.fill();
-
-        if (n.r > 1.8) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(108, 92, 231, 0.08)`;
-          ctx.fill();
-        }
-
-        n.x += n.vx;
-        n.y += n.vy;
-
-        if (n.x < 0) {
-          n.x = 0;
-          n.vx *= -1;
-        }
-        if (n.x > canvas.width) {
-          n.x = canvas.width;
-          n.vx *= -1;
-        }
-        if (n.y < 0) {
-          n.y = 0;
-          n.vy *= -1;
-        }
-        if (n.y > canvas.height) {
-          n.y = canvas.height;
-          n.vy *= -1;
-        }
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
 
   return (
     <motion.section 
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="relative min-h-screen w-full flex items-center justify-center overflow-hidden px-4 sm:px-6 md:px-10"
     >
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none opacity-35 z-0"
-      />
-
       <div className="fixed top-[-10%] left-[-10%] w-[70%] h-[70%] bg-[#6c5ce7]/10 blur-[120px] rounded-full pointer-events-none z-0" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#00cec9]/10 blur-[120px] rounded-full pointer-events-none z-0" />
 
@@ -365,7 +251,6 @@ function Vacancies() {
 
   useEffect(() => {
     fetchVacancies();
-    // Check admin (you can implement proper auth)
     const checkAdmin = () => {
       const user = localStorage.getItem('user');
       setIsAdmin(user === 'admin');
@@ -534,16 +419,16 @@ function Vacancies() {
               </>
             )}
            
-<button
-  onClick={() => {
-    const vacancyId = role._id || role.id;
-    window.location.href = `/careers/apply?vacancy=${vacancyId}`;
-  }}
-  className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
-  style={{ backgroundColor: role.color || "#6c5ce7" }}
->
-  Apply Now →
-</button>
+            <button
+              onClick={() => {
+                const vacancyId = role._id || role.id;
+                window.location.href = `/careers/apply?vacancy=${vacancyId}`;
+              }}
+              className="px-5 py-2 rounded-full text-[10px] font-bold tracking-[0.18em] uppercase transition-all hover:opacity-80 hover:scale-105"
+              style={{ backgroundColor: role.color || "#6c5ce7" }}
+            >
+              Apply Now →
+            </button>
           </div>
         </div>
       </motion.div>
@@ -671,8 +556,7 @@ function Vacancies() {
   );
 }
 
-/* ─── WHY BUILD WITH US (Enhanced) ─── */
-/* ─── WHY BUILD WITH US (Enhanced with SVG Icons) ─── */
+/* ─── WHY BUILD WITH US ─── */
 const perks = [
   {
     icon: (
@@ -767,7 +651,6 @@ function WhyBuild() {
             whileHover={{ y: -8, borderColor: p.color, scale: 1.02 }}
             className={`group relative border border-white/10 bg-gradient-to-br ${p.gradient} bg-[#11111e]/80 backdrop-blur-sm rounded-2xl p-7 flex flex-col gap-4 transition-all duration-500 cursor-pointer overflow-hidden`}
           >
-            {/* Animated glow effect on hover */}
             <motion.div 
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
               style={{
@@ -775,7 +658,6 @@ function WhyBuild() {
               }}
             />
             
-            {/* Icon container with pulse animation */}
             <motion.div 
               className="relative w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
               style={{
@@ -789,7 +671,6 @@ function WhyBuild() {
               {p.icon}
             </motion.div>
 
-            {/* Title with decorative line */}
             <div className="relative">
               <h3 className="text-white font-black text-sm tracking-[0.1em] uppercase mb-2">
                 {p.title}
@@ -800,12 +681,10 @@ function WhyBuild() {
               />
             </div>
 
-            {/* Description */}
             <p className="text-white/35 text-xs leading-relaxed group-hover:text-white/50 transition-colors duration-300">
               {p.desc}
             </p>
 
-            {/* Decorative corner accent */}
             <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={p.color} strokeWidth="1.5">
                 <path d="M5 12H19M19 12L12 5M19 12L12 19" strokeLinecap="round" strokeLinejoin="round"/>
@@ -815,7 +694,6 @@ function WhyBuild() {
         ))}
       </div>
 
-      {/* Optional: Stats row */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

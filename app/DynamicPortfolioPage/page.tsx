@@ -17,6 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLanguage } from "@/constants/LanguageContext";
 import { translations } from "@/constants/translations";
+import ParticleNetwork from "@/components/ParticleNetworkBG";
 
 const iconMap: Record<string, any> = {
   faLayerGroup: faLayerGroup,
@@ -246,7 +247,6 @@ const PremiumSpinner = ({ loadingTexts, pleaseWait, complete }: { loadingTexts: 
 export default function DynamicPortfolioPage() {
   const [projects, setProjects] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   
   const { lang } = useLanguage();
@@ -304,91 +304,6 @@ export default function DynamicPortfolioPage() {
     fetchProjects();
   }, []);
 
-  // Enhanced Particle Effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{ x: number; y: number; vx: number; vy: number; r: number; color: string; pulse: number }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      
-      const nodeCount = window.innerWidth < 768 ? 45 : 90;
-      nodes = Array.from({ length: nodeCount }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 2.5 + 1,
-        color: Math.random() > 0.6 ? "rgba(168, 85, 247, 0.5)" : "rgba(34, 211, 238, 0.4)",
-        pulse: Math.random() * Math.PI * 2
-      }));
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const gradient = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
-            gradient.addColorStop(0, `rgba(168, 85, 247, ${0.12 * (1 - dist / 150)})`);
-            gradient.addColorStop(1, `rgba(34, 211, 238, ${0.12 * (1 - dist / 150)})`);
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((n) => {
-        const pulseRadius = n.r + Math.sin(n.pulse) * 0.5;
-        n.pulse += 0.02;
-        
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, pulseRadius, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.fill();
-        
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, pulseRadius + 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(168, 85, 247, 0.03)`;
-        ctx.fill();
-
-        n.x += n.vx;
-        n.y += n.vy;
-
-        if (n.x < -50) n.x = canvas.width + 50;
-        if (n.x > canvas.width + 50) n.x = -50;
-        if (n.y < -50) n.y = canvas.height + 50;
-        if (n.y > canvas.height + 50) n.y = -50;
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
   const headerY = 1 - scrollProgress * 200;
   const headerOpacity = 1 - scrollProgress * 2;
 
@@ -403,27 +318,18 @@ export default function DynamicPortfolioPage() {
   return (
     <div className={`relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden min-h-screen ${lang === 'BN' ? 'font-hind' : 'font-sans'}`}>
       
-      {/* Enhanced Particle Network Background */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-70"
+      {/* Particle Network Background - পুরনো BG এর জায়গায় */}
+      <ParticleNetwork 
+        opacity={0.5}
+        particleCount={90}
+        connectionDistance={150}
+        particleSize={{ min: 1, max: 2.5 }}
+        particleColor="rgba(168, 85, 247, 0.5)"
+        lineColor="rgba(168, 85, 247"
+        lineOpacity={0.12}
+        speed={0.3}
+        glowEffect={true}
       />
-
-      {/* Static Grid Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.08]" 
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
-          }}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,#0b0c18_95%)]" />
-      </div>
-
-      {/* Gradient Glows */}
-      <div className="fixed top-[-20%] left-[-20%] w-[60%] h-[60%] bg-purple-900/20 blur-[150px] rounded-full pointer-events-none z-0 animate-pulse" />
-      <div className="fixed bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-cyan-900/15 blur-[150px] rounded-full pointer-events-none z-0 animate-pulse" style={{ animationDelay: '2s' }} />
 
       {/* Content Area */}
       <div className="max-w-7xl mx-auto relative z-10">
@@ -457,22 +363,18 @@ export default function DynamicPortfolioPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-<h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-[1.1] md:leading-[1.05] py-4 overflow-visible">
-  <span className="block bg-gradient-to-r from-white via-white to-white/50 bg-clip-text text-transparent pb-1">
-    {portfolio.title}
-  </span>
-  <span className="relative inline-block mt-1 md:mt-2 px-2">
-    {/* Background Glow */}
-    <span className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
-    
-    <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400 py-1 block">
-      {portfolio.titleGradient}
-    </span>
-
-    {/* Bottom Decorative Line */}
-    <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
-  </span>
-</h1>
+            <h1 className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase leading-[1.1] md:leading-[1.05] py-4 overflow-visible">
+              <span className="block bg-gradient-to-r from-white via-white to-white/50 bg-clip-text text-transparent pb-1">
+                {portfolio.title}
+              </span>
+              <span className="relative inline-block mt-1 md:mt-2 px-2">
+                <span className="absolute -inset-4 bg-gradient-to-r from-purple-600/20 to-cyan-500/20 blur-2xl" />
+                <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-cyan-400 py-1 block">
+                  {portfolio.titleGradient}
+                </span>
+                <span className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+              </span>
+            </h1>
           </motion.div>
 
           <motion.p

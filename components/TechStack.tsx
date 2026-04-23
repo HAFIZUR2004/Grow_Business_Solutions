@@ -49,7 +49,6 @@ const TechStack = () => {
   const sectionRef = useRef(null);
   const orbitRefs = useRef<HTMLDivElement[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentRow, setCurrentRow] = useState(0);
 
   const { lang } = useLanguage();
@@ -66,120 +65,6 @@ const TechStack = () => {
   const scrollPrev = () => {
     if (currentRow > 0) setCurrentRow((prev) => prev - 1);
   };
-
-  // Particle Network Canvas Effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      r: number;
-      color: string;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-
-      nodes = Array.from({ length: 55 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 2.5 + 0.8,
-        color:
-          Math.random() > 0.6
-            ? "rgba(97, 218, 251, 0.5)"
-            : "rgba(104, 160, 99, 0.4)",
-      }));
-    };
-
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(
-            nodes[i].x - nodes[j].x,
-            nodes[i].y - nodes[j].y,
-          );
-          if (d < 160) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.1 * (1 - d / 160);
-
-            const gradient = ctx.createLinearGradient(
-              nodes[i].x,
-              nodes[i].y,
-              nodes[j].x,
-              nodes[j].y,
-            );
-            gradient.addColorStop(0, "rgba(97, 218, 251, " + opacity + ")");
-            gradient.addColorStop(1, "rgba(104, 160, 99, " + opacity + ")");
-
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-      }
-
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = n.color;
-        ctx.fill();
-
-        if (n.r > 1.8) {
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r + 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(97, 218, 251, 0.08)`;
-          ctx.fill();
-        }
-
-        n.x += n.vx;
-        n.y += n.vy;
-
-        if (n.x < 0) {
-          n.x = 0;
-          n.vx *= -1;
-        }
-        if (n.x > canvas.width) {
-          n.x = canvas.width;
-          n.vx *= -1;
-        }
-        if (n.y < 0) {
-          n.y = 0;
-          n.vy *= -1;
-        }
-        if (n.y > canvas.height) {
-          n.y = canvas.height;
-          n.vy *= -1;
-        }
-      });
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -242,40 +127,18 @@ const TechStack = () => {
       ref={sectionRef}
       className={`relative py-20 px-8 overflow-hidden bg-[#0b0c18] text-[#E5E2E1] ${lang === 'BN' ? 'font-hind' : ''}`}
     >
-      {/* Particle Network Canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"
-      />
-
-      {/* Background Decor */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#0b0c18_0%,transparent_85%)]" />
-        <div
-          className="absolute top-0 left-0 w-full h-full opacity-10"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
-            backgroundSize: "60px 60px",
-          }}
-        />
-      </div>
-
-      {/* Glow Effects */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none z-0" />
-
       <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
         {/* Left Side: Content & Vertical Slider */}
         <div className="tech-content space-y-12">
           <div className="space-y-1 tech-content-title">
-           <h2 className={`text-6xl md:text-8xl font-black tracking-tight uppercase leading-[1.3] md:leading-[1.2] text-white overflow-visible py-4 ${lang === 'BN' ? 'font-hind' : ''}`}>
-  {t.techStack.title}{" "}
-  <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light pr-6 md:pr-10">
-    {t.techStack.titleGradient}
-  </span>{" "}
-  <br />
-  {t.techStack.titleEnd}
-</h2>
+            <h2 className={`text-6xl md:text-8xl font-black tracking-tight uppercase leading-[1.3] md:leading-[1.2] text-white overflow-visible py-4 ${lang === 'BN' ? 'font-hind' : ''}`}>
+              {t.techStack.title}{" "}
+              <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light pr-6 md:pr-10">
+                {t.techStack.titleGradient}
+              </span>{" "}
+              <br />
+              {t.techStack.titleEnd}
+            </h2>
           </div>
 
           {/* Sliding Grid Area */}

@@ -186,6 +186,7 @@ const PremiumReviews = () => {
   const [touchEnd, setTouchEnd] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { lang } = useLanguage();
   const t = translations[lang];
@@ -210,10 +211,11 @@ const PremiumReviews = () => {
     fetchTestimonials();
   }, []);
 
-  // Particle Network Canvas Effect
+  // Particle Network Canvas Effect - FIXED VERSION
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -229,23 +231,21 @@ const PremiumReviews = () => {
       pulseDir: number;
     }> = [];
 
-    const resize = () => {
-      const rect = canvas.parentElement?.getBoundingClientRect();
-      if (rect) {
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-      } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-
-      const nodeCount = Math.min(65, Math.floor((canvas.width * canvas.height) / 20000));
+    const initNodes = () => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      const width = rect?.width || window.innerWidth;
+      const height = rect?.height || window.innerHeight;
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      const nodeCount = Math.min(65, Math.floor((width * height) / 20000));
       nodes = [];
       
       for (let i = 0; i < nodeCount; i++) {
         nodes.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
+          x: Math.random() * width,
+          y: Math.random() * height,
           vx: (Math.random() - 0.5) * 0.35,
           vy: (Math.random() - 0.5) * 0.35,
           r: Math.random() * 2.8 + 1,
@@ -258,21 +258,33 @@ const PremiumReviews = () => {
       }
     };
 
-    canvas.style.position = 'absolute';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
+    const resize = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      initNodes();
+    };
 
-    resize();
+    // Initial setup
+    initNodes();
+    
+    // Use ResizeObserver for better resize handling
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+    
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    
     window.addEventListener("resize", resize);
 
     const draw = () => {
-      if (!ctx || !canvas) return;
+      if (!ctx || !canvas || nodes.length === 0) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      if (nodes.length === 0) return;
-
+      // Draw connections between nodes
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
@@ -299,6 +311,7 @@ const PremiumReviews = () => {
         }
       }
 
+      // Draw nodes with pulse effect
       nodes.forEach((node) => {
         const pulseRadius = node.r + Math.sin(node.pulse) * 0.8;
         node.pulse += node.pulseDir;
@@ -308,6 +321,7 @@ const PremiumReviews = () => {
         ctx.fillStyle = node.color;
         ctx.fill();
         
+        // Glow effect for larger nodes
         if (node.r > 2) {
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.r + 1.8, 0, Math.PI * 2);
@@ -315,26 +329,31 @@ const PremiumReviews = () => {
           ctx.fill();
         }
         
+        // Update position
         node.x += node.vx;
         node.y += node.vy;
         
-        if (node.x < -50) node.x = canvas.width + 50;
-        if (node.x > canvas.width + 50) node.x = -50;
-        if (node.y < -50) node.y = canvas.height + 50;
-        if (node.y > canvas.height + 50) node.y = -50;
+        // Boundary check with padding
+        const padding = 50;
+        if (node.x < -padding) node.x = canvas.width + padding;
+        if (node.x > canvas.width + padding) node.x = -padding;
+        if (node.y < -padding) node.y = canvas.height + padding;
+        if (node.y > canvas.height + padding) node.y = -padding;
       });
       
       animId = requestAnimationFrame(draw);
     };
     
-    setTimeout(() => {
-      resize();
+    // Start animation after a small delay to ensure canvas is ready
+    const timeoutId = setTimeout(() => {
       draw();
     }, 100);
     
     return () => {
+      clearTimeout(timeoutId);
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -407,7 +426,11 @@ const PremiumReviews = () => {
   const currentReview = testimonials[index];
 
   return (
-    <section className={`relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] ${lang === 'BN' ? 'font-hind' : ''}`}>
+    <section 
+      ref={containerRef}
+      className={`relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden bg-gradient-to-br from-[#0b0c18] via-[#0f0f1a] to-[#0b0c18] ${lang === 'BN' ? 'font-hind' : ''}`}
+    >
+      {/* Particle Network Canvas */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full pointer-events-none z-0"

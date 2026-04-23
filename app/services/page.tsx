@@ -11,7 +11,8 @@ import {
   Send, Loader2
 } from "lucide-react";
 import Link from "next/link";
-import PremiumSpinner from "@/components/PremiumSpinner"; // 👈 স্পিনার ইম্পোর্ট করুন
+import PremiumSpinner from "@/components/PremiumSpinner";
+import ParticleNetwork from "@/components/ParticleNetworkBG";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,36 +73,11 @@ const timeline = [
   { id: "04", title: "Launch & Optimize", desc: "Global deployment with 24/7 monitoring and continuous optimization.", icon: Rocket },
 ];
 
-// --- AI Message Data ---
-const aiResponses = {
-  "website": "I can help you build a high-performance website! We specialize in custom web applications, WordPress, Shopify, and full-stack solutions. What type of website are you looking for?",
-  "ecommerce": "Great choice! We build headless Shopify Plus stores and custom ecommerce platforms that are optimized for conversions. Would you like to see some of our ecommerce case studies?",
-  "wordpress": "WordPress is one of our core expertise areas! We build enterprise-grade WordPress sites with headless CMS architecture. What specific features do you need?",
-  "shopify": "Shopify experts at your service! We specialize in headless Shopify Plus, custom storefronts, and global ecommerce solutions. Ready to scale your online store?",
-  "ai": "AI is the future! We integrate LLMs, build custom AI agents, and create automation workflows. How can AI transform your business?",
-  "price": "Our pricing is customized based on your specific needs. The best way is to schedule a free discovery call where we can understand your requirements and provide a detailed quote.",
-  "time": "Project timelines vary based on complexity. A typical website takes 4-8 weeks, while complex ecommerce or AI projects can take 12-16 weeks. Let's discuss your timeline!",
-  "support": "We offer 24/7 global support with dedicated teams across time zones. Our SLA guarantees 99.9% uptime and rapid response times.",
-  "portfolio": "We've delivered 150+ projects for 50+ global brands. From startups to Fortune 500 companies, check out our case studies to see our work!",
-  "contact": "You can reach us at growbusinesssolutionsbd@gmail.com or call +880 1884 369340. Fill out the contact form below and we'll get back to you within 24 hours!",
-  "default": "Thanks for your message! Our AI assistant is learning. For immediate assistance, please fill out the contact form below or email us directly. How else can I help you today?"
-};
-
 export default function ServicesPage() {
-  const [loading, setLoading] = useState(true); // 👈 লোডিং স্টেট যোগ করুন
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [loading, setLoading] = useState(true);
   const timelineLineRef = useRef<HTMLDivElement>(null);
   const timelineScrollRef = useRef<HTMLDivElement>(null);
   const contactFormRef = useRef<HTMLDivElement>(null);
-
-  // AI Chat State
-  const [messages, setMessages] = useState<Array<{type: 'user' | 'ai', content: string}>>([
-    { type: 'ai', content: "👋 Hello! I'm your AI assistant. Ask me anything about our services, pricing, timeline, or technology stack!" }
-  ]);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Contact Form State
   const [formData, setFormData] = useState({
@@ -120,77 +96,6 @@ export default function ServicesPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Particle Effect
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let nodes: Array<{x: number, y: number, vx: number, vy: number, r: number}> = [];
-    
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-      
-      nodes = Array.from({ length: 60 }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        r: Math.random() * 2.5 + 0.5,
-      }));
-    };
-    
-    resize();
-    window.addEventListener("resize", resize);
-
-    const draw = () => {
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 150) {
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            const opacity = 0.15 * (1 - d / 150);
-            ctx.strokeStyle = `rgba(108, 92, 231, ${opacity})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
-          }
-        }
-      }
-      
-      nodes.forEach((n) => {
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(162, 155, 254, 0.5)`;
-        ctx.fill();
-        
-        n.x += n.vx;
-        n.y += n.vy;
-        
-        if (n.x < 0) { n.x = 0; n.vx *= -1; }
-        if (n.x > canvas.width) { n.x = canvas.width; n.vx *= -1; }
-        if (n.y < 0) { n.y = 0; n.vy *= -1; }
-        if (n.y > canvas.height) { n.y = canvas.height; n.vy *= -1; }
-      });
-      
-      animId = requestAnimationFrame(draw);
-    };
-    
-    draw();
-    
-    return () => { 
-      cancelAnimationFrame(animId); 
-      window.removeEventListener("resize", resize); 
-    };
-  }, []);
-
   // Scroll to contact form function
   const scrollToContactForm = () => {
     contactFormRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -198,7 +103,7 @@ export default function ServicesPage() {
 
   // GSAP Timeline Animation
   useEffect(() => {
-    if (!loading) { // 👈 লোডিং false হলে অ্যানিমেশন চালু হবে
+    if (!loading) {
       if (timelineLineRef.current && timelineScrollRef.current) {
         gsap.fromTo(
           timelineLineRef.current,
@@ -240,42 +145,6 @@ export default function ServicesPage() {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [loading]);
-
-  // Auto-scroll chat to bottom
-  useEffect(() => {
-    if (isChatOpen) {
-      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, isChatOpen]);
-
-  // AI Response Handler
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
-
-    const userMessage = inputMessage;
-    setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
-    setInputMessage("");
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const lowerMsg = userMessage.toLowerCase();
-      let response = aiResponses.default;
-      
-      if (lowerMsg.includes('website') || lowerMsg.includes('site')) response = aiResponses.website;
-      else if (lowerMsg.includes('ecommerce') || lowerMsg.includes('shop') || lowerMsg.includes('store')) response = aiResponses.ecommerce;
-      else if (lowerMsg.includes('wordpress')) response = aiResponses.wordpress;
-      else if (lowerMsg.includes('shopify')) response = aiResponses.shopify;
-      else if (lowerMsg.includes('ai') || lowerMsg.includes('artificial intelligence')) response = aiResponses.ai;
-      else if (lowerMsg.includes('price') || lowerMsg.includes('cost') || lowerMsg.includes('budget')) response = aiResponses.price;
-      else if (lowerMsg.includes('time') || lowerMsg.includes('duration') || lowerMsg.includes('long')) response = aiResponses.time;
-      else if (lowerMsg.includes('support') || lowerMsg.includes('help')) response = aiResponses.support;
-      else if (lowerMsg.includes('portfolio') || lowerMsg.includes('case study') || lowerMsg.includes('project')) response = aiResponses.portfolio;
-      else if (lowerMsg.includes('contact') || lowerMsg.includes('reach') || lowerMsg.includes('email')) response = aiResponses.contact;
-      
-      setMessages(prev => [...prev, { type: 'ai', content: response }]);
-      setIsLoading(false);
-    }, 1000);
-  };
 
   // Form Submit Handler - Integrated with your API
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -328,10 +197,17 @@ export default function ServicesPage() {
   return (
     <main className="relative min-h-screen bg-[#05070a] text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
       
-      {/* Particle Background */}
-      <canvas 
-        ref={canvasRef} 
-        className="fixed inset-0 w-full h-full pointer-events-none opacity-40 z-0" 
+      {/* Particle Network BG - পুরনো সব BG এর জায়গায় */}
+      <ParticleNetwork 
+        opacity={0.4}
+        particleCount={60}
+        connectionDistance={150}
+        particleSize={{ min: 0.5, max: 2.5 }}
+        particleColor="rgba(108, 92, 231, 0.5)"
+        lineColor="rgba(108, 92, 231"
+        lineOpacity={0.15}
+        speed={0.5}
+        glowEffect={true}
       />
       
       {/* Hero Section */}
@@ -374,10 +250,10 @@ export default function ServicesPage() {
                 Book a Strategy Call →
               </button>
               <Link href="/projects">
-  <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-full transition-all duration-300">
-    View Case Studies
-  </button>
-</Link>
+                <button className="px-10 py-5 border border-white/10 hover:bg-white/5 rounded-full transition-all duration-300">
+                  View Case Studies
+                </button>
+              </Link>
             </div>
           </motion.div>
 
@@ -504,8 +380,6 @@ export default function ServicesPage() {
 
       {/* Enhanced "Our Journey" Counter Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
-        
-
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -597,209 +471,92 @@ export default function ServicesPage() {
         <div className="relative p-12 md:p-24 rounded-[3rem] bg-gradient-to-br from-[#111319] to-transparent border border-white/10 overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#6c5ce7]/10 blur-[100px] rounded-full" />
           
-         <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
-  <div>
-    <h2 className="text-5xl md:text-7xl font-black leading-[0.9] mb-10 tracking-tighter">
-      READY TO <br /> <span className="text-white/30 italic">DOMINATE?</span>
-    </h2>
-    <div className="space-y-8">
-      {/* Email - Fixed alignment */}
-      <div className="flex items-start gap-6 group">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#6c5ce7]/20 transition-colors border border-white/5 flex-shrink-0">
-          <Mail size={24} />
-        </div>
-        <span className="text-xl text-white/70 font-bold break-all md:break-normal">
-          growbusinesssolutionsbd@gmail.com
-        </span>
-      </div>
-      
-      {/* Globe */}
-      <div className="flex items-center gap-6 group">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#00cec9]/20 transition-colors border border-white/5 flex-shrink-0">
-          <Globe size={24} />
-        </div>
-        <span className="text-xl text-white/70 font-bold">Global Delivery Center</span>
-      </div>
-      
-      {/* Phone */}
-      <div className="flex items-center gap-6 group">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#f9ab00]/20 transition-colors border border-white/5 flex-shrink-0">
-          <Phone size={24} />
-        </div>
-        <span className="text-xl text-white/70 font-bold">+880 1884 369340</span>
-      </div>
-    </div>
-  </div>
-
-  <div className="space-y-6 bg-white/[0.02] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
-    <form onSubmit={handleFormSubmit} className="space-y-6">
-      <input 
-        type="text"
-        placeholder="Full Name"
-        value={formData.name}
-        onChange={(e) => setFormData({...formData, name: e.target.value})}
-        required
-        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
-      />
-      <input 
-        type="email"
-        placeholder="Work Email"
-        value={formData.email}
-        onChange={(e) => setFormData({...formData, email: e.target.value})}
-        required
-        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
-      />
-      <textarea 
-        placeholder="Project Requirements..."
-        value={formData.requirements}
-        onChange={(e) => setFormData({...formData, requirements: e.target.value})}
-        required
-        className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm h-32 resize-none"
-      />
-      
-      {submitStatus && (
-        <div className={`p-4 rounded-xl text-sm font-medium ${
-          submitStatus.type === 'success' 
-            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-            : 'bg-red-500/20 text-red-400 border border-red-500/30'
-        }`}>
-          {submitStatus.message}
-        </div>
-      )}
-      
-      <button 
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full py-6 bg-[#6c5ce7] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl hover:bg-[#5a4ad1] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            SENDING...
-          </>
-        ) : (
-          'Schedule Discovery Call'
-        )}
-      </button>
-    </form>
-  </div>
-</div>
-        </div>
-      </section>
-
-      {/* AI Chat Widget - Floating Button & Chat Window */}
-      <>
-        {/* AI Chat Button */}
-        <motion.button
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 1, type: "spring" }}
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] shadow-[0_0_30px_rgba(108,92,231,0.5)] hover:scale-110 transition-all duration-300 flex items-center justify-center group"
-        >
-          <Brain size={28} className="text-white group-hover:rotate-12 transition-transform" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#05070a] animate-pulse" />
-        </motion.button>
-
-        {/* AI Chat Window */}
-        <motion.div
-          initial={{ opacity: 0, y: 100, scale: 0.9 }}
-          animate={{ 
-            opacity: isChatOpen ? 1 : 0, 
-            y: isChatOpen ? 0 : 100,
-            scale: isChatOpen ? 1 : 0.9,
-            pointerEvents: isChatOpen ? 'auto' : 'none'
-          }}
-          transition={{ duration: 0.3 }}
-          className="fixed bottom-24 right-8 z-50 w-[400px] max-w-[calc(100vw-2rem)] bg-[#0a0c0f] border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl"
-        >
-          {/* Chat Header */}
-          <div className="bg-gradient-to-r from-[#6c5ce7]/20 to-[#00cec9]/20 p-4 border-b border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] flex items-center justify-center">
-                <Sparkles size={18} className="text-white" />
+          <div className="grid lg:grid-cols-2 gap-20 items-center relative z-10">
+            <div>
+              <h2 className="text-5xl md:text-7xl font-black leading-[0.9] mb-10 tracking-tighter">
+                READY TO <br /> <span className="text-white/30 italic">DOMINATE?</span>
+              </h2>
+              <div className="space-y-8">
+                <div className="flex items-start gap-6 group">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#6c5ce7]/20 transition-colors border border-white/5 flex-shrink-0">
+                    <Mail size={24} />
+                  </div>
+                  <span className="text-xl text-white/70 font-bold break-all md:break-normal">
+                    growbusinesssolutionsbd@gmail.com
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-6 group">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#00cec9]/20 transition-colors border border-white/5 flex-shrink-0">
+                    <Globe size={24} />
+                  </div>
+                  <span className="text-xl text-white/70 font-bold">Global Delivery Center</span>
+                </div>
+                
+                <div className="flex items-center gap-6 group">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-[#f9ab00]/20 transition-colors border border-white/5 flex-shrink-0">
+                    <Phone size={24} />
+                  </div>
+                  <span className="text-xl text-white/70 font-bold">+880 1884 369340</span>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-black text-sm tracking-wider">AI ASSISTANT</h3>
-                <p className="text-[10px] text-white/40">Online • Ready to help</p>
-              </div>
-              <button 
-                onClick={() => setIsChatOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
-              >
-                ✕
-              </button>
+            </div>
+
+            <div className="space-y-6 bg-white/[0.02] p-8 md:p-12 rounded-[2rem] border border-white/10 shadow-inner">
+              <form onSubmit={handleFormSubmit} className="space-y-6">
+                <input 
+                  type="text"
+                  placeholder="Full Name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  required
+                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
+                />
+                <input 
+                  type="email"
+                  placeholder="Work Email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  required
+                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm"
+                />
+                <textarea 
+                  placeholder="Project Requirements..."
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({...formData, requirements: e.target.value})}
+                  required
+                  className="w-full bg-transparent border-b border-white/10 py-5 focus:border-[#6c5ce7] outline-none transition-all font-bold text-sm h-32 resize-none"
+                />
+                
+                {submitStatus && (
+                  <div className={`p-4 rounded-xl text-sm font-medium ${
+                    submitStatus.type === 'success' 
+                      ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                      : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                  }`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+                
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-6 bg-[#6c5ce7] rounded-2xl font-black uppercase tracking-[0.3em] text-[10px] shadow-2xl hover:bg-[#5a4ad1] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      SENDING...
+                    </>
+                  ) : (
+                    'Schedule Discovery Call'
+                  )}
+                </button>
+              </form>
             </div>
           </div>
-
-          {/* Chat Messages */}
-          <div className="h-[400px] overflow-y-auto p-4 space-y-3">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                    msg.type === 'user'
-                      ? 'bg-gradient-to-r from-[#6c5ce7] to-[#8b7df0] text-white'
-                      : 'bg-white/5 border border-white/10 text-white/80'
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-white/5 border border-white/10 p-3 rounded-2xl">
-                  <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-[#6c5ce7] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 bg-[#6c5ce7] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 bg-[#6c5ce7] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
-
-          {/* Quick Suggestions */}
-          <div className="px-4 py-2 border-t border-white/5 flex gap-2 flex-wrap">
-            {['Pricing', 'Timeline', 'Portfolio', 'Contact'].map((suggestion) => (
-              <button
-                key={suggestion}
-                onClick={() => {
-                  setInputMessage(suggestion);
-                  handleSendMessage();
-                }}
-                className="text-[10px] px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-
-          {/* Chat Input */}
-          <div className="p-4 border-t border-white/10 flex gap-2">
-            <input
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Ask me anything..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-[#6c5ce7] transition-colors"
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={isLoading || !inputMessage.trim()}
-              className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#6c5ce7] to-[#00cec9] flex items-center justify-center hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send size={16} className="text-white" />
-            </button>
-          </div>
-        </motion.div>
-      </>
+        </div>
+      </section>
     </main>
   );
 }
