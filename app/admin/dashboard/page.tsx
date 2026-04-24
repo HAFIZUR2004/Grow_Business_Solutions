@@ -10,9 +10,35 @@ import {
   Mail, Zap, X
 } from 'lucide-react';
 
+// Define types
+interface Application {
+  _id: string;
+  fullName: string;
+  vacancyTitle: string;
+  status: 'pending' | 'reviewed' | 'accepted' | 'rejected';
+  appliedAt: string;
+  [key: string]: any;
+}
+
+interface Vacancy {
+  _id: string;
+  title: string;
+  [key: string]: any;
+}
+
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+  link?: string;
+}
+
 export default function DashboardPage() {
-  const [applications, setApplications] = useState([]);
-  const [vacancies, setVacancies] = useState([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [vacancies, setVacancies] = useState<any[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -27,7 +53,6 @@ export default function DashboardPage() {
     fetchData();
     fetchNotifications();
     
-    // Click outside close handler
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
@@ -59,8 +84,9 @@ export default function DashboardPage() {
     try {
       const res = await fetch('/api/notifications');
       const data = await res.json();
-      setNotifications(Array.isArray(data) ? data : []);
-      const unread = data.filter((n: any) => !n.read).length;
+      const notificationsData = Array.isArray(data) ? data : [];
+      setNotifications(notificationsData);
+      const unread = notificationsData.filter((n: any) => !n.read).length;
       setUnreadCount(unread);
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -81,10 +107,10 @@ export default function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notificationId, read: true })
       });
-      setNotifications(prev => prev.map((n: any) => 
+      setNotifications((prev: any[]) => prev.map((n: any) => 
         n.id === notificationId ? { ...n, read: true } : n
       ));
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev: number) => Math.max(0, prev - 1));
     } catch (error) {
       console.error('Error marking as read:', error);
     }
@@ -140,13 +166,13 @@ export default function DashboardPage() {
   ];
 
   const getStatusBadge = (status: string) => {
-    const statuses = {
+    const statuses: any = {
       pending: { label: 'পেন্ডিং', class: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: Clock },
       reviewed: { label: 'রিভিউ করা', class: 'bg-purple-100 text-purple-700 border-purple-200', icon: Eye },
       accepted: { label: 'সিলেক্টেড', class: 'bg-green-100 text-green-700 border-green-200', icon: CheckCircle },
       rejected: { label: 'রিজেক্টেড', class: 'bg-red-100 text-red-700 border-red-200', icon: XCircle },
     };
-    return statuses[status as keyof typeof statuses] || statuses.pending;
+    return statuses[status] || statuses.pending;
   };
 
   if (loading) {
@@ -193,7 +219,7 @@ export default function DashboardPage() {
             <RefreshCw size={20} className={`text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
           </button>
           
-          {/* নোটিফিকেশন বাটন */}
+          {/* Notification Button */}
           <div className="relative" ref={notificationRef}>
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
@@ -207,7 +233,7 @@ export default function DashboardPage() {
               )}
             </button>
             
-            {/* নোটিফিকেশন ড্রপডাউন */}
+            {/* Notifications Dropdown */}
             <AnimatePresence>
               {showNotifications && (
                 <motion.div
@@ -491,7 +517,7 @@ export default function DashboardPage() {
                 </tr>
               )}
             </tbody>
-          </table>
+           </table>
         </div>
 
         {applications.length > 5 && (

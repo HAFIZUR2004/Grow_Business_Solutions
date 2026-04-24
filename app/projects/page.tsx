@@ -16,7 +16,7 @@ import {
   faArrowRight
 } from "@fortawesome/free-solid-svg-icons";
 import PremiumSpinner from "@/components/PremiumSpinner";
-import ParticleNetwork from "@/components/ParticleNetworkBG";
+import ParticleNetwork from "@/components/ParticleNetwork";
 
 const iconMap: Record<string, any> = {
   faLayerGroup: faLayerGroup,

@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLanguage } from "@/constants/LanguageContext";
 import { translations } from "@/constants/translations";
-import ParticleNetwork from "@/components/ParticleNetworkBG";
+import ParticleNetwork from "@/components/ParticleNetwork";
 
 const iconMap: Record<string, any> = {
   faLayerGroup: faLayerGroup,

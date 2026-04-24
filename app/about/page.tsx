@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { FaAws, FaFigma, FaDocker } from "react-icons/fa";
 import { SiTailwindcss, SiGraphql, SiExpress } from "react-icons/si";
-import ParticleNetwork from "@/components/ParticleNetworkBG";
+import ParticleNetwork from "@/components/ParticleNetwork";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);

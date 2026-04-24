@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import ParticleNetwork from '@/components/ParticleNetworkBG';
+import ParticleNetwork from '@/components/ParticleNetwork';
 
 interface Vacancy {
   _id?: string;

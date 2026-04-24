@@ -17,12 +17,11 @@ export async function triggerNotification(data: {
   }
 }
 
-// Push Notification সেটআপ (মোবাইলের জন্য)
+// Push Notification সেটআপ
 export async function requestPushPermission() {
-  if ('Notification' in window && 'serviceWorker' in navigator) {
+  if (typeof window !== 'undefined' && 'Notification' in window && 'serviceWorker' in navigator) {
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
-      // Service Worker রেজিস্টার করুন
       const registration = await navigator.serviceWorker.register('/sw.js');
       return registration;
     }
@@ -30,20 +29,58 @@ export async function requestPushPermission() {
   return null;
 }
 
-// মোবাইল Push Notification পাঠান
-export async function sendPushNotification(title: string, body: string, link?: string) {
-  if ('serviceWorker' in navigator && 'PushManager' in window) {
-    const registration = await navigator.serviceWorker.ready;
-    registration.showNotification(title, {
+// Service Worker এর মাধ্যমে নোটিফিকেশন (actions সহ)
+export async function sendPushNotificationWithActions(title: string, body: string, link?: string) {
+  if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      
+      // Send message to service worker
+      if (registration.active) {
+        registration.active.postMessage({
+          type: 'SHOW_NOTIFICATION',
+          title: title,
+          body: body,
+          link: link,
+          icon: '/icon-192.png',
+          badge: '/badge.png'
+        });
+      } else {
+        // Fallback without actions
+        await registration.showNotification(title, {
+          body: body,
+          icon: '/icon-192.png',
+          badge: '/badge.png',
+          data: { url: link }
+        });
+      }
+    } catch (error) {
+      console.error('Push notification error:', error);
+    }
+  }
+}
+
+// সরল নোটিফিকেশন (সবচেয়ে সহজ)
+export async function sendSimpleNotification(title: string, body: string, link?: string) {
+  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+    const notification = new Notification(title, {
       body: body,
       icon: '/icon-192.png',
-      badge: '/badge.png',
-      vibrate: [200, 100, 200],
-      data: { url: link },
-      actions: [
-        { action: 'open', title: 'খুলুন' },
-        { action: 'dismiss', title: 'বাদ দিন' }
-      ]
     });
+    
+    notification.onclick = () => {
+      if (link) {
+        window.focus();
+        window.location.href = link;
+      }
+      notification.close();
+    };
+    
+    notification.onclose = () => {
+      console.log('Notification closed');
+    };
+    
+    return notification;
   }
+  return null;
 }

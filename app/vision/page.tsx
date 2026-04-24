@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Heart, DollarSign, Globe, Zap, Shield, Clock, Users, Target, Sparkles, TrendingUp, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Heart, Target, TrendingUp, ChevronRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function VisionPage() {
@@ -28,8 +28,8 @@ export default function VisionPage() {
     if (!ctx) return;
 
     let animId: number;
-    let particles: Particle[] = [];
-    let wires: Wire[] = [];
+    let particles: any[] = [];
+    let wires: any[] = [];
 
     class Particle {
       x: number;
@@ -42,8 +42,13 @@ export default function VisionPage() {
       pulsePhase: number;
 
       constructor(x?: number, y?: number) {
-        this.x = x || Math.random() * canvas.width;
-        this.y = y || Math.random() * canvas.height;
+        if (!canvas) {
+          this.x = 0;
+          this.y = 0;
+        } else {
+          this.x = x || Math.random() * canvas.width;
+          this.y = y || Math.random() * canvas.height;
+        }
         this.originalX = this.x;
         this.originalY = this.y;
         this.vx = (Math.random() - 0.5) * 0.2;
@@ -53,7 +58,7 @@ export default function VisionPage() {
       }
 
       draw(time: number) {
-        if (!ctx) return;
+        if (!ctx || !canvas) return;
         const pulse = 0.5 + Math.sin(time * 0.003 + this.pulsePhase) * 0.3;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius * (0.8 + pulse * 0.2), 0, Math.PI * 2);
@@ -71,6 +76,7 @@ export default function VisionPage() {
       }
 
       update() {
+        if (!canvas) return;
         const dx = mousePosition.x - this.x;
         const dy = mousePosition.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -101,20 +107,23 @@ export default function VisionPage() {
       constructor() {
         this.phase = Math.random() * Math.PI * 2;
         this.points = [];
-        const startX = Math.random() * canvas.width;
-        const startY = Math.random() * canvas.height;
-        let currentX = startX;
-        let currentY = startY;
         
-        for (let i = 0; i < 8; i++) {
-          currentX += (Math.random() - 0.5) * 80;
-          currentY += (Math.random() - 0.5) * 80;
-          this.points.push({ x: currentX, y: currentY });
+        if (canvas) {
+          const startX = Math.random() * canvas.width;
+          const startY = Math.random() * canvas.height;
+          let currentX = startX;
+          let currentY = startY;
+          
+          for (let i = 0; i < 8; i++) {
+            currentX += (Math.random() - 0.5) * 80;
+            currentY += (Math.random() - 0.5) * 80;
+            this.points.push({ x: currentX, y: currentY });
+          }
         }
       }
       
       draw(time: number) {
-        if (!ctx) return;
+        if (!ctx || !canvas || this.points.length === 0) return;
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
         
@@ -126,7 +135,10 @@ export default function VisionPage() {
           ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, this.points[i].x, this.points[i].y);
         }
         
-        const gradient = ctx.createLinearGradient(this.points[0].x, this.points[0].y, this.points[this.points.length-1].x, this.points[this.points.length-1].y);
+        const gradient = ctx.createLinearGradient(
+          this.points[0].x, this.points[0].y, 
+          this.points[this.points.length-1].x, this.points[this.points.length-1].y
+        );
         gradient.addColorStop(0, `rgba(108, 92, 231, ${0.1 + Math.sin(time * 0.001 + this.phase) * 0.05})`);
         gradient.addColorStop(1, `rgba(0, 206, 201, ${0.1 + Math.cos(time * 0.001 + this.phase) * 0.05})`);
         ctx.strokeStyle = gradient;
@@ -143,6 +155,7 @@ export default function VisionPage() {
     }
 
     const initParticles = () => {
+      if (!canvas) return;
       particles = [];
       const particleCount = Math.min(120, Math.floor((canvas.width * canvas.height) / 8000));
       for (let i = 0; i < particleCount; i++) {
@@ -151,6 +164,7 @@ export default function VisionPage() {
     };
 
     const initWires = () => {
+      if (!canvas) return;
       wires = [];
       const wireCount = Math.min(15, Math.floor((canvas.width * canvas.height) / 50000));
       for (let i = 0; i < wireCount; i++) {
@@ -159,6 +173,7 @@ export default function VisionPage() {
     };
 
     const drawConnections = () => {
+      if (!ctx || !canvas) return;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -185,6 +200,7 @@ export default function VisionPage() {
     };
 
     const resize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       initParticles();
@@ -375,7 +391,7 @@ export default function VisionPage() {
                   >
                     <motion.div 
                       whileHover={{ scale: 1.1 }}
-                      className={`text-4xl md:text-5xl font-black mb-2`}
+                      className="text-4xl md:text-5xl font-black mb-2"
                       style={{ color: item.color }}
                     >
                       {item.value}

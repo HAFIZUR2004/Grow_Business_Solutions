@@ -45,7 +45,6 @@ const TeamSection = () => {
     }
   };
 
-  // translations থেকে teamMembers নেওয়া
   const members = t.teamMembers;
 
   return (
@@ -100,7 +99,9 @@ const TeamSection = () => {
             viewport={{ once: true }}
             className="text-white/40 text-base md:text-lg max-w-2xl mx-auto mt-6 leading-relaxed"
           >
-            {t.teamDesc}
+            {(t as any).teamDesc || (lang === 'BN' 
+              ? 'আমাদের ডিজিটাল সলিউশনের পিছনে থাকা মেধাবী ব্যক্তিদের সাথে পরিচিত হন। সৃজনশীল, উদ্ভাবক এবং সমস্যা সমাধানকারীদের একটি দল যা আপনার ভিশনকে বাস্তবায়িত করতে নিবেদিত।'
+              : 'Meet the brilliant minds behind our digital solutions. A team of passionate creators, innovators, and problem-solvers dedicated to bringing your vision to life.')}
           </motion.p>
         </div>
 
@@ -129,7 +130,7 @@ const TeamSection = () => {
             msOverflowStyle: "none"
           }}
         >
-          {members.map((member, idx) => (
+          {members.map((member: any, idx: number) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, x: 50 }}
@@ -161,7 +162,6 @@ const TeamSection = () => {
                 </p>
               </div>
 
-              {/* Social Bar - Drops UP from bottom */}
               <div className="absolute bottom-0 left-0 w-full bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-sm translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out z-20">
                 <div className="flex h-14">
                   <SocialLink href={member.social?.twitter || "#"} icon={<FiTwitter />} bgColor="hover:bg-[#1DA1F2]" />
@@ -189,7 +189,7 @@ const TeamSection = () => {
           className="flex justify-center mt-8 gap-2"
         >
           <div className="flex gap-2">
-            {members.map((_, idx) => (
+            {members.map((_: any, idx: number) => (
               <div 
                 key={idx}
                 className="w-1.5 h-1.5 rounded-full bg-white/20 transition-all duration-300 hover:bg-cyan-400 hover:w-3 cursor-pointer"

@@ -12,7 +12,7 @@ export default function Home() {
     <main>
       <Hero />
       <EngineeringProtocol />
-      <SuccessSection />
+      <SuccessSection/>
       <TechStack />
       <TeamSection/>
       <PremiumReviews/>

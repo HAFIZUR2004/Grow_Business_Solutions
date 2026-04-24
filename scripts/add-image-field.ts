@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import 'dotenv/config';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
   console.error('❌ MONGODB_URI not found in .env.local');
@@ -12,7 +12,7 @@ if (!MONGODB_URI) {
 const TEST_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 async function migrateTestimonials() {
-  let client;
+  let client: MongoClient | null = null;
   
   try {
     console.log('📡 Connecting to MongoDB...');
@@ -65,3 +65,4 @@ async function migrateTestimonials() {
 }
 
 migrateTestimonials();
+// ,,,

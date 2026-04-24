@@ -9,7 +9,7 @@ import {
   CheckCircle, MessageSquare, User, AtSign
 } from "lucide-react";
 import Image from "next/image";
-import ParticleNetwork from "@/components/ParticleNetworkBG";
+import ParticleNetwork from "@/components/ParticleNetwork";
 
 // ============ প্রিমিয়াম লোডিং স্পিনার কম্পোনেন্ট ============
 const PremiumSpinner = () => {

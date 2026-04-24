@@ -87,13 +87,16 @@ const EngineeringProtocol = () => {
     desc: string;
   };
 
+  // Check if language is Bengali (case insensitive)
+  const isBengali = lang?.toLowerCase() === 'bn';
+
   return (
     <section
       ref={scrollRef}
       className="relative bg-[#0b0c18] text-white py-20 px-6 overflow-hidden font-hind"
     >
       <div className="max-w-screen-2xl mx-auto relative z-10">
-        <h2 className={`text-6xl md:text-8xl font-black text-center mb-40 tracking-tight px-4 ${lang === 'bn' ? 'font-hind' : ''}`}>
+        <h2 className={`text-6xl md:text-8xl font-black text-center mb-40 tracking-tight px-4 ${isBengali ? 'font-hind' : ''}`}>
           {t.protocolTitle}{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 italic font-light inline-block pr-4">
             {t.protocolTitleItalic}
@@ -133,12 +136,12 @@ const EngineeringProtocol = () => {
                       </span>
 
                       <h4
-                        className={`text-2xl font-bold mb-2 ${lang === 'bn' ? 'font-hind' : ''}`}
+                        className={`text-2xl font-bold mb-2 ${isBengali ? 'font-hind' : ''}`}
                         style={{ color: design.color }}
                       >
                         {design.id}. {step.title}
                       </h4>
-                      <p className={`text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0 ${lang === 'bn' ? 'font-hind' : ''}`}>
+                      <p className={`text-white/40 max-w-[400px] leading-relaxed mx-auto md:mx-0 ${isBengali ? 'font-hind' : ''}`}>
                         {step.desc}
                       </p>
                     </div>

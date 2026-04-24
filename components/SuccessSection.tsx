@@ -117,18 +117,18 @@ const SuccessSection = () => {
     }
   }, [inView, lang]);
 
+  // ফিক্সড cardVariants - টাইপিং সমস্যা সমাধান করা হয়েছে
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: (i: number) => ({
+    visible: {
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.15,
         duration: 0.6,
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
       },
-    }),
+    },
   };
 
   // কাউন্টার ভ্যালু ফরম্যাট করা (বাংলা digits সহ)
@@ -216,6 +216,7 @@ const SuccessSection = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
                 whileHover={{ y: -10 }}
+                transition={{ delay: i * 0.15 }}
                 className="group relative rounded-3xl bg-white/[0.02] backdrop-blur-sm border border-white/5 overflow-hidden transition-all duration-500 hover:border-purple-500/30 hover:shadow-2xl"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />

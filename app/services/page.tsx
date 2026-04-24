@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import PremiumSpinner from "@/components/PremiumSpinner";
-import ParticleNetwork from "@/components/ParticleNetworkBG";
+import ParticleNetwork from "@/components/ParticleNetwork";
 
 gsap.registerPlugin(ScrollTrigger);
 

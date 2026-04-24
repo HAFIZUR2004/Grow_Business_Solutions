@@ -1,96 +1,98 @@
-// app/api/vacancies/[id]/route.ts
-import { NextResponse } from 'next/server';
-import { ObjectId } from 'mongodb';
-import clientPromise from '@/lib/mongodb';
+// app/api/portfolio/[id]/route.ts
+export const dynamic = 'force-dynamic';
 
-// GET all vacancies
-export async function GET() {
+import { NextRequest, NextResponse } from 'next/server';
+import Portfolio from '@/app/models/Portfolio';
+import { dbConnect } from '@/lib/dbConnect';
+
+// GET single portfolio
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const client = await clientPromise;
-    const db = client.db('portfolio');
-    const vacancies = await db.collection('vacancies').find({}).toArray();
+    await dbConnect();
+    const { id } = await params;
     
-    return NextResponse.json(vacancies);
+    const portfolio = await Portfolio.findOne({ id: id });
+    
+    if (!portfolio) {
+      return NextResponse.json(
+        { error: 'Portfolio not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(portfolio, { status: 200 });
   } catch (error) {
     console.error('GET Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch vacancies' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch portfolio' },
+      { status: 500 }
+    );
   }
 }
 
-// POST new vacancy
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const client = await clientPromise;
-    const db = client.db('portfolio');
-    
-    const newVacancy = {
-      ...body,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    
-    const result = await db.collection('vacancies').insertOne(newVacancy);
-    
-    return NextResponse.json({ ...newVacancy, _id: result.insertedId }, { status: 201 });
-  } catch (error) {
-    console.error('POST Error:', error);
-    return NextResponse.json({ error: 'Failed to create vacancy' }, { status: 500 });
-  }
-}
-
-// PUT - Update vacancy
+// PUT update portfolio
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await dbConnect();
+    const { id } = await params;
     const body = await request.json();
-    const client = await clientPromise;
-    const db = client.db('portfolio');
     
-    const { id, ...updateData } = body;
-    
-    const result = await db.collection('vacancies').updateOne(
-      { id: params.id }, // Make sure this matches the field name in your database
+    const updatedPortfolio = await Portfolio.findOneAndUpdate(
+      { id: id },
       { 
-        $set: {
-          ...updateData,
-          updatedAt: new Date(),
-        }
-      }
+        ...body,
+        updatedAt: new Date()
+      },
+      { new: true }
     );
     
-    if (result.matchedCount === 0) {
-      return NextResponse.json({ error: 'Vacancy not found' }, { status: 404 });
+    if (!updatedPortfolio) {
+      return NextResponse.json(
+        { error: 'Portfolio not found' },
+        { status: 404 }
+      );
     }
     
-    return NextResponse.json({ success: true });
+    return NextResponse.json(updatedPortfolio, { status: 200 });
   } catch (error) {
     console.error('PUT Error:', error);
-    return NextResponse.json({ error: 'Failed to update vacancy' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to update portfolio' },
+      { status: 500 }
+    );
   }
 }
 
-// DELETE - Remove vacancy
+// DELETE portfolio
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const client = await clientPromise;
-    const db = client.db('portfolio');
+    await dbConnect();
+    const { id } = await params;
     
-    const result = await db.collection('vacancies').deleteOne({ id: params.id });
+    const deletedPortfolio = await Portfolio.findOneAndDelete({ id: id });
     
-    if (result.deletedCount === 0) {
-      return NextResponse.json({ error: 'Vacancy not found' }, { status: 404 });
+    if (!deletedPortfolio) {
+      return NextResponse.json(
+        { error: 'Portfolio not found' },
+        { status: 404 }
+      );
     }
     
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error('DELETE Error:', error);
-    return NextResponse.json({ error: 'Failed to delete vacancy' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to delete portfolio' },
+      { status: 500 }
+    );
   }
 }
