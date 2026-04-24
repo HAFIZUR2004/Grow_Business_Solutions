@@ -8,11 +8,11 @@ import { dbConnect } from '@/lib/dbConnect';
 // GET single portfolio
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await params;
+    const { id } = await context.params;
     
     const portfolio = await Portfolio.findOne({ id: id });
     
@@ -36,11 +36,11 @@ export async function GET(
 // PUT update portfolio
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await params;
+    const { id } = await context.params;
     const body = await request.json();
     
     const updatedPortfolio = await Portfolio.findOneAndUpdate(
@@ -72,11 +72,11 @@ export async function PUT(
 // DELETE portfolio
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await params;
+    const { id } = await context.params;
     
     const deletedPortfolio = await Portfolio.findOneAndDelete({ id: id });
     

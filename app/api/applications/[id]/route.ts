@@ -1,3 +1,4 @@
+// app/api/applications/[id]/route.ts
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -8,14 +9,12 @@ const DB_NAME = 'growbusinessDB';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = await params;
-
-    console.log('Fetching application with ID:', id);
+    const { id } = await context.params;
 
     let application = null;
 
@@ -33,7 +32,7 @@ export async function GET(
 
     if (!application) {
       return NextResponse.json(
-        { error: 'অ্যাপ্লিকেশন পাওয়া যায়নি' },
+        { error: 'Application not found' },
         { status: 404 }
       );
     }
@@ -42,7 +41,7 @@ export async function GET(
   } catch (error) {
     console.error('GET Application Error:', error);
     return NextResponse.json(
-      { error: 'অ্যাপ্লিকেশন লোড করতে ব্যর্থ হয়েছে' },
+      { error: 'Failed to load application' },
       { status: 500 }
     );
   }
@@ -50,12 +49,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = await params;
+    const { id } = await context.params;
     const { status } = await request.json();
 
     let result = null;
@@ -74,7 +73,7 @@ export async function PUT(
 
     if (result.matchedCount === 0) {
       return NextResponse.json(
-        { error: 'অ্যাপ্লিকেশন পাওয়া যায়নি' },
+        { error: 'Application not found' },
         { status: 404 }
       );
     }
@@ -83,7 +82,7 @@ export async function PUT(
   } catch (error) {
     console.error('PUT Application Error:', error);
     return NextResponse.json(
-      { error: 'স্ট্যাটাস আপডেট করতে ব্যর্থ হয়েছে' },
+      { error: 'Failed to update status' },
       { status: 500 }
     );
   }
