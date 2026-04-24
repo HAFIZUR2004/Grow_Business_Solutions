@@ -30,7 +30,6 @@ export default function AdminLayout({
     { path: '/admin/testimonials', name: 'টেস্টিমোনিয়াল', icon: MessageSquare },
     { path: '/admin/applications', name: 'আবেদনপত্র', icon: Users },
     { path: '/admin/messages', name: 'মেসেজ', icon: Mail },
-    { path: '/admin/settings', name: 'সেটিংস', icon: Settings }, 
   ];
 
   return (

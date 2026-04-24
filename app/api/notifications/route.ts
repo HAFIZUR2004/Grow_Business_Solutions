@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+// app/api/notifications/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 
 // টেম্পোরারি স্টোরেজ (আপনার ডাটাবেস ব্যবহার করুন)
 let notifications: any[] = [
@@ -17,7 +18,7 @@ export async function GET() {
   return NextResponse.json(notifications);
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const newNotification = {
@@ -30,13 +31,17 @@ export async function POST(request: Request) {
     notifications.unshift(newNotification);
     notifications = notifications.slice(0, 50);
     
-    return NextResponse.json(newNotification);
+    return NextResponse.json(newNotification, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create notification' }, { status: 500 });
+    console.error('Create notification error:', error);
+    return NextResponse.json(
+      { error: 'Failed to create notification' },
+      { status: 500 }
+    );
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   try {
     const { notificationId, read } = await request.json();
     const notification = notifications.find(n => n.id === notificationId);
@@ -45,6 +50,27 @@ export async function PUT(request: Request) {
     }
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update notification' }, { status: 500 });
+    console.error('Update notification error:', error);
+    return NextResponse.json(
+      { error: 'Failed to update notification' },
+      { status: 500 }
+    );
+  }
+}
+
+// মার্ক অল এজ রিড করার জন্য অতিরিক্ত এন্ডপয়েন্ট
+export async function PATCH(request: NextRequest) {
+  try {
+    const { markAllRead } = await request.json();
+    if (markAllRead) {
+      notifications = notifications.map(n => ({ ...n, read: true }));
+    }
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Mark all read error:', error);
+    return NextResponse.json(
+      { error: 'Failed to mark all as read' },
+      { status: 500 }
+    );
   }
 }

@@ -1,17 +1,18 @@
-import { NextResponse } from 'next/server';
+// app/api/applications/[id]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
 
 const DB_NAME = 'growbusinessDB';
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = params;
+    const { id } = await params; // Promise থেকে id বের করুন
 
     console.log('Fetching application with ID:', id);
 
@@ -49,13 +50,13 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = params;
+    const { id } = await params; // Promise থেকে id বের করুন
     const { status } = await request.json();
 
     let result = null;

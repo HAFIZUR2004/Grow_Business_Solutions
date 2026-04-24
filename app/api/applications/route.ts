@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+// app/api/applications/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 
 const DB_NAME = 'growbusinessDB';
@@ -27,7 +28,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const client = await clientPromise;
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       status: 'pending'
     });
     
-    // নোটিফিকেশন ট্রিগার করুন (যদি needed)
+    // নোটিফিকেশন ট্রিগার করুন
     const newApplication = { ...body, _id: result.insertedId };
     
     // ব্যাকগ্রাউন্ডে নোটিফিকেশন পাঠান
