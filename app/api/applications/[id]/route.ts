@@ -1,4 +1,5 @@
-// app/api/applications/[id]/route.ts
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
@@ -12,20 +13,18 @@ export async function GET(
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = await params; // Promise থেকে id বের করুন
+    const { id } = await params;
 
     console.log('Fetching application with ID:', id);
 
     let application = null;
 
-    // প্রথমে ObjectId দিয়ে চেষ্টা
     if (ObjectId.isValid(id)) {
       application = await db.collection('applications').findOne({
         _id: new ObjectId(id)
       });
     }
 
-    // না পেলে string id দিয়ে চেষ্টা
     if (!application) {
       application = await db.collection('applications').findOne({
         id: id
@@ -56,7 +55,7 @@ export async function PUT(
   try {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
-    const { id } = await params; // Promise থেকে id বের করুন
+    const { id } = await params;
     const { status } = await request.json();
 
     let result = null;

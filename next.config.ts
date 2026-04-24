@@ -41,13 +41,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // অস্থায়ীভাবে build error থেকে বাঁচতে এই অংশ যোগ করুন
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // এই অপশনগুলো সরিয়ে দিন (deprecated)
+  output: 'standalone',
 };
 
 export default nextConfig;

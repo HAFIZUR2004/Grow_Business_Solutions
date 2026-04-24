@@ -1,4 +1,6 @@
 // app/api/applications/route.ts
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 
@@ -9,7 +11,6 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db(DB_NAME);
     
-    // সব আবেদন পাওয়া
     const applications = await db
       .collection('applications')
       .find({})
@@ -40,10 +41,9 @@ export async function POST(request: NextRequest) {
       status: 'pending'
     });
     
-    // নোটিফিকেশন ট্রিগার করুন
     const newApplication = { ...body, _id: result.insertedId };
     
-    // ব্যাকগ্রাউন্ডে নোটিফিকেশন পাঠান
+    // Notification (non-blocking)
     fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/notifications`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

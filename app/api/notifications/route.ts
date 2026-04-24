@@ -1,7 +1,8 @@
 // app/api/notifications/route.ts
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 
-// টেম্পোরারি স্টোরেজ (আপনার ডাটাবেস ব্যবহার করুন)
 let notifications: any[] = [
   {
     id: '1',
@@ -58,7 +59,6 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// মার্ক অল এজ রিড করার জন্য অতিরিক্ত এন্ডপয়েন্ট
 export async function PATCH(request: NextRequest) {
   try {
     const { markAllRead } = await request.json();

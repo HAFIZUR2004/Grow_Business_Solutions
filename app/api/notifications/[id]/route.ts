@@ -1,7 +1,9 @@
 // app/api/notifications/[id]/route.ts
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 
-// টেম্পোরারি স্টোরেজ (আপনার ডাটাবেস ব্যবহার করুন)
+// টেম্পোরারি স্টোরেজ (production এ ডাটাবেস ব্যবহার করুন)
 let notifications: any[] = [];
 
 export async function DELETE(
@@ -9,7 +11,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; // Promise থেকে id বের করুন
+    const { id } = await params;
     notifications = notifications.filter(n => n.id !== id);
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -21,7 +23,6 @@ export async function DELETE(
   }
 }
 
-// যদি GET needed হয় জন্য
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
