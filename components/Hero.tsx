@@ -82,6 +82,17 @@ export default function HeroSection() {
         <div className="glow-left" aria-hidden />
         <div className="glow-bottom" aria-hidden />
 
+        {/* Subtle background gradient for depth */}
+        <div
+  className="bg-gradient"
+  aria-hidden
+  style={{
+    background:
+      "radial-gradient(circle at 20% 40%, rgba(110, 60, 210, 0.55) 0%, rgba(11, 12, 24, 0) 80%)",
+  }}
+/>
+
+
         {/* Bottom wave lines */}
         <svg
           className="waves"
@@ -265,7 +276,7 @@ function GlobeSVG() {
   return (
     <svg
       viewBox="0 0 600 480"
-      xmlns="http://www.w3.org/000/svg"
+      xmlns="http://www.w3.org/2000/svg"
       width="100%"
       height="100%"
     >
@@ -605,6 +616,15 @@ const css = `
   /* বাংলা টেক্সটের জন্য স্পেসিফিক ক্লাস */
   .bangla-text {
     font-family: 'Hind Siliguri', 'Inter', sans-serif;
+  }
+  
+  /* Subtle background gradient for depth */
+  .bg-gradient {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 40%, rgba(40, 20, 100, 0.25) 0%, rgba(11, 12, 24, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
   }
   
   .hero-canvas {

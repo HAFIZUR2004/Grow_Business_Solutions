@@ -17,6 +17,7 @@ interface ParticleNetworkProps {
   speed?: number;
   className?: string;
   glowEffect?: boolean;
+  bgOpacity?: number; // New prop for background opacity
 }
 
 export default function ParticleNetwork({
@@ -30,6 +31,7 @@ export default function ParticleNetwork({
   speed = 0.8,
   className = "",
   glowEffect = true,
+  bgOpacity = 0.15, // Default subtle background opacity
 }: ParticleNetworkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,8 +77,8 @@ export default function ParticleNetwork({
       canvas.width = rect.width;
       canvas.height = rect.height;
       
-      // Set initial dark background
-      ctx.fillStyle = "#05050a";
+      // Set initial dark background with subtle purple tint
+      ctx.fillStyle = "#0b0c18";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       initNodes(canvas.width, canvas.height);
@@ -119,8 +121,16 @@ export default function ParticleNetwork({
       const W = canvas.width;
       const H = canvas.height;
       
-      // Clear with fade effect for smooth trail
-      ctx.fillStyle = "#05050a";
+      // Clear with fade effect for smooth trail - Now with subtle purple background
+      ctx.fillStyle = "#0b0c18";
+      ctx.fillRect(0, 0, W, H);
+      
+      // Add subtle background gradient overlay (like hero section)
+      const bgGradient = ctx.createRadialGradient(W * 0.2, H * 0.4, 0, W * 0.5, H * 0.5, W * 0.8);
+      bgGradient.addColorStop(0, `rgba(110, 60, 210, ${bgOpacity * 0.8})`);
+      bgGradient.addColorStop(0.6, `rgba(80, 40, 180, ${bgOpacity * 0.4})`);
+      bgGradient.addColorStop(1, `rgba(11, 12, 24, 0)`);
+      ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, W, H);
       
       // Add subtle grid pattern for depth
@@ -269,7 +279,7 @@ export default function ParticleNetwork({
       window.removeEventListener("resize", resize);
       resizeObserver.disconnect();
     };
-  }, [particleCount, connectionDistance, particleSize, particleColor, lineColor, lineOpacity, speed, glowEffect]);
+  }, [particleCount, connectionDistance, particleSize, particleColor, lineColor, lineOpacity, speed, glowEffect, bgOpacity]);
 
   return (
     <motion.div

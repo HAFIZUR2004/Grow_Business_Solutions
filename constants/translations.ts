@@ -119,22 +119,22 @@ export const translations = {
         },
       },
       {
-        name: "Julian Kross",
-        role: "Lead Systems Architect",
+        name: "Habiba Akhter",
+        role: "MERN Stack Developer",
         description:
           "Building invisible foundations with zero-latency precision.",
-        image: "/team/Julian.jpg",
+        image: "https://i.ibb.co.com/4R9fJX6T/Whats-App-Image-2026-04-21-at-1-52-13-PM.jpg",
         social: {
           email: "hafizur@growbusiness.solutions",
-          linkedin: "https://linkedin.com/in/hafizur",
-          github: "https://github.com/hafizur",
+          linkedin: " https://www.linkedin.com/in/habiba-anika-00ab163a1/",
+          github: " https://github.com/coderhabiba",
           twitter: "https://twitter.com/hafizur",
           facebook: "https://facebook.com/hafizur",
         },
       },
       {
         name: "Md. Shukur Mahmud",
-        role: "Founder & Developer",
+        role: "CoFounder & Developer",
         description:
           "Building invisible foundations with zero-latency precision.",
         image: "/team/Shukur.png",
@@ -346,19 +346,7 @@ reviews: {
           facebook: "https://facebook.com/hafizur",
         },
       },
-      {
-        name: "এলেনা ভ্যান্স",
-        role: "কৌশল প্রধান",
-        description: "জটিল মার্কেট ডেটাকে সুশৃঙ্খল রোডম্যাপে রূপান্তরিত করছেন।",
-        image: "/team/Elena.jpg",
-        social: {
-          email: "hafizur@growbusiness.solutions",
-          linkedin: "https://linkedin.com/in/hafizur",
-          github: "https://github.com/hafizur",
-          twitter: "https://twitter.com/hafizur",
-          facebook: "https://facebook.com/hafizur",
-        },
-      },
+     
       {
         name: "জুলিয়ান ক্রস",
         role: "লিড সিস্টেম আর্কিটেক্ট",
@@ -381,6 +369,19 @@ reviews: {
           email: "hafizur@growbusiness.solutions",
           linkedin: "https://linkedin.com/in/hafizur",
           github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
+       {
+        name: "হাবিবা আখতার",
+        role: "MERN স্ট্যাক ডেভেলপার",
+        description: "জটিল মার্কেট ডেটাকে সুশৃঙ্খল রোডম্যাপে রূপান্তরিত করছেন।",
+        image: "https://i.ibb.co.com/4R9fJX6T/Whats-App-Image-2026-04-21-at-1-52-13-PM.jpg",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: " https://www.linkedin.com/in/habiba-anika-00ab163a1/",
+          github: " https://github.com/coderhabiba",
           twitter: "https://twitter.com/hafizur",
           facebook: "https://facebook.com/hafizur",
         },
