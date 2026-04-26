@@ -3,12 +3,25 @@
 import { useLanguage } from "@/constants/LanguageContext";
 import { translations } from "@/constants/translations";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation"; 
 
 export default function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { lang } = useLanguage();
   const t = translations[lang];
+   const router = useRouter(); 
 
+ const handleContactClick = () => {
+    router.push('/ContactUs');
+  };
+
+   const handleServiceClick = () => {
+   
+    const serviceSection = document.getElementById('success-section');
+    if (serviceSection) {
+      serviceSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -24,7 +37,7 @@ export default function HeroSection() {
     resize();
     window.addEventListener("resize", resize);
 
-    const nodes = Array.from({ length: 55 }, () => ({
+    const nodes = Array.from({ length: 35 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.25,
@@ -42,7 +55,7 @@ export default function HeroSection() {
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
           const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 160) {
+          if (d < 110) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -160,8 +173,12 @@ export default function HeroSection() {
           <p className="desc">{t.heroDesc}</p>
 
           <div className="btns">
-            <button className="btn btn-primary">{t.heroBtnPrimary}</button>
-            <button className="btn btn-secondary">{t.heroBtnSecondary}</button>
+            <button className="btn btn-primary" onClick={handleContactClick}>
+              {t.heroBtnPrimary}
+            </button>
+             <button className="btn btn-secondary" onClick={handleServiceClick}>
+              {t.heroBtnSecondary}
+            </button>
           </div>
         </div>
       </section>

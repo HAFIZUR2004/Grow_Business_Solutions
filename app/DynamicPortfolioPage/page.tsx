@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { PublicLayout } from "../public-layout";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { 
@@ -168,6 +170,7 @@ const PremiumSpinner = ({ loadingTexts, pleaseWait, complete }: { loadingTexts: 
         </motion.div>
       </motion.div>
 
+      {/* Logo Container - Your Company Logo */}
       <motion.div
         className="relative w-20 h-20 mb-6"
         animate={{
@@ -179,8 +182,16 @@ const PremiumSpinner = ({ loadingTexts, pleaseWait, complete }: { loadingTexts: 
           scale: { duration: 1.5, repeat: Infinity },
         }}
       >
-        <div className="w-full h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
-          <span className="text-white text-2xl font-bold">🚀</span>
+        {/* Gradient Border Ring for Premium Look */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 p-[2px]">
+          <div className="w-full h-full rounded-full bg-gradient-to-br from-[#0b0c18] to-[#0f0f1a] flex items-center justify-center overflow-hidden">
+            {/* Your Company Logo */}
+            <img 
+              src="/logo.png" 
+              alt="Company Logo" 
+              className="w-16 h-16 object-contain rounded-full"
+            />
+          </div>
         </div>
       </motion.div>
 

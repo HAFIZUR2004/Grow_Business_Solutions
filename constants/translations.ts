@@ -105,6 +105,21 @@ export const translations = {
           facebook: "https://facebook.com/hafizur",
         },
       },
+      ,
+      {
+        name: "Md. Shukur Mahmud",
+        role: "CoFounder & Developer",
+        description:
+          "Building invisible foundations with zero-latency precision.",
+        image: "/team/Shukur.png",
+        social: {
+          email: "hafizur@growbusiness.solutions",
+          linkedin: "https://linkedin.com/in/hafizur",
+          github: "https://github.com/hafizur",
+          twitter: "https://twitter.com/hafizur",
+          facebook: "https://facebook.com/hafizur",
+        },
+      },
       {
         name: "Elena Vance",
         role: "Head of Strategy",

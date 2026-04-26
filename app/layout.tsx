@@ -1,11 +1,9 @@
-// app/layout.tsx
 "use client";
 
 import type { Metadata } from "next";
 import { Inter, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/constants/LanguageContext";
 import { usePathname } from "next/navigation";
 import { AIChatbotProvider } from "@/components/AIChatbotProvider";
@@ -28,8 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
-  // 👉 admin path check
   const isAdmin = pathname?.startsWith("/admin");
 
   return (
@@ -43,15 +39,13 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <LanguageProvider>
-          {/* Wrap everything with AIChatbotProvider */}
           <AIChatbotProvider>
             {/* Navbar only for public */}
             {!isAdmin && <Navbar />}
 
             <main className="grow relative z-10">{children}</main>
 
-            {/* Footer only for public */}
-            {!isAdmin && <Footer />}
+            {/* Footer সরিয়ে ফেলা হয়েছে - এখন PublicLayout handle করবে */}
           </AIChatbotProvider>
         </LanguageProvider>
       </body>
