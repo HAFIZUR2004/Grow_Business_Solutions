@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import Link from "next/link";
-
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Code2,
@@ -364,7 +363,7 @@ export default function AboutPage() {
 
   return (
     <PublicLayout>
-      <main className="relative min-h-screen bg-[#05070a] text-white font-sans overflow-x-hidden">
+      <main className="relative min-h-screen bg-[#05070a] text-white font-hind overflow-x-hidden">
         {/* Particle Network BG */}
         <ParticleNetwork
           opacity={0.35}

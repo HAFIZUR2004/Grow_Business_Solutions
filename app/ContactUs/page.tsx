@@ -62,7 +62,7 @@ const PremiumSpinner = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#05070a] via-[#0a0c0f] to-[#05070a] flex flex-col items-center justify-center z-[200]">
+    <div className="fixed inset-0 bg-gradient-to-br font-hind from-[#05070a] via-[#0a0c0f] to-[#05070a] flex flex-col items-center justify-center z-[200]">
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] bg-[#6c5ce7]/20 rounded-full"
@@ -306,7 +306,7 @@ export default function ContactSection() {
 
   return (
     <PublicLayout>
-      <section className="relative min-h-screen bg-[#05070a] text-white flex items-center px-4 md:px-10 py-32 overflow-hidden">
+      <section className="relative min-h-screen bg-[#05070a] text-white font-hind flex items-center px-4 md:px-10 py-32 overflow-hidden">
         <ParticleNetwork
           opacity={0.4}
           particleCount={70}

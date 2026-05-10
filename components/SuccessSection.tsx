@@ -36,13 +36,13 @@ const statsConfig = [
   {
     icon: Clock,
     isCounter: true,
-    targetValue: 8,
+    targetValue: 2,
     suffix: "+",
   },
   {
     icon: Briefcase,
     isCounter: true,
-    targetValue: 20,
+    targetValue: 4,
     suffix: "+",
   },
   {
@@ -97,19 +97,19 @@ const SuccessSection = () => {
     // Default data for English
     return [
       {
-        title: "8+ Years",
+        title: "2+ Years",
         desc: "Of dedicated craft in digital architecture.",
         icon: Clock,
         isCounter: true,
-        targetValue: 8,
+        targetValue: 2,
         suffix: "+",
       },
       {
-        title: "20+ Projects",
+        title: "4+ Projects",
         desc: "High-impact solutions delivered globally.",
         icon: Briefcase,
         isCounter: true,
-        targetValue: 20,
+        targetValue: 4,
         suffix: "+",
       },
       {

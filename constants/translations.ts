@@ -89,7 +89,7 @@ export const translations = {
       },
     ],
     trustBadges: {
-      projectsCompleted: "8+ Projects Completed",
+      projectsCompleted: "4+ Projects Completed",
       fiveStarRating: "5 Star Rating",
       onTimeDelivery: "On-Time Delivery",
       premiumQuality: "Premium Quality",
@@ -792,7 +792,7 @@ export const translations = {
       },
     ],
     trustBadges: {
-      projectsCompleted: "৮+ প্রজেক্ট সম্পন্ন",
+      projectsCompleted: "৪+ প্রজেক্ট সম্পন্ন",
       fiveStarRating: "৫ স্টার রেটিং",
       onTimeDelivery: "সময়ে ডেলিভারি",
       premiumQuality: "প্রিমিয়াম কোয়ালিটি",
