@@ -30,7 +30,7 @@ export function proxy(request: NextRequest) {
     console.log('Password:', password);
     
     // হার্ডকোডেড ক্রেডেনশিয়াল
-    if (username === 'hafiz' && password === 'admin123') {
+    if (username === 'hafiz' && password === 'admi643791') {
       console.log('Auth success');
       return NextResponse.next();
     }
