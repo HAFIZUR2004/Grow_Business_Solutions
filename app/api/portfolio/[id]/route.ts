@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import Portfolio from '@/app/models/Portfolio';
 import { dbConnect } from '@/lib/dbConnect';
+import mongoose from 'mongoose';
 
 // GET single portfolio
 export async function GET(
@@ -14,7 +15,14 @@ export async function GET(
     await dbConnect();
     const { id } = await context.params;
     
-    const portfolio = await Portfolio.findOne({ id: id });
+    // Try to find by _id first (MongoDB ObjectId), then by custom id field
+    let portfolio;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      portfolio = await Portfolio.findById(id);
+    }
+    if (!portfolio) {
+      portfolio = await Portfolio.findOne({ id: id });
+    }
     
     if (!portfolio) {
       return NextResponse.json(
@@ -43,14 +51,34 @@ export async function PUT(
     const { id } = await context.params;
     const body = await request.json();
     
-    const updatedPortfolio = await Portfolio.findOneAndUpdate(
-      { id: id },
-      { 
-        ...body,
-        updatedAt: new Date()
-      },
-      { new: true }
-    );
+    // Remove id from body if present to avoid conflicts
+    const { id: _, ...updateData } = body;
+    
+    let updatedPortfolio;
+    
+    // First try to find by MongoDB _id
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      updatedPortfolio = await Portfolio.findByIdAndUpdate(
+        id,
+        { 
+          ...updateData,
+          updatedAt: new Date()
+        },
+        { new: true, runValidators: true }
+      );
+    }
+    
+    // If not found by _id, try by custom id field
+    if (!updatedPortfolio) {
+      updatedPortfolio = await Portfolio.findOneAndUpdate(
+        { id: id },
+        { 
+          ...updateData,
+          updatedAt: new Date()
+        },
+        { new: true, runValidators: true }
+      );
+    }
     
     if (!updatedPortfolio) {
       return NextResponse.json(
@@ -78,7 +106,17 @@ export async function DELETE(
     await dbConnect();
     const { id } = await context.params;
     
-    const deletedPortfolio = await Portfolio.findOneAndDelete({ id: id });
+    let deletedPortfolio;
+    
+    // First try to delete by MongoDB _id
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      deletedPortfolio = await Portfolio.findByIdAndDelete(id);
+    }
+    
+    // If not found by _id, try by custom id field
+    if (!deletedPortfolio) {
+      deletedPortfolio = await Portfolio.findOneAndDelete({ id: id });
+    }
     
     if (!deletedPortfolio) {
       return NextResponse.json(
