@@ -280,13 +280,19 @@ const PremiumSpinner = ({
 };
 // ==================================================
 
-export default function DynamicPortfolioPage() {
+interface DynamicPortfolioPageProps {
+  t?: any;
+  lang?: string;
+}
+
+export default function DynamicPortfolioPage({ t: propT, lang: propLang }: DynamicPortfolioPageProps) {
   const [projects, setProjects] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const headerRef = useRef<HTMLDivElement>(null);
 
-  const { lang } = useLanguage();
-  const t = translations[lang];
+  const context = useLanguage();
+  const lang = propLang || context.lang;
+  const t = propT || translations[lang as keyof typeof translations];
   const portfolio = t.portfolio;
 
   const [scrollProgress, setScrollProgress] = useState(0);

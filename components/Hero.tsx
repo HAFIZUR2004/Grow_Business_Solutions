@@ -1,15 +1,16 @@
 "use client";
 
-import { useLanguage } from "@/constants/LanguageContext";
-import { translations } from "@/constants/translations";
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
-export default function HeroSection() {
+interface HeroProps {
+  t: any;
+  lang: string;
+}
+
+export default function HeroSection({ t, lang }: HeroProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { lang } = useLanguage();
-  const t = translations[lang];
-   const router = useRouter(); 
+  const router = useRouter(); 
 
  const handleContactClick = () => {
     router.push('/ContactUs');
@@ -45,7 +46,17 @@ export default function HeroSection() {
       r: Math.random() * 2.2 + 0.8,
     }));
 
+    let isVisible = true;
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+    });
+    observer.observe(canvas);
+
     const draw = () => {
+      if (!isVisible) {
+        animId = requestAnimationFrame(draw);
+        return;
+      }
       const W = canvas.width;
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
@@ -84,6 +95,7 @@ export default function HeroSection() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
+      observer.disconnect();
     };
   }, []);
 
@@ -613,8 +625,6 @@ function hexPts(cx: number, cy: number, s: number): string {
 }
 
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
   .hero {
     position: relative;

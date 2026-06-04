@@ -3,8 +3,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLanguage } from "@/constants/LanguageContext";
-import { translations } from "@/constants/translations";
 import {
   Code2,
   Atom,
@@ -179,15 +177,18 @@ const categoryColors: Record<string, string> = {
   Security: "#e84393",
 };
 
-const TechStack = () => {
+interface TechStackProps {
+  t: any;
+  lang: string;
+}
+
+const TechStack = ({ t, lang }: TechStackProps) => {
   const sectionRef = useRef(null);
   const orbitRefs = useRef<(HTMLDivElement | null)[]>([]);
   const gridRef = useRef<HTMLDivElement>(null);
   const [currentRow, setCurrentRow] = useState(0);
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
 
-  const { lang } = useLanguage();
-  const t = translations[lang];
   const features = t.techStack?.features || [];
 
   const totalRows = Math.ceil(features.length / 2);
@@ -359,7 +360,7 @@ const TechStack = () => {
                 ref={gridRef}
                 className="features-grid grid grid-cols-1 sm:grid-cols-2 gap-5"
               >
-                {features.map((feature, index) => {
+                {features.map((feature: any, index: number) => {
                   const Icon = featureIcons[index % featureIcons.length];
                   return (
                     <motion.div

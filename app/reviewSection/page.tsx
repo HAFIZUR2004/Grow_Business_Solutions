@@ -18,9 +18,15 @@ interface TestimonialType {
   company: string;
 }
 
-const PremiumReviews = () => {
-  const { lang } = useLanguage();
-  const t = translations[lang];
+interface PremiumReviewsProps {
+  t?: any;
+  lang?: string;
+}
+
+const PremiumReviews = ({ t: propT, lang: propLang }: PremiumReviewsProps) => {
+  const context = useLanguage();
+  const lang = propLang || context.lang;
+  const t = propT || translations[lang as keyof typeof translations];
 
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);

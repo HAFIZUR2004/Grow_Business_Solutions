@@ -1,6 +1,3 @@
-// app/api/vacancies/route.ts
-export const dynamic = 'force-dynamic';
-
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { IVacancy, validateVacancy, defaultVacancy } from '@/app/models/Vacancy';

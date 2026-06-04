@@ -1,7 +1,5 @@
 "use client";
 
-import { useLanguage } from "@/constants/LanguageContext";
-import { translations } from "@/constants/translations";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { motion, useScroll, useTransform, Variants } from "framer-motion";
@@ -68,7 +66,12 @@ const cardVariants: Variants = {
   }),
 };
 
-const SuccessSection = () => {
+interface SuccessSectionProps {
+  t: any;
+  lang: string;
+}
+
+const SuccessSection = ({ t, lang }: SuccessSectionProps) => {
   const [counters, setCounters] = useState([0, 0, 0]);
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -76,9 +79,6 @@ const SuccessSection = () => {
     triggerOnce: true,
     threshold: 0.2,
   });
-
-  const { lang } = useLanguage();
-  const t = translations[lang];
 
   // ✅ FIXED: No any type - proper typing
   const dynamicStatsData: StatInfo[] = useMemo(() => {

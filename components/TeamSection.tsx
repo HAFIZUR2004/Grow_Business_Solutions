@@ -10,8 +10,6 @@ import {
   FiInstagram,
   FiLinkedin,
 } from "react-icons/fi";
-import { useLanguage } from "@/constants/LanguageContext";
-import { translations } from "@/constants/translations";
 
 // ✅ টাইপ ডিফাইন করুন
 interface SocialLinks {
@@ -48,15 +46,16 @@ const SocialLink = ({
   </a>
 );
 
-const TeamSection = () => {
+interface TeamSectionProps {
+  teamData: any;
+  lang: string;
+}
+
+const TeamSection = ({ teamData, lang }: TeamSectionProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { lang } = useLanguage();
-  const t = translations[lang];
-
-  const teamData = t.teamHorizontal;
   const members: TeamMember[] = teamData.members;
 
   const { scrollYProgress } = useScroll({
