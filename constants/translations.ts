@@ -132,6 +132,18 @@ export const translations = {
           },
         },
         {
+          name: "Sharif Mohammad Nasrullah",
+          role: "Full Stack Engineer | AI Integration Specialist",
+          company: "",
+          image: "/team/nasrullah.png",
+          social: {
+            twitter: "https://twitter.com/",
+            github: "https://github.com/sharif418",
+            linkedin: "in/bibekbhowmick",
+            instagram: "",
+          },
+        },
+        {
           name: "Bibek Bhowmick",
           role: "Senior Software Developer & System Architect",
           company: "",
@@ -832,6 +844,18 @@ export const translations = {
             github: "https://github.com/mahmud014",
             linkedin: "in/shukurmahmud",
             instagram: "smanik5588",
+          },
+        },
+        {
+          name: "শরীফ মো নাসরুল্লাহ ",
+          role: "ফুল স্ট্যাক ইঞ্জিনিয়ার | এআই ইন্টিগ্রেশন স্পেশালিস্ট",
+          company: "",
+          image: "/team/nasrullah.png",
+          social: {
+            twitter: "https://twitter.com/",
+            github: "https://github.com/sharif418",
+            linkedin: "https://linkedin.com/in/",
+            instagram: "https://instagram.com/",
           },
         },
         {
