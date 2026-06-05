@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   FiArrowRight,
   FiGithub,
@@ -57,22 +57,6 @@ const TeamSection = ({ teamData, lang }: TeamSectionProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const members: TeamMember[] = teamData.members;
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.7, 1],
-    [0.3, 1, 1, 0.3],
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.3, 0.7, 1],
-    [0.95, 1, 1, 0.95],
-  );
 
   const scrollNext = () => {
     if (scrollRef.current) {
@@ -250,7 +234,10 @@ const TeamSection = ({ teamData, lang }: TeamSectionProps) => {
       </div>
 
       <motion.div
-        style={{ opacity, scale }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true, margin: "-50px" }}
         className="max-w-7xl mx-auto relative z-10"
       >
         <div className="text-center mb-16">

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
-import { motion, useScroll, useTransform, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import {
   Star,
   Rocket,
@@ -122,14 +122,6 @@ const SuccessSection = ({ t, lang }: SuccessSectionProps) => {
       },
     ];
   }, [lang, t.stats]);
-
-  // Scroll animation
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1, 0.3]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.95]);
 
   // Counter animation
   useEffect(() => {
@@ -349,7 +341,10 @@ const SuccessSection = ({ t, lang }: SuccessSectionProps) => {
       </div>
 
       <motion.div
-        style={{ opacity, scale }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true, margin: "-50px" }}
         className="max-w-7xl mx-auto relative z-10"
       >
         <div className="text-center mb-20">

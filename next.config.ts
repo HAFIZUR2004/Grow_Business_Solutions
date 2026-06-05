@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
+  // Disable cache components to allow dynamic routes in admin section
+  cacheComponents: false,
   experimental: {
   },
   images: {

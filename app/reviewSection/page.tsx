@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import PremiumSpinner from "@/components/PremiumSpinner";
 import { useLanguage } from "@/constants/LanguageContext";
 import { translations } from "@/constants/translations";
 
@@ -28,7 +27,6 @@ const PremiumReviews = ({ t: propT, lang: propLang }: PremiumReviewsProps) => {
   const lang = propLang || context.lang;
   const t = propT || translations[lang as keyof typeof translations];
 
-  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [touchStart, setTouchStart] = useState(0);
@@ -42,31 +40,28 @@ const PremiumReviews = ({ t: propT, lang: propLang }: PremiumReviewsProps) => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        setLoading(true);
-        const response = await fetch('/api/testimonials');
+        const response = await fetch("/api/testimonials");
         const result = await response.json();
 
         if (result.success && Array.isArray(result.data)) {
           // MongoDB _id → id ম্যাপিং
           const formatted: TestimonialType[] = result.data.map((item: any) => ({
             id: item._id.toString(),
-            name: item.name || '',
-            role: item.role || '',
-            comment: item.comment || '',
-            image: item.image || '',
+            name: item.name || "",
+            role: item.role || "",
+            comment: item.comment || "",
+            image: item.image || "",
             rating: item.rating || 5,
-            company: item.company || '',
+            company: item.company || "",
           }));
           setTestimonials(formatted);
         } else {
-          console.warn('No testimonials found or API error');
+          console.warn("No testimonials found or API error");
           setTestimonials([]);
         }
       } catch (error) {
-        console.error('Error fetching testimonials:', error);
+        console.error("Error fetching testimonials:", error);
         setTestimonials([]);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -246,17 +241,6 @@ const PremiumReviews = ({ t: propT, lang: propLang }: PremiumReviewsProps) => {
     if (touchStart - touchEnd > 75) handleNext();
     if (touchStart - touchEnd < -75) handlePrev();
   };
-
-  // ✅ Loading state
-  if (loading) {
-    return (
-      <PremiumSpinner
-        loadingTexts={[t?.premiumReviews?.loadingText || "Loading Reviews"]}
-        pleaseWait={t?.premiumReviews?.loadingSubText || "Please wait"}
-        complete="Complete"
-      />
-    );
-  }
 
   // ✅ No data state
   if (testimonials.length === 0) {
@@ -535,7 +519,7 @@ const PremiumReviews = ({ t: propT, lang: propLang }: PremiumReviewsProps) => {
                 "200+ Happy Clients",
             },
             {
-              icon: "🚀",
+              icon: "🏆",
               text:
                 t.premiumReviews?.trustBadges?.projectsDelivered ||
                 "50+ Projects Delivered",
