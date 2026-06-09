@@ -193,7 +193,7 @@ export default function CTABridgeSection({ t, lang }: CTABridgeSectionProps) {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10 w-full">
+      <div className="max-w-6xl font-hind mx-auto relative z-10 w-full">
         {/* Main heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -406,7 +406,7 @@ const TechStack = ({ t, lang }: TechStackProps) => {
             <div className="h-px w-12 bg-gradient-to-l from-transparent to-purple-500" />
           </div>
 
-          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6">
+          <h2 className="text-5xl md:text-7xl lg:text-8xl font-black font-hind tracking-tighter mb-6">
             {t.techStack?.title || "The"}{" "}
             <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-400 bg-clip-text text-transparent">
               {t.techStack?.titleGradient || "Atomic"}
@@ -414,7 +414,7 @@ const TechStack = ({ t, lang }: TechStackProps) => {
             {t.techStack?.titleEnd || "Stack."}
           </h2>
 
-          <p className="text-white/40 max-w-2xl mx-auto text-lg font-light">
+          <p className="text-white/40 max-w-2xl mx-auto font-hind text-lg font-light">
             {lang === "BN"
               ? "আমরা ব্যবহার করি বিশ্বের সবচেয়ে আধুনিক ও শক্তিশালী টুলস এবং টেকনোলজি"
               : "We use cutting-edge tools & technologies to build exceptional digital experiences"}
