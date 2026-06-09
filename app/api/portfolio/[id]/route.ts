@@ -3,22 +3,22 @@ import Portfolio from '@/app/models/Portfolio';
 import { dbConnect } from '@/lib/dbConnect';
 import mongoose from 'mongoose';
 
-// GET single portfolio
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await context.params;
+    const { id } = await params;
     
-    // Try to find by _id first (MongoDB ObjectId), then by custom id field
     let portfolio;
     if (mongoose.Types.ObjectId.isValid(id)) {
-      portfolio = await Portfolio.findById(id);
+      portfolio = await Portfolio.findById(id).lean();
     }
     if (!portfolio) {
-      portfolio = await Portfolio.findOne({ id: id });
+      portfolio = await Portfolio.findOne({ id: id }).lean();
     }
     
     if (!portfolio) {
@@ -29,52 +29,42 @@ export async function GET(
     }
     
     return NextResponse.json(portfolio, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('GET Error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch portfolio' },
+      { error: 'Failed to fetch portfolio', details: error.message },
       { status: 500 }
     );
   }
 }
 
-// PUT update portfolio
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await context.params;
+    const { id } = await params;
     const body = await request.json();
     
-    // Remove id from body if present to avoid conflicts
     const { id: _, ...updateData } = body;
     
     let updatedPortfolio;
     
-    // First try to find by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(id)) {
       updatedPortfolio = await Portfolio.findByIdAndUpdate(
         id,
-        { 
-          ...updateData,
-          updatedAt: new Date()
-        },
+        { ...updateData, updatedAt: new Date() },
         { new: true, runValidators: true }
-      );
+      ).lean();
     }
     
-    // If not found by _id, try by custom id field
     if (!updatedPortfolio) {
       updatedPortfolio = await Portfolio.findOneAndUpdate(
         { id: id },
-        { 
-          ...updateData,
-          updatedAt: new Date()
-        },
+        { ...updateData, updatedAt: new Date() },
         { new: true, runValidators: true }
-      );
+      ).lean();
     }
     
     if (!updatedPortfolio) {
@@ -85,34 +75,31 @@ export async function PUT(
     }
     
     return NextResponse.json(updatedPortfolio, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('PUT Error:', error);
     return NextResponse.json(
-      { error: 'Failed to update portfolio' },
+      { error: 'Failed to update portfolio', details: error.message },
       { status: 500 }
     );
   }
 }
 
-// DELETE portfolio
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
-    const { id } = await context.params;
+    const { id } = await params;
     
     let deletedPortfolio;
     
-    // First try to delete by MongoDB _id
     if (mongoose.Types.ObjectId.isValid(id)) {
-      deletedPortfolio = await Portfolio.findByIdAndDelete(id);
+      deletedPortfolio = await Portfolio.findByIdAndDelete(id).lean();
     }
     
-    // If not found by _id, try by custom id field
     if (!deletedPortfolio) {
-      deletedPortfolio = await Portfolio.findOneAndDelete({ id: id });
+      deletedPortfolio = await Portfolio.findOneAndDelete({ id: id }).lean();
     }
     
     if (!deletedPortfolio) {
@@ -122,11 +109,11 @@ export async function DELETE(
       );
     }
     
-    return NextResponse.json({ success: true }, { status: 200 });
-  } catch (error) {
+    return NextResponse.json({ success: true, message: 'Portfolio deleted successfully' }, { status: 200 });
+  } catch (error: any) {
     console.error('DELETE Error:', error);
     return NextResponse.json(
-      { error: 'Failed to delete portfolio' },
+      { error: 'Failed to delete portfolio', details: error.message },
       { status: 500 }
     );
   }

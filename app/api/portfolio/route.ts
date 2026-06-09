@@ -1,40 +1,30 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/dbConnect';
+import Portfolio from '@/app/models/Portfolio';
 
-// Force dynamic rendering for production
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const runtime = 'nodejs';
 
 export async function GET() {
-  console.log('🔵 API GET called');
-  
   try {
-    // Check MongoDB URI
-    if (!process.env.MONGODB_URI) {
-      console.error('❌ MONGODB_URI is not defined');
-      return NextResponse.json(
-        { error: 'Database configuration missing' },
-        { status: 500 }
-      );
-    }
-    
-    console.log('🟢 Connecting to database...');
+    console.log('1. Starting GET request');
     await dbConnect();
-    console.log('✅ Database connected');
+    console.log('2. Database connected');
     
-    // Dynamic import to avoid build issues
-    const Portfolio = (await import('@/app/models/Portfolio')).default;
-    const portfolios = await Portfolio.find({}).sort({ createdAt: -1 });
+    const portfolios = await Portfolio.find({})
+      .sort({ createdAt: -1 })
+      .lean()
+      .maxTimeMS(10000);
     
-    console.log(`📊 Found ${portfolios.length} portfolios`);
+    console.log(`3. Found ${portfolios.length} portfolios`);
     return NextResponse.json(portfolios, { status: 200 });
-    
   } catch (error: any) {
-    console.error('❌ API Error:', error);
+    console.error('❌ GET Error:', error);
     return NextResponse.json(
       { 
         error: 'Failed to fetch portfolios',
-        details: error.message 
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
       },
       { status: 500 }
     );
@@ -42,23 +32,21 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  console.log('🔵 API POST called');
-  
   try {
+    console.log('1. Starting POST request');
     const body = await request.json();
-    console.log('📝 Request body:', body);
+    console.log('2. Body:', body);
     
-    if (!process.env.MONGODB_URI) {
+    if (!body.title || !body.category || !body.description || !body.image) {
       return NextResponse.json(
-        { error: 'Database configuration missing' },
-        { status: 500 }
+        { error: 'Missing required fields' },
+        { status: 400 }
       );
     }
     
     await dbConnect();
-    const Portfolio = (await import('@/app/models/Portfolio')).default;
+    console.log('3. Database connected');
     
-    const trimmedImage = body.image?.trim() || '';
     const count = await Portfolio.countDocuments();
     const newId = String(count + 1).padStart(2, '0');
     
@@ -67,24 +55,28 @@ export async function POST(request: Request) {
       title: body.title,
       category: body.category,
       description: body.description,
-      tech: body.tech || [],
+      tech: Array.isArray(body.tech) ? body.tech : 
+            (body.tech ? body.tech.split(',').map((t: string) => t.trim()) : []),
+      icon: body.icon || 'faLayerGroup',
       colorKey: body.colorKey || 'purple',
       stats: body.stats || '',
-      image: trimmedImage,
+      image: body.image.trim(),
       imageAlt: body.imageAlt || body.title,
       github: body.github || '',
       liveUrl: body.liveUrl || '',
     };
     
     const portfolio = await Portfolio.create(portfolioData);
-    console.log('✅ Created portfolio:', portfolio.id);
+    console.log('4. Portfolio created:', portfolio.id);
     
     return NextResponse.json(portfolio, { status: 201 });
-    
   } catch (error: any) {
     console.error('❌ POST Error:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create portfolio' },
+      { 
+        error: 'Failed to create portfolio', 
+        details: error.message 
+      },
       { status: 500 }
     );
   }

@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Disable cache components to allow dynamic routes in admin section
-  cacheComponents: false,
+  // Important for MongoDB compatibility
+  serverExternalPackages: ['mongoose', 'mongodb'],
   experimental: {
+    serverComponentsExternalPackages: ['mongoose', 'mongodb'],
   },
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -14,12 +15,20 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
       { protocol: "https", hostname: "**.postimg.cc" },
       { protocol: "https", hostname: "*.cloudinary.com" },
+      { protocol: "https", hostname: "**" }, // Allow all for production
     ],
   },
   output: 'standalone',
-  // Optimize compression and source maps
   compress: true,
   productionBrowserSourceMaps: false,
+  
+  // Webpack configuration for MongoDB
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...(config.externals || []), 'mongoose', 'mongodb'];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
