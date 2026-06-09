@@ -221,7 +221,7 @@ export default function ServicesPage() {
 
   return (
     <PublicLayout showFooter={true}>
-      <main className="relative min-h-screen bg-[#05070a] text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
+      <main className="relative min-h-screen bg-[#05070a] font-hind text-white selection:bg-[#6c5ce7]/30 overflow-hidden">
         <ParticleNetwork
           opacity={0.4}
           particleCount={60}

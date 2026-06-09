@@ -108,6 +108,18 @@ export const translations = {
       allNodesActive: "ALL NODES ACTIVE",
       members: [
         {
+          name: "Saiful Islam",
+          role: "Founder & CEO",
+          company: "",
+          image: "/team/saifulislam.png",
+          social: {
+            twitter: "https://twitter.com/",
+            github: "https://github.com/",
+            linkedin: "https://linkedin.com/in/",
+            instagram: "https://instagram.com/",
+          },
+        },
+        {
           name: "Hafizur Rahman",
           role: "Technical Consultant",
           company: "",
@@ -822,6 +834,18 @@ export const translations = {
       systemStatus: "সিস্টেম স্ট্যাটাস: সক্রিয়",
       allNodesActive: "সকল নোড সক্রিয়",
       members: [
+        {
+          name: "সাইফুল ইসলাম",
+          role: "প্রতিষ্ঠাতা ও প্রধান নির্বাহী কর্মকর্তা",
+          company: "",
+          image: "/team/saifulislam.png",
+          social: {
+            twitter: "https://twitter.com/",
+            github: "https://github.com/",
+            linkedin: "https://linkedin.com/in/",
+            instagram: "https://instagram.com/",
+          },
+        },
         {
           name: "হাফিজুর রহমান",
           role: "প্রযুক্তি পরামর্শক",
