@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
@@ -5,6 +7,7 @@ import { PublicLayout } from "./public-layout";
 import ClientSections from "@/components/ClientSections";
 import CTABridgeSection from "@/components/CTABridgeSection";
 import { translations } from "@/constants/translations";
+import { useLanguage } from "@/constants/LanguageContext";
 
 // Minimal loading fallback for faster perceived performance
 const LoadingFallback = () => <div className="h-screen bg-transparent" />;
@@ -34,8 +37,7 @@ const TechStack = dynamic(() => import("@/components/TechStack"), {
 });
 
 export default function Home() {
-  // Server-side default language
-  const lang = "EN";
+  const { lang } = useLanguage();
   const t = translations[lang];
 
   return (

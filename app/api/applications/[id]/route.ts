@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
-import clientPromise from '@/lib/mongodb';
-
-const DB_NAME = 'growbusinessDB';
+import { getDatabase } from '@/lib/mongodb';
 
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
+    const db = await getDatabase();
     const { id } = await context.params;
 
     let application = null;
@@ -49,8 +46,7 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
+    const db = await getDatabase();
     const { id } = await context.params;
     const { status } = await request.json();
 

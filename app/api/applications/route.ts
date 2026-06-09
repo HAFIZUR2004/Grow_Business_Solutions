@@ -1,13 +1,10 @@
 // app/api/applications/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-
-const DB_NAME = 'growbusinessDB';
+import { getDatabase } from '@/lib/mongodb';
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
+    const db = await getDatabase();
     
     const applications = await db
       .collection('applications')
@@ -30,8 +27,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const client = await clientPromise;
-    const db = client.db(DB_NAME);
+    const db = await getDatabase();
     
     const result = await db.collection('applications').insertOne({
       ...body,
