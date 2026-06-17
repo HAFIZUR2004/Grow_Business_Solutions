@@ -56,7 +56,7 @@ export default function ContactSection() {
     {
       icon: Phone,
       label: "DIRECT LINE",
-      value: "+8801884369340",
+      value: "+8801726441994",
       color: "#6c5ce7",
       detail: "24/7 Available",
     },
@@ -70,7 +70,7 @@ export default function ContactSection() {
     {
       icon: MapPin,
       label: "GLOBAL NODE",
-      value: "Barishal, Bangladesh • Remote First",
+      value: "House 76/A, Road 11, Banani, Dhaka, Banani Model Town, Bangladesh, 1213 • Remote First",
       color: "#00cec9",
       detail: "Worldwide Service",
     },

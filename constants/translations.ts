@@ -125,10 +125,10 @@ export const translations = {
           company: "",
           image: "/team/hafizur.jpg",
           social: {
-            twitter: "https://twitter.com/hafizur",
-            github: "https://github.com/hafizur",
-            linkedin: "https://linkedin.com/in/hafizur",
-            instagram: "https://instagram.com/hafizur",
+            twitter: "https://twitter.com/",
+            github: "https://github.com/HAFIZUR2004",
+            linkedin: "https://linkedin.com/in/hafizur-mern",
+            instagram: "https://instagram.com",
           },
         },
         {
@@ -852,10 +852,10 @@ export const translations = {
           company: "",
           image: "/team/hafizur.jpg",
           social: {
-            twitter: "https://twitter.com/hafizur",
-            github: "https://github.com/hafizur",
-            linkedin: "https://linkedin.com/in/hafizur",
-            instagram: "https://instagram.com/hafizur",
+            twitter: "https://twitter.com/",
+            github: "https://github.com/HAFIZUR2004",
+            linkedin: "https://linkedin.com/in/hafizur-mern",
+            instagram: "https://instagram.com/",
           },
         },
         {
