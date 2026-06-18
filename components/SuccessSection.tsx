@@ -514,7 +514,7 @@ const SuccessSection = ({
                           {getFormattedCounter(counterValue, stat.suffix)}
                         </span>
                       </motion.h3>
-
+{/* ,,,,, */}
                       <motion.p
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
