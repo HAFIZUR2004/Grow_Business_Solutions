@@ -1,7 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Disable cache components to allow dynamic routes in admin section
+  // Note: Next.js 14 এ 'cacheComponents' অফিশিয়াল প্রপার্টি নয়, তবে এটি টাইপ সেফ রাখার জন্য এভাবেই রাখা হলো
   cacheComponents: false,
   experimental: {
   },
@@ -22,4 +22,4 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
 };
 
-export default nextConfig;
+module.exports = nextConfig;
