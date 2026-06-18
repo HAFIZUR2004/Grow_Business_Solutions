@@ -95,6 +95,7 @@ export const translations = {
       premiumQuality: "Premium Quality",
     },
 
+
     // Team Section
     teamHorizontal: {
       badge: "MEET THE COLLECTIVE",
@@ -497,7 +498,115 @@ export const translations = {
         },
       ],
     },
-  
+    //aboutpage
+    aboutPage: {
+      heroBadge: "OUR ARCHITECTURAL DNA",
+      heroTitle: "ENGINEERING",
+      heroTitleGradient: "DIGITAL EQUITY",
+      heroDesc:
+        "Grow Business Solutions is a collective of architects designing high-performance digital ecosystems for the modern era.",
+      heroBtnPrimary: "Explore Our Vision",
+      heroBtnSecondary: "Start Your Journey →",
+
+      fullStackTitle: "The Full Stack",
+      fullStackSubtitle: "12+ Modern Technologies • MERN • DevOps • Cloud",
+
+      journeyTitle: "Our Journey",
+      journeySubtitle: "THE PATH",
+      journeySubtitleItalic: "TO INNOVATION",
+
+      ctaTitle: "Ready to Write",
+      ctaTitleGradient: "Your Success Story?",
+      ctaDesc:
+        "Let's build something extraordinary together. Join the ranks of our global clients.",
+      ctaBtn: "Start Your Journey →",
+
+      // Stats labels
+      statsLabels: {
+        govtProjects: "Govt. Projects",
+        codeQuality: "Code Quality",
+        support: "Support",
+        techStack: "Tech Stack",
+      },
+
+      // Feature titles and descriptions
+      features: [
+        { title: "Optimized Core", desc: "Engineered for peak dominance." },
+        { title: "Reactive UI", desc: "Fluid, responsive interfaces." },
+        { title: "Distributed Edge", desc: "Global scale infrastructure." },
+        { title: "Ironclad Security", desc: "Enterprise-grade protection." },
+        { title: "Containerized", desc: "Consistent deployment everywhere." },
+        { title: "Cloud Native", desc: "AWS ready infrastructure." },
+      ],
+
+      // Journey steps
+      journeySteps: [
+        {
+          id: "01",
+          year: "2022 – 2024",
+          title: "The Foundation",
+          desc: "Started as developers on key government projects, proving technical excellence and professionalism. These collaborative roots inspired us to build our own platform.",
+          deliverables: [
+            "Govt. Project Experience",
+            "Core Team Synergy",
+            "Technical Excellence",
+          ],
+          duration: "Collaborative Roots",
+        },
+        {
+          id: "02",
+          year: "2025",
+          title: "The Transition",
+          desc: "Conceptualized Grow Business Solutions. Extensive research on solving business problems with custom web apps and modern technology.",
+          deliverables: [
+            "Market Research",
+            "Service Roadmap",
+            "Strategic Planning",
+          ],
+          duration: "Concept Phase",
+        },
+        {
+          id: "03",
+          year: "2026",
+          title: "The Official Launch",
+          desc: "Grow Business Solutions BD officially launches. Ready to deliver global-standard custom web solutions using cutting-edge MERN Stack technology.",
+          deliverables: [
+            "Official Agency Launch",
+            "Custom Web Solutions",
+            "Client-First Approach",
+          ],
+          duration: "New Era Begins",
+        },
+        {
+          id: "04",
+          year: "Future",
+          title: "Global Impact",
+          desc: "Aiming to serve global clients with high-performance digital ecosystems, innovation, and uncompromised quality.",
+          deliverables: [
+            "Global Reach",
+            "Innovation Lab",
+            "Enterprise Solutions",
+          ],
+          duration: "Worldwide Vision",
+        },
+      ],
+
+      // Technology names for orbit (optional - যদি চান)
+      techNames: {
+        nextjs: "Next.js",
+        react: "React",
+        nodejs: "Node.js",
+        mongodb: "MongoDB",
+        typescript: "TypeScript",
+        express: "Express",
+        tailwind: "Tailwind",
+        graphql: "GraphQL",
+        docker: "Docker",
+        aws: "AWS",
+        git: "Git",
+        figma: "Figma",
+      },
+    },
     //careersPage
     careersPage: {
       heroBadge: "WE ARE HIRING",
@@ -687,8 +796,7 @@ export const translations = {
       },
     ],
 
-    //Success in Motion
-    successBadge: "সাফল্যের মাইলফলক",
+ successBadge: "সাফল্যের মাইলফলক",
     successTitle: "গতিশীল",
     successTitleGradient: "সাফল্য",
     successDescription:

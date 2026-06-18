@@ -79,10 +79,11 @@ interface JourneyStep {
 
 interface StatItem {
   value: number;
-  label: string;
+  label?: string; // Made optional since you compute/add it dynamically inside the component
   suffix: string;
   icon: LucideIcon;
   note: string;
+  key: string;       // 👈 Add this line to allow the 'key' property
   isDynamic?: boolean;
 }
 
